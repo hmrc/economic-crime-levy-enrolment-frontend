@@ -1,4 +1,4 @@
-service.name = economic-crime-levy-enrolment-frontend
+service.name = Add Economic Crime Levy
 
 site.back = Back
 site.remove = Remove
@@ -6,8 +6,8 @@ site.change = Change
 site.no = No
 site.yes = Yes
 site.continue = Continue
+site.saveAndContinue = Save and continue
 site.start = Start now
-site.startAgain = Start again
 site.signIn = Sign in
 site.govuk = GOV.UK
 
@@ -22,36 +22,52 @@ timeout.signOut = Sign out
 
 error.browser.title.prefix = Error:
 error.boolean = Please give an answer
-error.invalid_date = Give a correct date
-error.date.day_blank = Enter a day
-error.date.day_invalid = Give a correct day using numbers 1 to 31
-error.date.month_blank = Enter a month
-error.date.month_invalid = Give a correct month using numbers 1 to 12
-error.date.year_blank = Enter a year
-error.date.year_invalid = Give a correct year
-error.integer = Give an answer in whole numbers
-error.non_numeric = Give a value using only numbers
-error.number = Please enter a valid number
+error.day.required = Enter a day
+error.day.invalid = The day entered must be a real day
+error.month.required = Enter a month
+error.month.invalid = The month entered must be a real month
+error.year.required = Enter a year
+error.year.invalid = The year entered must be a real year
+error.dayMonth.required = The date entered must include a day and month
+error.dayYear.required = The date entered must include a day and year
+error.monthYear.required = The date entered must include a month and year
+error.date.required = Enter a date
+error.date.invalid = The date entered must be a real date
 error.required = Please enter a value
 error.summary.title = There is a problem
 
-index.title = economic-crime-levy-enrolment-frontend
-index.heading = economic-crime-levy-enrolment-frontend
-index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
+answersAreInvalid.title = The answers you provided are not valid
+answersAreInvalid.heading = The answers you provided are not valid
+answersAreInvalid.p1 = The answers you provided are not valid or are incomplete.
+answersAreInvalid.p2 = This might have happened because you bookmarked a URL in the journey and tried to come back to it after 30 days.
+answersAreInvalid.p3 = You will need to submit your answers again.
+answersAreInvalid.button = Register for the Economic Crime Levy
 
-checkYourAnswers.title = Check Your Answers
-checkYourAnswers.heading = Check Your Answers
+start.title = Register for the Economic Crime Levy
+start.heading = Register for the Economic Crime Levy
+start.p1 = Use this service if you are an organisation or entity registered with HMRC for Anti-Money Laundering (AML) supervision and you need to register for the Economic Crime Levy (ECL).
+start.p2 = Check if you {0}.
+start.p2.link = <a href="https://www.gov.uk/government/publications/economic-crime-anti-money-laundering-levy/economic-crime-anti-money-laundering-levy" class="govuk-link">need to pay the levy</a>
+start.p3 = You will be able to submit a return and pay the levy after you have registered. You must pay the levy by 30 September {0}. You will be charged interest if you make a late payment.
+start.beforeYouStart = Before you start
+start.provide = You will need to provide:
+start.provide.b1 = information about your UK revenue for the last financial year
+start.provide.b2 = the date when your organisation started AML-regulated activities, if you started in the past financial year
+start.provide.b3 = details about your organisation so we can confirm your identity
+start.provide.b4 = the details of up to 2 people in your organisation who can act as a point of contact for any activities related to the ECL
+start.provide.b5 = the business sector your organisation operates in
+start.doNotUse = Do not use this service if:
+start.doNotUse.b1 = the Financial Conduct Authority (FCA) or the Gambling Commission (GC) supervises your AML activities
+start.doNotUse.b2 = your UK revenue is less than £10.2 million per year
 
-journeyRecovery.continue.title = Sorry, there is a problem with the service
-journeyRecovery.continue.heading = Sorry, there is a problem with the service
-journeyRecovery.continue.guidance = [Add content to explain how to proceed.]
-journeyRecovery.startAgain.title = Sorry, there is a problem with the service
-journeyRecovery.startAgain.heading = Sorry, there is a problem with the service
-journeyRecovery.startAgain.guidance = [Add content to explain why the user needs to start again.]
+feedback.heading = Tell us what you think
+feedback.p1 = This is a new service and we want to know what you think of it.
+feedback.link = <a href="{0}" class="govuk-link">Send us your feedback</a>
+feedback.p2 = {0}. Your thoughts and ideas will help us to make improvements.
+
+exit.survey.link = <a href="{0}" class="govuk-link">What did you think of this service?</a>
+exit.survey = {0} (takes 30 seconds) to exit survey.
 
 signedOut.title = For your security, we signed you out
 signedOut.heading = For your security, we signed you out
 signedOut.guidance = We did not save your answers.
-
-unauthorised.title = You can’t access this service with this account
-unauthorised.heading = You can’t access this service with this account

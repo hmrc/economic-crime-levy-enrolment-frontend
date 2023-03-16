@@ -2,20 +2,10 @@
 
 ->          /hmrc-frontend                               hmrcfrontend.Routes
 
-GET         /                                            controllers.IndexController.onPageLoad
+GET         /                                            uk.gov.hmrc.economiccrimelevyenrolment.controllers.IndexController.onPageLoad
 
-GET         /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                                uk.gov.hmrc.economiccrimelevyenrolment.controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
-
-GET         /refresh-session                             controllers.KeepAliveController.keepAlive
-
-GET         /there-is-a-problem                          controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
-
-GET         /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
-
-GET         /account/sign-out-survey                     controllers.auth.AuthController.signOut
-GET         /account/sign-out                            controllers.auth.AuthController.signOutNoSurvey
-GET         /account/signed-out                          controllers.auth.SignedOutController.onPageLoad
-
-GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad
+GET         /account/sign-out-survey                     uk.gov.hmrc.economiccrimelevyenrolment.controllers.SignOutController.signOut()
+GET         /account/sign-out                            uk.gov.hmrc.economiccrimelevyenrolment.controllers.SignOutController.signOutNoSurvey()
+GET         /account/signed-out                          uk.gov.hmrc.economiccrimelevyenrolment.controllers.SignOutController.signedOut()
