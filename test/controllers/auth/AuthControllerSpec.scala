@@ -1,7 +1,6 @@
 package controllers.auth
 
 import base.SpecBase
-import config.FrontendAppConfig
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar

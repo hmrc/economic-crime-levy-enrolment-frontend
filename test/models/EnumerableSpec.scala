@@ -4,6 +4,7 @@ import org.scalatest.{EitherValues, OptionValues}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.libs.json._
+import uk.gov.hmrc.economiccrimelevyenrolment.models.Enumerable
 
 object EnumerableSpec {
 

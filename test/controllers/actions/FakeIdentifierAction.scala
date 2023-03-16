@@ -1,8 +1,8 @@
 package controllers.actions
 
 import javax.inject.Inject
-import models.requests.IdentifierRequest
 import play.api.mvc._
+import uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions.IdentifierAction
 
 import scala.concurrent.{ExecutionContext, Future}
 

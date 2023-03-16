@@ -4,6 +4,8 @@ import base.SpecBase
 import controllers.routes
 import pages._
 import models._
+import uk.gov.hmrc.economiccrimelevyenrolment.models.{CheckMode, NormalMode, UserAnswers}
+import uk.gov.hmrc.economiccrimelevyenrolment.pages.Page
 
 class NavigatorSpec extends SpecBase {
 

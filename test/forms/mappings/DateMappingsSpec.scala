@@ -1,14 +1,13 @@
 package forms.mappings
 
 import java.time.LocalDate
-
-import generators.Generators
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.{Form, FormError}
+import uk.gov.hmrc.economiccrimelevyenrolment.mappings.Mappings
 
 class DateMappingsSpec
     extends AnyFreeSpec
