@@ -27,7 +27,7 @@ class AppConfig @Inject() (configuration: Configuration, servicesConfig: Service
 
   val host: String    = configuration.get[String]("host")
   val appName: String = configuration.get[String]("appName")
-  val mongoTtl: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
+  val mongoTtl: Int   = configuration.get[Int]("mongodb.timeToLiveInSeconds")
 
   private val contactHost                  = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier = configuration.get[String]("contact-frontend.serviceId")
@@ -41,6 +41,8 @@ class AppConfig @Inject() (configuration: Configuration, servicesConfig: Service
   val signInUrl: String              = configuration.get[String]("urls.signIn")
   val signOutUrl: String             = configuration.get[String]("urls.signOut")
   val eclSignOutUrl: String          = configuration.get[String]("urls.eclSignOut")
+  val submitReturnUrl: String        = configuration.get[String]("urls.submitReturn")
+  val taxAndSchemeManagement: String = configuration.get[String]("urls.taxAndSchemeManagement")
 
   val accessibilityStatementServicePath: String =
     configuration.get[String]("accessibility-statement.service-path")

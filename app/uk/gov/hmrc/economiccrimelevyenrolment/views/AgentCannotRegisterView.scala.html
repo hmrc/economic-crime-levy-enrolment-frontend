@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,23 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package uk.gov.hmrc.economiccrimelevyenrolment.viewmodels
+@this(
+        layout: templates.Layout
+)
 
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Key
+@()(implicit request: Request[_], messages: Messages)
 
-import scala.language.implicitConversions
+@layout(
+    pageTitle = title(messages("agentCannotRegister.title")),
+    showBackLink = false
+) {
 
-object implicits extends ImplicitConversions
+    <h1 class="govuk-heading-l">@messages("agentCannotRegister.heading")</h1>
 
-trait ImplicitConversions {
+    <p class="govuk-body">@messages("agentCannotRegister.p1")</p>
+    <p class="govuk-body">@messages("agentCannotRegister.p2")</p>
+    <p class="govuk-body">@Html(messages("agentCannotRegister.p3", messages("agentCannotRegister.p3.link")))</p>
 
-  implicit def stringToText(string: String)(implicit messages: Messages): Text =
-    Text(messages(string))
-
-  implicit def stringToKey(string: String)(implicit messages: Messages): Key =
-    Key(content = Text(messages(string)))
 }

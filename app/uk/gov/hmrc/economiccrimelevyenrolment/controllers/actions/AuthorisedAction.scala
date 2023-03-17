@@ -24,10 +24,10 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.economiccrimelevyenrolment.config.AppConfig
-import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.EclEnrolment
 import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.AuthorisedRequest
 import uk.gov.hmrc.economiccrimelevyenrolment.services.EnrolmentStoreProxyService
+import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
 import scala.concurrent.{ExecutionContext, Future}

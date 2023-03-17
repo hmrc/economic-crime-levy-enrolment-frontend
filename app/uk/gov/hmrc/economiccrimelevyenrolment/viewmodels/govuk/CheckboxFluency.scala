@@ -1,3 +1,19 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.gov.hmrc.economiccrimelevyenrolment.viewmodels.govuk
 
 import play.api.data.Form
@@ -40,7 +56,7 @@ trait CheckboxFluency {
         name = name,
         errorMessage = errorMessage(form(name)),
         items = items.map { item =>
-          item copy (checked = form.data.exists(data => data._2 == item.value))
+          item.copy(checked = form.data.exists(data => data._2 == item.value))
         }
       )
   }
@@ -48,7 +64,7 @@ trait CheckboxFluency {
   implicit class FluentCheckboxes(checkboxes: Checkboxes) {
 
     def describedBy(value: String): Checkboxes =
-      checkboxes copy (describedBy = Some(value))
+      checkboxes.copy(describedBy = Some(value))
   }
 
   object CheckboxItemViewModel {
@@ -70,18 +86,18 @@ trait CheckboxFluency {
   implicit class FluentCheckboxItem(item: CheckboxItem) {
 
     def withLabel(label: Label): CheckboxItem =
-      item copy (label = Some(label))
+      item.copy(label = Some(label))
 
     def withHint(hint: Hint): CheckboxItem =
-      item copy (hint = Some(hint))
+      item.copy(hint = Some(hint))
 
     def withConditionalHtml(html: Html): CheckboxItem =
-      item copy (conditionalHtml = Some(html))
+      item.copy(conditionalHtml = Some(html))
 
     def disabled(): CheckboxItem =
-      item copy (disabled = true)
+      item.copy(disabled = true)
 
     def withAttribute(attribute: (String, String)): CheckboxItem =
-      item copy (attributes = item.attributes + attribute)
+      item.copy(attributes = item.attributes + attribute)
   }
 }

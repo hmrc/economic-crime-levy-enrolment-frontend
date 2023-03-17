@@ -15,20 +15,26 @@
  *@
 
 @this(
-        layout: templates.Layout
+        layout: templates.Layout,
+        button: GovukButton
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
 @layout(
-    pageTitle = title(messages("start.title")),
-    timeout = false,
-    showBackLink = false,
-    showSignOut = false
+    pageTitle = title(messages("answersAreInvalid.title")),
+    showBackLink = false
 ) {
 
-    <h1 class="govuk-heading-l">@messages("start.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("answersAreInvalid.heading")</h1>
 
-    <p class="govuk-body">@messages("start.p1")</p>
+    <p class="govuk-body">@messages("answersAreInvalid.p1")</p>
+    <p class="govuk-body">@messages("answersAreInvalid.p2")</p>
+    <p class="govuk-body">@messages("answersAreInvalid.p3")</p>
+
+    @button(
+        ButtonViewModel(messages("answersAreInvalid.button"))
+                .asLink(StartController.onPageLoad().url)
+    )
 
 }

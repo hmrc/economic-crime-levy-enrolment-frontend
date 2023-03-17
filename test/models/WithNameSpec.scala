@@ -2,7 +2,6 @@ package models
 
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import uk.gov.hmrc.economiccrimelevyenrolment.models.WithName
 
 class WithNameSpec extends AnyFreeSpec with Matchers {
 

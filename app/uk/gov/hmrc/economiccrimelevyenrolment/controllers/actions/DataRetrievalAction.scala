@@ -17,22 +17,31 @@
 package uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions
 
 import play.api.mvc.ActionTransformer
+import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
 import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.{AuthorisedRequest, DataRequest}
-import uk.gov.hmrc.economiccrimelevyenrolment.services.EclRegistrationService
+import uk.gov.hmrc.economiccrimelevyenrolment.repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserAnswersDataRetrievalAction @Inject() (
-  val eclRegistrationService: EclRegistrationService
+  val sessionRepository: SessionRepository
 )(implicit val executionContext: ExecutionContext)
     extends DataRetrievalAction
     with FrontendHeaderCarrierProvider {
 
   override protected def transform[A](request: AuthorisedRequest[A]): Future[DataRequest[A]] =
-    eclRegistrationService.getOrCreateRegistration(request.internalId)(hc(request)).map {
+    getOrCreateUserAnswers(request.internalId).map {
       DataRequest(request.request, request.internalId, _)
+    }
+
+  private def getOrCreateUserAnswers(internalId: String): Future[UserAnswers] =
+    sessionRepository.get(internalId).flatMap {
+      case Some(userAnswers) => Future.successful(userAnswers)
+      case None              =>
+        val userAnswers = UserAnswers.empty(internalId)
+        sessionRepository.upsert(userAnswers).map(_ => userAnswers)
     }
 }
 

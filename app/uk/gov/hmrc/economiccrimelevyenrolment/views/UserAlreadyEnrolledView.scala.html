@@ -14,21 +14,21 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.economiccrimelevyenrolment.config.AppConfig
+
 @this(
-        layout: templates.Layout
+        layout: templates.Layout,
+        appConfig: AppConfig
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(eclReferenceNumber: String)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = title(messages("start.title")),
-    timeout = false,
-    showBackLink = false,
-    showSignOut = false
-) {
+    @layout(pageTitle = title(messages("userAlreadyEnrolled.title"))) {
 
-    <h1 class="govuk-heading-l">@messages("start.heading")</h1>
+        <h1 class="govuk-heading-l">@messages("userAlreadyEnrolled.heading")</h1>
 
-    <p class="govuk-body">@messages("start.p1")</p>
+        <p class="govuk-body">@messages("userAlreadyEnrolled.body.p1", eclReferenceNumber)</p>
 
-}
+        <p class="govuk-body">@Html(messages("userAlreadyEnrolled.body.p2", messages("userAlreadyEnrolled.body.p2.link", appConfig.submitReturnUrl)))</p>
+
+    }
