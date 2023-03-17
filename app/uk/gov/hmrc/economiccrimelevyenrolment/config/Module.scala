@@ -18,7 +18,9 @@ package uk.gov.hmrc.economiccrimelevyenrolment.config
 
 import com.google.inject.AbstractModule
 import play.api.{Configuration, Environment}
+import uk.gov.hmrc.economiccrimelevyenrolment.connectors.{EnrolmentStoreProxyConnector, EnrolmentStoreProxyConnectorImpl}
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions.{DataRetrievalAction, UserAnswersDataRetrievalAction}
+import uk.gov.hmrc.economiccrimelevyenrolment.testonly.connectors.stubs.StubEnrolmentStoreProxyConnector
 
 import java.time.{Clock, ZoneOffset}
 
@@ -30,6 +32,18 @@ class Module(environment: Environment, configuration: Configuration) extends Abs
       .asEagerSingleton()
 
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
+
+    val enrolmentStoreProxyStubEnabled = configuration.get[Boolean]("features.enrolmentStoreProxyStubEnabled")
+
+    if (enrolmentStoreProxyStubEnabled) {
+      bind(classOf[EnrolmentStoreProxyConnector])
+        .to(classOf[StubEnrolmentStoreProxyConnector])
+        .asEagerSingleton()
+    } else {
+      bind(classOf[EnrolmentStoreProxyConnector])
+        .to(classOf[EnrolmentStoreProxyConnectorImpl])
+        .asEagerSingleton()
+    }
 
   }
 }

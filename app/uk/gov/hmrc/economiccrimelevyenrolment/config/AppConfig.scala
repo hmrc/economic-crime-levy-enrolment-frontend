@@ -61,6 +61,9 @@ class AppConfig @Inject() (configuration: Configuration, servicesConfig: Service
   val timeout: Int   = configuration.get[Int]("timeout-dialog.timeout")
   val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
 
+  val enrolmentStoreProxyStubReturnsEclReference: Boolean =
+    configuration.get[Boolean]("features.enrolmentStoreProxyStubReturnsEclReference")
+
   val enrolmentStoreProxyBaseUrl: String = servicesConfig.baseUrl("enrolment-store-proxy")
 
 }
