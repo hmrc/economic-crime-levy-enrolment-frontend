@@ -33,7 +33,6 @@ lazy val root = (project in file("."))
       "uk.gov.hmrc.economiccrimelevyenrolment.views.ViewUtils._",
       "uk.gov.hmrc.economiccrimelevyenrolment.models._",
       "uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes._",
-      "uk.gov.hmrc.economiccrimelevyenrolment.controllers.contacts.routes._",
       "uk.gov.hmrc.economiccrimelevyenrolment.viewmodels.govuk.all._"
     ),
     PlayKeys.playDefaultPort := 14000,

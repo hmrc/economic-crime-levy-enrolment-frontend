@@ -2,9 +2,17 @@
 
 ->          /hmrc-frontend                               hmrcfrontend.Routes
 
-GET         /                                            uk.gov.hmrc.economiccrimelevyenrolment.controllers.StartController.onPageLoad
+GET         /                                            uk.gov.hmrc.economiccrimelevyenrolment.controllers.StartController.onPageLoad()
 
 GET         /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
+
+GET         /agent-cannot-register                       uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.agentCannotRegister()
+
+GET         /assistant-cannot-register                   uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.assistantCannotRegister()
+
+GET         /already-registered-for-economic-crime-levy  uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.userAlreadyEnrolled()
+
+GET         /add-levy                                    uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.groupAlreadyEnrolled()
 
 GET         /account/sign-out-survey                     uk.gov.hmrc.economiccrimelevyenrolment.controllers.SignOutController.signOut()
 GET         /account/sign-out                            uk.gov.hmrc.economiccrimelevyenrolment.controllers.SignOutController.signOutNoSurvey()
