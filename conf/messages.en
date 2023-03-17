@@ -1,4 +1,4 @@
-service.name = economic-crime-levy-enrolment-frontend
+service.name = Add Economic Crime Levy
 
 site.back = Back
 site.remove = Remove
@@ -6,8 +6,8 @@ site.change = Change
 site.no = No
 site.yes = Yes
 site.continue = Continue
+site.saveAndContinue = Save and continue
 site.start = Start now
-site.startAgain = Start again
 site.signIn = Sign in
 site.govuk = GOV.UK
 
@@ -22,36 +22,76 @@ timeout.signOut = Sign out
 
 error.browser.title.prefix = Error:
 error.boolean = Please give an answer
-error.invalid_date = Give a correct date
-error.date.day_blank = Enter a day
-error.date.day_invalid = Give a correct day using numbers 1 to 31
-error.date.month_blank = Enter a month
-error.date.month_invalid = Give a correct month using numbers 1 to 12
-error.date.year_blank = Enter a year
-error.date.year_invalid = Give a correct year
-error.integer = Give an answer in whole numbers
-error.non_numeric = Give a value using only numbers
-error.number = Please enter a valid number
+error.day.required = Enter a day
+error.day.invalid = The day entered must be a real day
+error.month.required = Enter a month
+error.month.invalid = The month entered must be a real month
+error.year.required = Enter a year
+error.year.invalid = The year entered must be a real year
+error.dayMonth.required = The date entered must include a day and month
+error.dayYear.required = The date entered must include a day and year
+error.monthYear.required = The date entered must include a month and year
+error.date.required = Enter a date
+error.date.invalid = The date entered must be a real date
 error.required = Please enter a value
 error.summary.title = There is a problem
 
-index.title = economic-crime-levy-enrolment-frontend
-index.heading = economic-crime-levy-enrolment-frontend
-index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
+answersAreInvalid.title = The answers you provided are not valid
+answersAreInvalid.heading = The answers you provided are not valid
+answersAreInvalid.p1 = The answers you provided are not valid or are incomplete.
+answersAreInvalid.p2 = This might have happened because you bookmarked a URL in the journey and tried to come back to it after 30 days.
+answersAreInvalid.p3 = You will need to submit your answers again.
+answersAreInvalid.button = Register for the Economic Crime Levy
 
-checkYourAnswers.title = Check Your Answers
-checkYourAnswers.heading = Check Your Answers
+start.title = Add Economic Crime Levy to your account
+start.heading = Add Economic Crime Levy to your account
+start.p1 = Coming soon! Use this service to add the Economic Crime Levy to your Business Tax Account
 
-journeyRecovery.continue.title = Sorry, there is a problem with the service
-journeyRecovery.continue.heading = Sorry, there is a problem with the service
-journeyRecovery.continue.guidance = [Add content to explain how to proceed.]
-journeyRecovery.startAgain.title = Sorry, there is a problem with the service
-journeyRecovery.startAgain.heading = Sorry, there is a problem with the service
-journeyRecovery.startAgain.guidance = [Add content to explain why the user needs to start again.]
+userAlreadyEnrolled.title = You have already registered for the Economic Crime Levy
+userAlreadyEnrolled.heading = You have already registered for the Economic Crime Levy
+userAlreadyEnrolled.body.p1 = Your ECL reference number is {0}.
+userAlreadyEnrolled.body.p2 = You can {0} if you are ready.
+userAlreadyEnrolled.body.p2.link = <a href="{0}" class="govuk-link">submit a return</a>
+
+groupAlreadyEnrolled.title = Your organisation is already registered for the Economic Crime Levy
+groupAlreadyEnrolled.heading = Your organisation is already registered for the Economic Crime Levy
+groupAlreadyEnrolled.body.p1 = Your ECL reference number is {0}.
+groupAlreadyEnrolled.body.p2 = You can {0}.
+groupAlreadyEnrolled.body.p2.link = <a href="{0}" class="govuk-link">add this levy to your business tax account</a>
+
+agentCannotRegister.title = You cannot use this service to register for the Economic Crime Levy
+agentCannotRegister.heading = You cannot use this service to register for the Economic Crime Levy
+agentCannotRegister.p1 = Agents cannot complete an Economic Crime Levy (ECL) registration on behalf of a client.
+agentCannotRegister.p2 = Your client must register using their own Government Gateway ID.
+agentCannotRegister.p3 = Go to your {0}.
+agentCannotRegister.p3.link = <a href="https://www.gov.uk/guidance/sign-in-to-your-agent-services-account" class="govuk-link">agent services account</a>
+
+assistantCannotRegister.title = You must be an administrator to register for this service
+assistantCannotRegister.heading = You must be an administrator to register for this service
+assistantCannotRegister.p1 = You are not an administrator for your organisation. You cannot use this service to register for the Economic Crime Levy (ECL).
+assistantCannotRegister.p2 = You will need to ask an administrator in your organisation to add you to the account.
+
+feedback.heading = Tell us what you think
+feedback.p1 = This is a new service and we want to know what you think of it.
+feedback.link = <a href="{0}" class="govuk-link">Send us your feedback</a>
+feedback.p2 = {0}. Your thoughts and ideas will help us to make improvements.
+
+exit.survey.link = <a href="{0}" class="govuk-link">What did you think of this service?</a>
+exit.survey = {0} (takes 30 seconds) to exit survey.
 
 signedOut.title = For your security, we signed you out
 signedOut.heading = For your security, we signed you out
 signedOut.guidance = We did not save your answers.
 
-unauthorised.title = You can’t access this service with this account
-unauthorised.heading = You can’t access this service with this account
+date.month.1 = January
+date.month.2 = February
+date.month.3 = March
+date.month.4 = April
+date.month.5 = May
+date.month.6 = June
+date.month.7 = July
+date.month.8 = August
+date.month.9 = September
+date.month.10 = October
+date.month.11 = November
+date.month.12 = December

@@ -2,20 +2,20 @@
 
 ->          /hmrc-frontend                               hmrcfrontend.Routes
 
-GET         /                                            controllers.IndexController.onPageLoad
+GET         /                                            uk.gov.hmrc.economiccrimelevyenrolment.controllers.StartController.onPageLoad()
 
 GET         /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
+GET         /answers-are-not-valid                       uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.answersAreInvalid()
 
-GET         /refresh-session                             controllers.KeepAliveController.keepAlive
+GET         /agent-cannot-register                       uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.agentCannotRegister()
 
-GET         /there-is-a-problem                          controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
+GET         /assistant-cannot-register                   uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.assistantCannotRegister()
 
-GET         /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
+GET         /already-registered-for-economic-crime-levy  uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.userAlreadyEnrolled()
 
-GET         /account/sign-out-survey                     controllers.auth.AuthController.signOut
-GET         /account/sign-out                            controllers.auth.AuthController.signOutNoSurvey
-GET         /account/signed-out                          controllers.auth.SignedOutController.onPageLoad
+GET         /add-levy                                    uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.groupAlreadyEnrolled()
 
-GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad
+GET         /account/sign-out-survey                     uk.gov.hmrc.economiccrimelevyenrolment.controllers.SignOutController.signOut()
+GET         /account/sign-out                            uk.gov.hmrc.economiccrimelevyenrolment.controllers.SignOutController.signOutNoSurvey()
+GET         /account/signed-out                          uk.gov.hmrc.economiccrimelevyenrolment.controllers.SignOutController.signedOut()
