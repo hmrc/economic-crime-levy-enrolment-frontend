@@ -35,7 +35,7 @@ lazy val root = (project in file("."))
       "uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes._",
       "uk.gov.hmrc.economiccrimelevyenrolment.viewmodels.govuk.all._"
     ),
-    PlayKeys.playDefaultPort := 14000,
+    PlayKeys.playDefaultPort := 14007,
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,
     (update / evictionWarningOptions).withRank(KeyRanks.Invisible) :=
@@ -47,8 +47,7 @@ lazy val root = (project in file("."))
         group(
           Seq(
             "javascripts/prevent-resubmit-warning.js",
-            "javascripts/print-dialogue.js",
-            "javascripts/accessible-autocomplete-fixes.js"
+            "javascripts/print-dialogue.js"
           )
         )
     ),

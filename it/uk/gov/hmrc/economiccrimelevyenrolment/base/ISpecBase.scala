@@ -59,8 +59,6 @@ abstract class ISpecBase
     "enrolment-store-proxy"
   )
 
-  val contextPath: String = "add-economic-crime-levy"
-
   override def fakeApplication(): Application =
     GuiceApplicationBuilder()
       .disable[com.kenshoo.play.metrics.PlayModule]
