@@ -17,20 +17,15 @@
 package uk.gov.hmrc.economiccrimelevyenrolment
 
 import com.danielasfregola.randomdatagenerator.RandomDataGenerator.random
-import org.mockito.ArgumentMatchers
 import play.api.test.FakeRequest
+import play.api.test.Helpers.await
 import uk.gov.hmrc.economiccrimelevyenrolment.base.ISpecBase
 import uk.gov.hmrc.economiccrimelevyenrolment.behaviours.AuthorisedBehaviour
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
-import uk.gov.hmrc.economiccrimelevyenrolment.repositories.SessionRepository
-
-import scala.concurrent.Future
 
 class HasEclReferenceISpec extends ISpecBase with AuthorisedBehaviour {
-
-  val mockSessionRepository: SessionRepository = mock[SessionRepository]
 
   s"GET ${routes.HasEclReferenceController.onPageLoad().url}" should {
     behave like authorisedActionWithEnrolmentCheckRoute(routes.HasEclReferenceController.onPageLoad())
@@ -38,10 +33,9 @@ class HasEclReferenceISpec extends ISpecBase with AuthorisedBehaviour {
     "respond with 200 status and the do you have an ECL reference number HTML view" in {
       stubAuthorisedWithEclEnrolment()
 
-      val userAnswers = random[UserAnswers]
+      val userAnswers = UserAnswers.empty(testInternalId)
 
-      when(mockSessionRepository.get(ArgumentMatchers.eq(testInternalId)))
-        .thenReturn(Future.successful(Some(userAnswers)))
+      await(sessionRepository.upsert(userAnswers))
 
       val result = callRoute(FakeRequest(routes.HasEclReferenceController.onPageLoad()))
 
