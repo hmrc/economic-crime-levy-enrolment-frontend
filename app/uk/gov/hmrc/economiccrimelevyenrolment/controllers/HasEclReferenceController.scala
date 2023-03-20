@@ -19,7 +19,7 @@ package uk.gov.hmrc.economiccrimelevyenrolment.controllers
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions.{AuthorisedActionWithEnrolmentCheck, DataRetrievalAction}
+import uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions.{AuthorisedAction, DataRetrievalAction}
 import uk.gov.hmrc.economiccrimelevyenrolment.forms.FormImplicits.FormOps
 import uk.gov.hmrc.economiccrimelevyenrolment.forms.HasEclReferenceFormProvider
 import uk.gov.hmrc.economiccrimelevyenrolment.models.{NormalMode, TriState}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class HasEclReferenceController @Inject() (
   val controllerComponents: MessagesControllerComponents,
-  authorise: AuthorisedActionWithEnrolmentCheck,
+  authorise: AuthorisedAction,
   getUserAnswers: DataRetrievalAction,
   repository: SessionRepository,
   formProvider: HasEclReferenceFormProvider,

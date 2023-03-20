@@ -21,33 +21,26 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
-import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.EclEnrolment
 import uk.gov.hmrc.economiccrimelevyenrolment.views.html._
 
 import scala.concurrent.Future
 
 class NotableErrorControllerSpec extends SpecBase {
 
-  val answersAreInvalidView: AnswersAreInvalidView             = app.injector.instanceOf[AnswersAreInvalidView]
-  val userAlreadyEnrolledView: UserAlreadyEnrolledView         = app.injector.instanceOf[UserAlreadyEnrolledView]
-  val groupAlreadyEnrolledView: GroupAlreadyEnrolledView       = app.injector.instanceOf[GroupAlreadyEnrolledView]
-  val agentCannotRegisterView: AgentCannotRegisterView         = app.injector.instanceOf[AgentCannotRegisterView]
-  val assistantCannotRegisterView: AssistantCannotRegisterView = app.injector.instanceOf[AssistantCannotRegisterView]
+  val answersAreInvalidView: AnswersAreInvalidView                 = app.injector.instanceOf[AnswersAreInvalidView]
+  val notRegisteredView: NotRegisteredView                         = app.injector.instanceOf[NotRegisteredView]
+  val agentCannotClaimEnrolmentView: AgentCannotClaimEnrolmentView =
+    app.injector.instanceOf[AgentCannotClaimEnrolmentView]
 
-  class TestContext(userAnswers: UserAnswers, eclRegistrationReference: Option[String] = None) {
+  class TestContext(userAnswers: UserAnswers) {
     val controller = new NotableErrorController(
       mcc,
-      fakeAuthorisedActionWithoutEnrolmentCheck(userAnswers.internalId, eclRegistrationReference),
-      fakeAuthorisedActionWithEnrolmentCheck(userAnswers.internalId),
-      fakeAuthorisedActionAgentsAllowed,
-      fakeAuthorisedActionAssistantsAllowed,
+      fakeAuthorisedAction(userAnswers.internalId),
       fakeDataRetrievalAction(userAnswers),
       appConfig,
-      userAlreadyEnrolledView,
-      groupAlreadyEnrolledView,
       answersAreInvalidView,
-      agentCannotRegisterView,
-      assistantCannotRegisterView
+      notRegisteredView,
+      agentCannotClaimEnrolmentView
     )
   }
 
@@ -63,58 +56,26 @@ class NotableErrorControllerSpec extends SpecBase {
     }
   }
 
-  "userAlreadyEnrolled" should {
-    "return OK and the correct view" in forAll { (userAnswers: UserAnswers, eclRegistrationReference: String) =>
-      new TestContext(userAnswers, Some(eclRegistrationReference)) {
-        val result: Future[Result] = controller.userAlreadyEnrolled()(fakeRequest)
-
-        status(result) shouldBe OK
-
-        contentAsString(result) shouldBe userAlreadyEnrolledView(eclRegistrationReference)(
-          fakeRequest,
-          messages
-        ).toString
-      }
-    }
-  }
-
-  "groupAlreadyEnrolled" should {
-    "return OK and the correct view" in forAll { (userAnswers: UserAnswers, eclRegistrationReference: String) =>
-      new TestContext(userAnswers, Some(eclRegistrationReference)) {
-        val result: Future[Result]    = controller.groupAlreadyEnrolled()(fakeRequest)
-        val taxAndSchemeManagementUrl =
-          s"${appConfig.taxAndSchemeManagement}/services/${EclEnrolment.ServiceName}/${EclEnrolment.IdentifierKey}~$eclRegistrationReference/users"
-
-        status(result) shouldBe OK
-
-        contentAsString(result) shouldBe groupAlreadyEnrolledView(eclRegistrationReference, taxAndSchemeManagementUrl)(
-          fakeRequest,
-          messages
-        ).toString
-      }
-    }
-  }
-
-  "agentCannotRegister" should {
+  "notRegistered" should {
     "return OK and the correct view" in forAll { userAnswers: UserAnswers =>
       new TestContext(userAnswers) {
-        val result: Future[Result] = controller.agentCannotRegister()(fakeRequest)
+        val result: Future[Result] = controller.notRegistered()(fakeRequest)
 
         status(result) shouldBe OK
 
-        contentAsString(result) shouldBe agentCannotRegisterView()(fakeRequest, messages).toString
+        contentAsString(result) shouldBe notRegisteredView()(fakeRequest, messages).toString
       }
     }
   }
 
-  "assistantCannotRegister" should {
+  "agentCannotClaimEnrolment" should {
     "return OK and the correct view" in forAll { userAnswers: UserAnswers =>
       new TestContext(userAnswers) {
-        val result: Future[Result] = controller.assistantCannotRegister()(fakeRequest)
+        val result: Future[Result] = controller.agentCannotClaimEnrolment()(fakeRequest)
 
         status(result) shouldBe OK
 
-        contentAsString(result) shouldBe assistantCannotRegisterView()(fakeRequest, messages).toString
+        contentAsString(result) shouldBe agentCannotClaimEnrolmentView()(fakeRequest, messages).toString
       }
     }
   }
