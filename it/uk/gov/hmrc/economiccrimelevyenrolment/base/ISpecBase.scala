@@ -8,6 +8,7 @@ package uk.gov.hmrc.economiccrimelevyenrolment.base
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import org.jsoup.Jsoup
+import org.mockito.MockitoSugar
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -39,6 +40,7 @@ abstract class ISpecBase
     with Status
     with HeaderNames
     with MimeTypes
+    with MockitoSugar
     with ResultExtractors
     with OptionValues
     with WireMockHelper

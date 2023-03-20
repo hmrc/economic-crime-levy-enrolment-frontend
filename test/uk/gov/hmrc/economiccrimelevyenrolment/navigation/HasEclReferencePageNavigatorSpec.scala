@@ -14,31 +14,21 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.economiccrimelevyenrolment.controllers
+package uk.gov.hmrc.economiccrimelevyenrolment.navigation
 
-import play.api.mvc.Result
-import play.api.test.Helpers._
 import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase
-import uk.gov.hmrc.economiccrimelevyenrolment.views.html.StartView
+import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
+import uk.gov.hmrc.economiccrimelevyenrolment.models.{TriState, UserAnswers}
 
-import scala.concurrent.Future
+class HasEclReferencePageNavigatorSpec extends SpecBase {
 
-class StartControllerSpec extends SpecBase {
+  val pageNavigator = new HasEclReferencePageNavigator()
 
-  val view: StartView = app.injector.instanceOf[StartView]
+  "nextPage" should {
+    "return a Call to the ??? page in NormalMode" in forAll { (userAnswers: UserAnswers, hasEclReference: TriState) =>
+      val updatedAnswers: UserAnswers = userAnswers.copy(hasEclReference = Some(hasEclReference))
 
-  val controller = new StartController(
-    mcc,
-    view
-  )
-
-  "onPageLoad" should {
-    "return OK and the correct view" in {
-      val result: Future[Result] = controller.onPageLoad()(fakeRequest)
-
-      status(result) shouldBe OK
-
-      contentAsString(result) shouldBe view()(fakeRequest, messages).toString
+    // TODO: Implement navigation test when navigation is in place
     }
   }
 

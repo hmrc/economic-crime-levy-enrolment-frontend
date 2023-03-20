@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-        layout: templates.Layout
-)
+package uk.gov.hmrc.economiccrimelevyenrolment.navigation
 
-@()(implicit request: Request[_], messages: Messages)
+import play.api.mvc.Call
+import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
 
-@layout(
-    pageTitle = title(messages("start.title")),
-    timeout = false,
-    showBackLink = false,
-    showSignOut = false
-) {
+class HasEclReferencePageNavigator extends PageNavigator {
 
-    <h1 class="govuk-heading-l">@messages("start.heading")</h1>
+  override protected def navigateInNormalMode(userAnswers: UserAnswers): Call = ???
 
-    <p class="govuk-body">@messages("start.p1")</p>
+  override protected def navigateInCheckMode(userAnswers: UserAnswers): Call = ???
 
 }

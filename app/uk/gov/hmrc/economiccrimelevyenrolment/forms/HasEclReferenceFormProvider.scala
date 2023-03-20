@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.economiccrimelevyenrolment.models
+package uk.gov.hmrc.economiccrimelevyenrolment.forms
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.data.Form
+import uk.gov.hmrc.economiccrimelevyenrolment.forms.mappings.Mappings
+import uk.gov.hmrc.economiccrimelevyenrolment.models.TriState
 
-import java.time.Instant
-
-final case class UserAnswers(
-  internalId: String,
-  hasEclReference: Option[TriState],
-  lastUpdated: Option[Instant] = None
-)
-
-object UserAnswers {
-  implicit val format: OFormat[UserAnswers] = Json.format[UserAnswers]
-
-  def empty(internalId: String): UserAnswers = UserAnswers(
-    internalId = internalId,
-    hasEclReference = None
-  )
+class HasEclReferenceFormProvider extends Mappings {
+  def apply(): Form[TriState] = Form(("value", enumerable[TriState]("hasEclReference.error.required")))
 }

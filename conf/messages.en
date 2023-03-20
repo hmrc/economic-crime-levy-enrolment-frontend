@@ -43,9 +43,14 @@ answersAreInvalid.p2 = This might have happened because you bookmarked a URL in 
 answersAreInvalid.p3 = You will need to submit your answers again.
 answersAreInvalid.button = Register for the Economic Crime Levy
 
-start.title = Add Economic Crime Levy to your account
-start.heading = Add Economic Crime Levy to your account
-start.p1 = Coming soon! Use this service to add the Economic Crime Levy to your Business Tax Account
+hasEclReference.title = Do you have an Economic Crime Levy (ECL) reference number?
+hasEclReference.heading = Do you have an Economic Crime Levy (ECL) reference number?
+hasEclReference.p1 = You will need to register for the Economic Crime Levy (ECL) if you do not have a reference number.
+hasEclReference.p2 = If you have forgotten your ECL reference number, you will need to contact us to recover it.
+hasEclReference.Yes = Yes
+hasEclReference.No = No
+hasEclReference.Unknown = I do not know my ECL reference number
+hasEclReference.error.required = Select if you have an ECL reference number
 
 userAlreadyEnrolled.title = You have already registered for the Economic Crime Levy
 userAlreadyEnrolled.heading = You have already registered for the Economic Crime Levy

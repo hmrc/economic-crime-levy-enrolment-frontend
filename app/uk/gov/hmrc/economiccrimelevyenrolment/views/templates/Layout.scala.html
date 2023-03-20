@@ -83,7 +83,7 @@
     pageTitle = Some(pageTitle),
     nonce = CSPNonce.get,
     signOutUrl = if(showSignOut) Some(SignOutController.signOut.url) else None,
-    serviceUrl = Some(StartController.onPageLoad.url),
+    serviceUrl = Some(HasEclReferenceController.onPageLoad.url),
     isWelshTranslationAvailable = isWelshTranslationAvailable.getOrElse(appConfig.languageTranslationEnabled),
     additionalScriptsBlock = Some(additionalScripts),
     additionalHeadBlock = Some(head),
