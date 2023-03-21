@@ -18,12 +18,13 @@ package uk.gov.hmrc.economiccrimelevyenrolment.models
 
 import play.api.libs.json.{Json, OFormat}
 
-import java.time.Instant
+import java.time.{Instant, LocalDate}
 
 final case class UserAnswers(
   internalId: String,
   hasEclReference: Option[TriState],
   eclReferenceNumber: Option[String],
+  eclRegistrationDate: Option[LocalDate],
   lastUpdated: Option[Instant] = None
 )
 
@@ -33,6 +34,7 @@ object UserAnswers {
   def empty(internalId: String): UserAnswers = UserAnswers(
     internalId = internalId,
     hasEclReference = None,
-    eclReferenceNumber = None
+    eclReferenceNumber = None,
+    eclRegistrationDate = None
   )
 }

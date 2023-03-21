@@ -23,31 +23,39 @@ import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.EclEnrolment
 import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, UserAnswers}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EclReferencePageNavigator @Inject() (enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector)(implicit
+class EclRegistrationDatePageNavigator @Inject() (enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector)(implicit
   ec: ExecutionContext
 ) extends AsyncPageNavigator
     with FrontendHeaderCarrierProvider {
 
   override protected def navigateInNormalMode(userAnswers: UserAnswers)(implicit request: RequestHeader): Future[Call] =
-    userAnswers.eclReferenceNumber match {
-      case Some(eclReferenceNumber) => verifyEclReferenceNumber(eclReferenceNumber)
-      case _                        => Future.successful(routes.NotableErrorController.answersAreInvalid())
+    (userAnswers.eclReferenceNumber, userAnswers.eclRegistrationDate) match {
+      case (Some(eclReferenceNumber), Some(eclRegistrationDate)) =>
+        verifyEclRegistrationDate(eclReferenceNumber, eclRegistrationDate)
+      case _                                                     => Future.successful(routes.NotableErrorController.answersAreInvalid())
     }
 
   override protected def navigateInCheckMode(userAnswers: UserAnswers)(implicit request: RequestHeader): Future[Call] =
     ???
 
-  private def verifyEclReferenceNumber(eclReferenceNumber: String)(implicit request: RequestHeader): Future[Call] = {
+  private def verifyEclRegistrationDate(eclReferenceNumber: String, eclRegistrationDate: LocalDate)(implicit
+    request: RequestHeader
+  ): Future[Call] = {
+    val eclRegistrationDateString = eclRegistrationDate.format(DateTimeFormatter.BASIC_ISO_DATE)
+
     val knownFacts = Seq(
-      KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber)
+      KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber),
+      KeyValue(key = EclEnrolment.VerifierKey, value = eclRegistrationDateString)
     )
 
     enrolmentStoreProxyConnector.queryKnownFacts(knownFacts).map { response =>
-      response.enrolments.find(_.identifiers.exists(_.value == eclReferenceNumber)) match {
-        case Some(_) => routes.EclRegistrationDateController.onPageLoad()
+      response.enrolments.find(_.verifiers.exists(_.value == eclRegistrationDateString)) match {
+        case Some(_) => routes.ConfirmationController.onPageLoad()
         case _       => routes.NotableErrorController.detailsDoNotMatch()
       }
     }

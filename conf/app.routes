@@ -14,6 +14,13 @@ GET         /find-your-ecl-reference-number              uk.gov.hmrc.economiccri
 GET         /your-ecl-reference-number                   uk.gov.hmrc.economiccrimelevyenrolment.controllers.EclReferenceController.onPageLoad()
 POST        /your-ecl-reference-number                   uk.gov.hmrc.economiccrimelevyenrolment.controllers.EclReferenceController.onSubmit()
 
+GET         /ecl-registration-date                       uk.gov.hmrc.economiccrimelevyenrolment.controllers.EclRegistrationDateController.onPageLoad()
+POST        /ecl-registration-date                       uk.gov.hmrc.economiccrimelevyenrolment.controllers.EclRegistrationDateController.onSubmit()
+
+GET         /success-page                                uk.gov.hmrc.economiccrimelevyenrolment.controllers.ConfirmationController.onPageLoad()
+
+GET         /details-do-not-match                        uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.detailsDoNotMatch()
+
 GET         /answers-are-not-valid                       uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.answersAreInvalid()
 
 GET         /agent-cannot-register                       uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.agentCannotRegister()

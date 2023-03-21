@@ -20,34 +20,35 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions.{AuthorisedActionWithEnrolmentCheck, DataRetrievalAction}
+import uk.gov.hmrc.economiccrimelevyenrolment.forms.EclRegistrationDateFormProvider
 import uk.gov.hmrc.economiccrimelevyenrolment.forms.FormImplicits.FormOps
-import uk.gov.hmrc.economiccrimelevyenrolment.forms.EclReferenceFormProvider
 import uk.gov.hmrc.economiccrimelevyenrolment.models.NormalMode
-import uk.gov.hmrc.economiccrimelevyenrolment.navigation.EclReferencePageNavigator
+import uk.gov.hmrc.economiccrimelevyenrolment.navigation.EclRegistrationDatePageNavigator
 import uk.gov.hmrc.economiccrimelevyenrolment.repositories.SessionRepository
-import uk.gov.hmrc.economiccrimelevyenrolment.views.html.EclReferenceView
+import uk.gov.hmrc.economiccrimelevyenrolment.views.html.EclRegistrationDateView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
+import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EclReferenceController @Inject() (
+class EclRegistrationDateController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   authorise: AuthorisedActionWithEnrolmentCheck,
   getUserAnswers: DataRetrievalAction,
   repository: SessionRepository,
-  formProvider: EclReferenceFormProvider,
-  pageNavigator: EclReferencePageNavigator,
-  view: EclReferenceView
+  formProvider: EclRegistrationDateFormProvider,
+  pageNavigator: EclRegistrationDatePageNavigator,
+  view: EclRegistrationDateView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  val form: Form[String] = formProvider()
+  val form: Form[LocalDate] = formProvider()
 
   def onPageLoad: Action[AnyContent] = (authorise andThen getUserAnswers) { implicit request =>
-    Ok(view(form.prepare(request.userAnswers.eclReferenceNumber)))
+    Ok(view(form.prepare(request.userAnswers.eclRegistrationDate)))
   }
 
   def onSubmit: Action[AnyContent] = (authorise andThen getUserAnswers).async { implicit request =>
@@ -55,8 +56,8 @@ class EclReferenceController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
-        eclReferenceNumber => {
-          val updatedAnswers = request.userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
+        eclRegistrationDate => {
+          val updatedAnswers = request.userAnswers.copy(eclRegistrationDate = Some(eclRegistrationDate))
           repository
             .upsert(updatedAnswers)
             .flatMap(_ => pageNavigator.nextPage(NormalMode, updatedAnswers).map(Redirect))

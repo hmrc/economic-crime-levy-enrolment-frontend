@@ -19,7 +19,7 @@ package uk.gov.hmrc.economiccrimelevyenrolment.testonly.connectors.stubs
 import uk.gov.hmrc.economiccrimelevyenrolment.config.AppConfig
 import uk.gov.hmrc.economiccrimelevyenrolment.connectors.EnrolmentStoreProxyConnector
 import uk.gov.hmrc.economiccrimelevyenrolment.models.KeyValue
-import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolment, GroupEnrolmentsResponse}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolment, GroupEnrolmentsResponse, QueryKnownFactsResponse}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -34,7 +34,8 @@ class StubEnrolmentStoreProxyConnector @Inject() (appConfig: AppConfig) extends 
         Seq(
           Enrolment(
             service = EclEnrolment.ServiceName,
-            identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = "XMECL0000000001"))
+            identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = "XMECL0000000001")),
+            verifiers = Seq(KeyValue(EclEnrolment.VerifierKey, "20230901"))
           )
         )
       )
@@ -43,5 +44,19 @@ class StubEnrolmentStoreProxyConnector @Inject() (appConfig: AppConfig) extends 
     } else {
       Future.successful(None)
     }
+
+  def queryKnownFacts(knownFacts: Seq[KeyValue])(implicit hc: HeaderCarrier): Future[QueryKnownFactsResponse] =
+    Future.successful(
+      QueryKnownFactsResponse(
+        service = EclEnrolment.ServiceName,
+        enrolments = Seq(
+          Enrolment(
+            service = EclEnrolment.ServiceName,
+            identifiers = Seq(KeyValue(EclEnrolment.IdentifierKey, "XMECL0000000001")),
+            verifiers = Seq(KeyValue(EclEnrolment.VerifierKey, "20230901"))
+          )
+        )
+      )
+    )
 
 }

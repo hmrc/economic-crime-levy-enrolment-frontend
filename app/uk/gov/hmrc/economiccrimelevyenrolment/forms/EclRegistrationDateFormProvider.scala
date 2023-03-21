@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.economiccrimelevyenrolment.models.eacd
+package uk.gov.hmrc.economiccrimelevyenrolment.forms
 
-object EclEnrolment {
-  val ServiceName: String   = "HMRC-ECL-ORG"
-  val IdentifierKey: String = "EclRegistrationReference"
-  val VerifierKey: String   = "EclRegistrationDate"
+import play.api.data.Form
+import uk.gov.hmrc.economiccrimelevyenrolment.forms.mappings.Mappings
+
+import java.time.LocalDate
+import javax.inject.Inject
+
+class EclRegistrationDateFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[LocalDate] =
+    Form("value" -> localDate("error.date.invalid", "error.date.required"))
+
 }

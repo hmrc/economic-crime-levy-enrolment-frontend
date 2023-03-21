@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package uk.gov.hmrc.economiccrimelevyenrolment.models.eacd
+@this(
+        layout: templates.Layout
+)
 
-object EclEnrolment {
-  val ServiceName: String   = "HMRC-ECL-ORG"
-  val IdentifierKey: String = "EclRegistrationReference"
-  val VerifierKey: String   = "EclRegistrationDate"
+@()(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = title(messages("detailsDoNotMatch.title"))) {
+
+    <h1 class="govuk-heading-l">@messages("detailsDoNotMatch.heading")</h1>
+
+    <p class="govuk-body">@messages("detailsDoNotMatch.p1")</p>
+
+    <p class="govuk-body">@messages("detailsDoNotMatch.p2")</p>
+
 }
