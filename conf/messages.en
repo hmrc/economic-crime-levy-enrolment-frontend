@@ -57,6 +57,11 @@ registration.heading = You need to register for the Economic Crime Levy
 registration.p1 = You need to register for the Economic Crime Levy (ECL).
 registration.register = Register for the Economic Crime Levy
 
+findEclReference.title = How to find your Economic Crime Levy reference number
+findEclReference.heading = How to find your Economic Crime Levy reference number
+findEclReference.p1 = You can find your ECL reference number in the letter you received from HMRC, or in the email confirmation you received when you registered.
+findEclReference.p2 = If you cannot find your ECL reference number, you will need to contact HMRC.
+
 userAlreadyEnrolled.title = You have already registered for the Economic Crime Levy
 userAlreadyEnrolled.heading = You have already registered for the Economic Crime Levy
 userAlreadyEnrolled.body.p1 = Your ECL reference number is {0}.

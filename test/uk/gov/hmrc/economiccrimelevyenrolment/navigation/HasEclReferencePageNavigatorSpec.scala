@@ -33,6 +33,13 @@ class HasEclReferencePageNavigatorSpec extends SpecBase {
 
         pageNavigator.nextPage(NormalMode, updatedAnswers) shouldBe routes.RegistrationController.onPageLoad()
     }
+
+    "return a Call to the find your ECL reference page in NormalMode when the answer is 'Unknown'" in forAll {
+      userAnswers: UserAnswers =>
+        val updatedAnswers: UserAnswers = userAnswers.copy(hasEclReference = Some(Unknown))
+
+        pageNavigator.nextPage(NormalMode, updatedAnswers) shouldBe routes.FindEclReferenceController.onPageLoad()
+    }
   }
 
 }

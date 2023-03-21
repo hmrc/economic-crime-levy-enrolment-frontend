@@ -27,7 +27,7 @@ class HasEclReferencePageNavigator extends PageNavigator {
     userAnswers.hasEclReference match {
       case Some(Yes)     => ???
       case Some(No)      => routes.RegistrationController.onPageLoad()
-      case Some(Unknown) => ???
+      case Some(Unknown) => routes.FindEclReferenceController.onPageLoad()
       case _             => routes.NotableErrorController.answersAreInvalid()
     }
 
