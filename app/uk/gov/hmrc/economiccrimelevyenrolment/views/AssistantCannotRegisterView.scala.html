@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package uk.gov.hmrc.economiccrimelevyenrolment.models.requests
+@this(
+        layout: templates.Layout
+)
 
-import play.api.mvc.{Request, WrappedRequest}
+@()(implicit request: Request[_], messages: Messages)
 
-case class AuthorisedRequest[A](
-  request: Request[A],
-  internalId: String,
-  groupId: String,
-  eclRegistrationReference: Option[String]
-) extends WrappedRequest[A](request)
+@layout(
+    pageTitle = title(messages("assistantCannotRegister.title")),
+    showBackLink = false
+) {
+
+    <h1 class="govuk-heading-l">@messages("assistantCannotRegister.heading")</h1>
+
+    <p class="govuk-body">@messages("assistantCannotRegister.p1")</p>
+    <p class="govuk-body">@messages("assistantCannotRegister.p2")</p>
+
+}

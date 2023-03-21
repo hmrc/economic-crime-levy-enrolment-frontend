@@ -9,9 +9,13 @@ POST        /do-you-have-an-ecl-reference-number         uk.gov.hmrc.economiccri
 
 GET         /answers-are-not-valid                       uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.answersAreInvalid()
 
-GET         /not-registered                              uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.notRegistered()
+GET         /agent-cannot-register                       uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.agentCannotRegister()
 
-GET         /agent-cannot-claim-enrolment                uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.agentCannotClaimEnrolment()
+GET         /assistant-cannot-register                   uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.assistantCannotRegister()
+
+GET         /already-registered-for-economic-crime-levy  uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.userAlreadyEnrolled()
+
+GET         /add-levy                                    uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.groupAlreadyEnrolled()
 
 GET         /account/sign-out-survey                     uk.gov.hmrc.economiccrimelevyenrolment.controllers.SignOutController.signOut()
 GET         /account/sign-out                            uk.gov.hmrc.economiccrimelevyenrolment.controllers.SignOutController.signOutNoSurvey()

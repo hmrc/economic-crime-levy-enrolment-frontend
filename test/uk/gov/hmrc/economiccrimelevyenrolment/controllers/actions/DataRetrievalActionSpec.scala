@@ -44,11 +44,11 @@ class DataRetrievalActionSpec extends SpecBase {
 
   "transform" should {
     "transform an AuthorisedRequest into a DataRequest" in forAll {
-      (internalId: String, eclRegistrationReference: String, userAnswers: UserAnswers) =>
+      (internalId: String, groupId: String, userAnswers: UserAnswers) =>
         when(mockSessionRepository.get(ArgumentMatchers.eq(internalId))).thenReturn(Future(Some(userAnswers)))
 
         val result: Future[DataRequest[AnyContentAsEmpty.type]] =
-          dataRetrievalAction.transform(AuthorisedRequest(fakeRequest, internalId, eclRegistrationReference))
+          dataRetrievalAction.transform(AuthorisedRequest(fakeRequest, internalId, groupId, None))
 
         await(result) shouldBe DataRequest(fakeRequest, internalId, userAnswers)
     }

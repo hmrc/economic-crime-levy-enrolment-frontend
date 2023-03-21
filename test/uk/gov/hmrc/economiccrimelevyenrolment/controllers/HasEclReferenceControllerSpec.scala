@@ -43,7 +43,7 @@ class HasEclReferenceControllerSpec extends SpecBase {
   class TestContext(userAnswers: UserAnswers) {
     val controller = new HasEclReferenceController(
       mcc,
-      fakeAuthorisedAction(userAnswers.internalId),
+      fakeAuthorisedActionWithEnrolmentCheck(userAnswers.internalId),
       fakeDataRetrievalAction(userAnswers),
       mockSessionRepository,
       formProvider,

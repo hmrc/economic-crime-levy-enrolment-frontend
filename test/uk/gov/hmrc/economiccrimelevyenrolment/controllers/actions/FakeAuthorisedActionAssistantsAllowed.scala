@@ -22,12 +22,13 @@ import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.AuthorisedRequest
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeAuthorisedAction @Inject() (internalId: String, bodyParsers: PlayBodyParsers) extends AuthorisedAction {
+class FakeAuthorisedActionAssistantsAllowed @Inject() (bodyParsers: PlayBodyParsers)
+    extends AuthorisedActionAssistantsAllowed {
 
   override def parser: BodyParser[AnyContent] = bodyParsers.defaultBodyParser
 
   override def invokeBlock[A](request: Request[A], block: AuthorisedRequest[A] => Future[Result]): Future[Result] =
-    block(AuthorisedRequest(request, internalId, "test-ecl-registration-reference"))
+    block(AuthorisedRequest(request, "test-internal-id", "test-group-id", None))
 
   override protected def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 

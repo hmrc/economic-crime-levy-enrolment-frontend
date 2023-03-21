@@ -20,6 +20,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.economiccrimelevyenrolment.config.AppConfig
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions._
+import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.EclEnrolment
 import uk.gov.hmrc.economiccrimelevyenrolment.views.html._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
@@ -28,25 +29,50 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class NotableErrorController @Inject() (
   val controllerComponents: MessagesControllerComponents,
-  authorise: AuthorisedAction,
+  authoriseWithoutEnrolmentCheck: AuthorisedActionWithoutEnrolmentCheck,
+  authoriseWithEnrolmentCheck: AuthorisedActionWithEnrolmentCheck,
+  authoriseAgentsAllowed: AuthorisedActionAgentsAllowed,
+  authoriseAssistantsAllowed: AuthorisedActionAssistantsAllowed,
   getUserAnswers: DataRetrievalAction,
   appConfig: AppConfig,
+  userAlreadyEnrolledView: UserAlreadyEnrolledView,
+  groupAlreadyEnrolledView: GroupAlreadyEnrolledView,
   answersAreInvalidView: AnswersAreInvalidView,
-  notRegisteredView: NotRegisteredView,
-  agentCannotClaimEnrolmentView: AgentCannotClaimEnrolmentView
+  agentCannotRegisterView: AgentCannotRegisterView,
+  assistantCannotRegisterView: AssistantCannotRegisterView
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def answersAreInvalid: Action[AnyContent] = (authorise andThen getUserAnswers) { implicit request =>
+  def answersAreInvalid: Action[AnyContent] = (authoriseWithEnrolmentCheck andThen getUserAnswers) { implicit request =>
     Ok(answersAreInvalidView())
   }
 
-  def notRegistered: Action[AnyContent] = Action { implicit request =>
-    Ok(notRegisteredView())
+  def userAlreadyEnrolled: Action[AnyContent] = authoriseWithoutEnrolmentCheck { implicit request =>
+    Ok(
+      userAlreadyEnrolledView(
+        request.eclRegistrationReference.getOrElse(
+          throw new IllegalStateException("ECL registration reference not found in request")
+        )
+      )
+    )
   }
 
-  def agentCannotClaimEnrolment: Action[AnyContent] = Action { implicit request =>
-    Ok(agentCannotClaimEnrolmentView())
+  def groupAlreadyEnrolled: Action[AnyContent] = authoriseWithoutEnrolmentCheck { implicit request =>
+    val eclRegistrationReference  = request.eclRegistrationReference.getOrElse(
+      throw new IllegalStateException("ECL registration reference not found in request")
+    )
+    val taxAndSchemeManagementUrl =
+      s"${appConfig.taxAndSchemeManagement}/services/${EclEnrolment.ServiceName}/${EclEnrolment.IdentifierKey}~$eclRegistrationReference/users"
+
+    Ok(groupAlreadyEnrolledView(eclRegistrationReference, taxAndSchemeManagementUrl))
+  }
+
+  def agentCannotRegister: Action[AnyContent] = authoriseAgentsAllowed { implicit request =>
+    Ok(agentCannotRegisterView())
+  }
+
+  def assistantCannotRegister: Action[AnyContent] = authoriseAssistantsAllowed { implicit request =>
+    Ok(assistantCannotRegisterView())
   }
 
 }

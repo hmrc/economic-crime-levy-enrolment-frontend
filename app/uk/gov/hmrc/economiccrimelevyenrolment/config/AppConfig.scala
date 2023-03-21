@@ -41,7 +41,7 @@ class AppConfig @Inject() (configuration: Configuration, servicesConfig: Service
   val signInUrl: String              = configuration.get[String]("urls.signIn")
   val signOutUrl: String             = configuration.get[String]("urls.signOut")
   val eclSignOutUrl: String          = configuration.get[String]("urls.eclSignOut")
-  val registrationUrl: String        = configuration.get[String]("urls.registration")
+  val submitReturnUrl: String        = configuration.get[String]("urls.submitReturn")
   val taxAndSchemeManagement: String = configuration.get[String]("urls.taxAndSchemeManagement")
 
   val accessibilityStatementServicePath: String =

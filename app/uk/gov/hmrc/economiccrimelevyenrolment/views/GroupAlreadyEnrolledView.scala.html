@@ -18,17 +18,14 @@
         layout: templates.Layout
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(eclReferenceNumber: String, taxAndSchemeManagementUrl: String)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = title(messages("agentCannotClaimEnrolment.title")),
-    showBackLink = false
-) {
+@layout(pageTitle = title(messages("groupAlreadyEnrolled.title"))) {
 
-    <h1 class="govuk-heading-l">@messages("agentCannotClaimEnrolment.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("groupAlreadyEnrolled.heading")</h1>
 
-    <p class="govuk-body">@messages("agentCannotClaimEnrolment.p1")</p>
-    <p class="govuk-body">@messages("agentCannotClaimEnrolment.p2")</p>
-    <p class="govuk-body">@Html(messages("agentCannotClaimEnrolment.p3", messages("agentCannotClaimEnrolment.p3.link")))</p>
+    <p class="govuk-body">@messages("groupAlreadyEnrolled.body.p1", eclReferenceNumber)</p>
+
+    <p class="govuk-body">@Html(messages("groupAlreadyEnrolled.body.p2", messages("groupAlreadyEnrolled.body.p2.link", taxAndSchemeManagementUrl)))</p>
 
 }
