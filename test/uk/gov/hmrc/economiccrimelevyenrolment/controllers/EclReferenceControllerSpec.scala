@@ -19,9 +19,10 @@ package uk.gov.hmrc.economiccrimelevyenrolment.controllers
 import org.mockito.ArgumentMatchers
 import org.scalacheck.Arbitrary
 import play.api.data.Form
-import play.api.mvc.{Call, Result}
+import play.api.mvc.{Call, RequestHeader, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase
+import uk.gov.hmrc.economiccrimelevyenrolment.connectors.EnrolmentStoreProxyConnector
 import uk.gov.hmrc.economiccrimelevyenrolment.forms.EclReferenceFormProvider
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
@@ -33,13 +34,17 @@ import scala.concurrent.Future
 
 class EclReferenceControllerSpec extends SpecBase {
 
-  val view: EclReferenceView                   = app.injector.instanceOf[EclReferenceView]
-  val formProvider: EclReferenceFormProvider   = new EclReferenceFormProvider()
-  val form: Form[String]                       = formProvider()
-  val pageNavigator: EclReferencePageNavigator = new EclReferencePageNavigator() {
-    override protected def navigateInNormalMode(userAnswers: UserAnswers): Call = onwardRoute
+  val view: EclReferenceView                                         = app.injector.instanceOf[EclReferenceView]
+  val formProvider: EclReferenceFormProvider                         = new EclReferenceFormProvider()
+  val form: Form[String]                                             = formProvider()
+  val mockSessionRepository: SessionRepository                       = mock[SessionRepository]
+  val mockEnrolmentStoreProxyConnector: EnrolmentStoreProxyConnector = mock[EnrolmentStoreProxyConnector]
+
+  val pageNavigator: EclReferencePageNavigator = new EclReferencePageNavigator(mockEnrolmentStoreProxyConnector) {
+    override protected def navigateInNormalMode(userAnswers: UserAnswers)(implicit
+      request: RequestHeader
+    ): Future[Call] = Future.successful(onwardRoute)
   }
-  val mockSessionRepository: SessionRepository = mock[SessionRepository]
 
   class TestContext(userAnswers: UserAnswers) {
     val controller = new EclReferenceController(

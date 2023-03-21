@@ -47,6 +47,13 @@ class HasEclReferencePageNavigatorSpec extends SpecBase {
 
         pageNavigator.nextPage(NormalMode, updatedAnswers) shouldBe routes.FindEclReferenceController.onPageLoad()
     }
+
+    "return a Call to the answers are invalid page in NormalMode when no answer has been provided" in forAll {
+      userAnswers: UserAnswers =>
+        val updatedAnswers: UserAnswers = userAnswers.copy(hasEclReference = None)
+
+        pageNavigator.nextPage(NormalMode, updatedAnswers) shouldBe routes.NotableErrorController.answersAreInvalid()
+    }
   }
 
 }

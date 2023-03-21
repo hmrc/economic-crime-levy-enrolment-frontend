@@ -93,7 +93,7 @@ trait EclTestData {
 
   private def authEnrolmentsToEnrolments(authEnrolments: Enrolments) =
     authEnrolments.enrolments
-      .map(e => Enrolment(e.key, e.identifiers.map(i => KeyValue(i.key, i.value))))
+      .map(e => Enrolment(e.key, e.identifiers.map(i => KeyValue(i.key, i.value)), Seq.empty))
       .toSeq
 
   def alphaNumericString: String = Gen.alphaNumStr.retryUntil(_.nonEmpty).sample.get

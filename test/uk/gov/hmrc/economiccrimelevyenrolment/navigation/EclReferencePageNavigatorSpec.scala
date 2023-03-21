@@ -16,20 +16,75 @@
 
 package uk.gov.hmrc.economiccrimelevyenrolment.navigation
 
+import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
 import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase
+import uk.gov.hmrc.economiccrimelevyenrolment.connectors.EnrolmentStoreProxyConnector
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
-import uk.gov.hmrc.economiccrimelevyenrolment.models.{NormalMode, UserAnswers}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolment, QueryKnownFactsResponse}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, NormalMode, UserAnswers}
+
+import scala.concurrent.Future
 
 class EclReferencePageNavigatorSpec extends SpecBase {
 
-  val pageNavigator = new EclReferencePageNavigator()
+  val mockEnrolmentStoreProxyConnector: EnrolmentStoreProxyConnector = mock[EnrolmentStoreProxyConnector]
+  val pageNavigator                                                  = new EclReferencePageNavigator(mockEnrolmentStoreProxyConnector)
 
   "nextPage" should {
-    "return a Call to the ??? page in NormalMode" in forAll { (userAnswers: UserAnswers, eclReferenceNumber: String) =>
-      val updatedAnswers: UserAnswers = userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
+    "return a Call to the date of registration page in NormalMode when the ECL reference number matches" in forAll {
+      (userAnswers: UserAnswers, eclReferenceNumber: String) =>
+        val updatedAnswers: UserAnswers               = userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
+        val knownFacts: Seq[KeyValue]                 = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber))
+        val expectedResponse: QueryKnownFactsResponse = QueryKnownFactsResponse(
+          service = EclEnrolment.ServiceName,
+          enrolments = Seq(
+            Enrolment(
+              service = EclEnrolment.ServiceName,
+              identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber)),
+              verifiers = Seq.empty
+            )
+          )
+        )
 
-    // TODO: Add route when next page routing logic
+        when(mockEnrolmentStoreProxyConnector.queryKnownFacts(ArgumentMatchers.eq(knownFacts))(any()))
+          .thenReturn(Future.successful(expectedResponse))
+
+        await(
+          pageNavigator.nextPage(NormalMode, updatedAnswers)(fakeRequest)
+        ) shouldBe routes.EclRegistrationDateController.onPageLoad()
+    }
+
+    "return a Call to the details are invalid page in NormalMode when the ECL reference number does not match" in forAll {
+      (userAnswers: UserAnswers, eclReferenceNumber: String) =>
+        val updatedAnswers: UserAnswers               = userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
+        val knownFacts: Seq[KeyValue]                 = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber))
+        val expectedResponse: QueryKnownFactsResponse = QueryKnownFactsResponse(
+          service = EclEnrolment.ServiceName,
+          enrolments = Seq(
+            Enrolment(
+              service = EclEnrolment.ServiceName,
+              identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = "invalid-reference")),
+              verifiers = Seq.empty
+            )
+          )
+        )
+
+        when(mockEnrolmentStoreProxyConnector.queryKnownFacts(ArgumentMatchers.eq(knownFacts))(any()))
+          .thenReturn(Future.successful(expectedResponse))
+
+        await(
+          pageNavigator.nextPage(NormalMode, updatedAnswers)(fakeRequest)
+        ) shouldBe routes.NotableErrorController.detailsDoNotMatch()
+    }
+
+    "return a Call to the answers are invalid page in NormalMode when no answer has been provided" in forAll {
+      userAnswers: UserAnswers =>
+        val updatedAnswers: UserAnswers = userAnswers.copy(eclReferenceNumber = None)
+
+        await(pageNavigator.nextPage(NormalMode, updatedAnswers)(fakeRequest)) shouldBe
+          routes.NotableErrorController.answersAreInvalid()
     }
   }
 

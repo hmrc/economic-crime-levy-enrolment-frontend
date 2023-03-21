@@ -29,6 +29,7 @@ import scala.concurrent.Future
 class NotableErrorControllerSpec extends SpecBase {
 
   val answersAreInvalidView: AnswersAreInvalidView             = app.injector.instanceOf[AnswersAreInvalidView]
+  val detailsDoNotMatchView: DetailsDoNotMatchView             = app.injector.instanceOf[DetailsDoNotMatchView]
   val userAlreadyEnrolledView: UserAlreadyEnrolledView         = app.injector.instanceOf[UserAlreadyEnrolledView]
   val groupAlreadyEnrolledView: GroupAlreadyEnrolledView       = app.injector.instanceOf[GroupAlreadyEnrolledView]
   val agentCannotRegisterView: AgentCannotRegisterView         = app.injector.instanceOf[AgentCannotRegisterView]
@@ -46,6 +47,7 @@ class NotableErrorControllerSpec extends SpecBase {
       userAlreadyEnrolledView,
       groupAlreadyEnrolledView,
       answersAreInvalidView,
+      detailsDoNotMatchView,
       agentCannotRegisterView,
       assistantCannotRegisterView
     )
@@ -59,6 +61,18 @@ class NotableErrorControllerSpec extends SpecBase {
         status(result) shouldBe OK
 
         contentAsString(result) shouldBe answersAreInvalidView()(fakeRequest, messages).toString
+      }
+    }
+  }
+
+  "detailsDoNotMatch" should {
+    "return OK and the correct view" in forAll { userAnswers: UserAnswers =>
+      new TestContext(userAnswers) {
+        val result: Future[Result] = controller.detailsDoNotMatch()(fakeRequest)
+
+        status(result) shouldBe OK
+
+        contentAsString(result) shouldBe detailsDoNotMatchView()(fakeRequest, messages).toString
       }
     }
   }
