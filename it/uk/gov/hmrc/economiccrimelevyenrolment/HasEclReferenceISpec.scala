@@ -16,14 +16,10 @@
 
 package uk.gov.hmrc.economiccrimelevyenrolment
 
-import com.danielasfregola.randomdatagenerator.RandomDataGenerator.random
 import play.api.test.FakeRequest
-import play.api.test.Helpers.await
 import uk.gov.hmrc.economiccrimelevyenrolment.base.ISpecBase
 import uk.gov.hmrc.economiccrimelevyenrolment.behaviours.AuthorisedBehaviour
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
-import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
-import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
 
 class HasEclReferenceISpec extends ISpecBase with AuthorisedBehaviour {
 
@@ -31,11 +27,7 @@ class HasEclReferenceISpec extends ISpecBase with AuthorisedBehaviour {
     behave like authorisedActionWithEnrolmentCheckRoute(routes.HasEclReferenceController.onPageLoad())
 
     "respond with 200 status and the do you have an ECL reference number HTML view" in {
-      stubAuthorisedWithEclEnrolment()
-
-      val userAnswers = UserAnswers.empty(testInternalId)
-
-      await(sessionRepository.upsert(userAnswers))
+      stubAuthorised()
 
       val result = callRoute(FakeRequest(routes.HasEclReferenceController.onPageLoad()))
 
