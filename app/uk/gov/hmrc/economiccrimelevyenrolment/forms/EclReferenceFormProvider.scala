@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.economiccrimelevyenrolment.models
+package uk.gov.hmrc.economiccrimelevyenrolment.forms
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.data.Form
+import uk.gov.hmrc.economiccrimelevyenrolment.forms.mappings.Mappings
 
-import java.time.Instant
+import javax.inject.Inject
 
-final case class UserAnswers(
-  internalId: String,
-  hasEclReference: Option[TriState],
-  eclReferenceNumber: Option[String],
-  lastUpdated: Option[Instant] = None
-)
+class EclReferenceFormProvider @Inject() extends Mappings {
 
-object UserAnswers {
-  implicit val format: OFormat[UserAnswers] = Json.format[UserAnswers]
+  def apply(): Form[String] =
+    Form("value" -> text("eclReference.error.required"))
 
-  def empty(internalId: String): UserAnswers = UserAnswers(
-    internalId = internalId,
-    hasEclReference = None,
-    eclReferenceNumber = None
-  )
 }

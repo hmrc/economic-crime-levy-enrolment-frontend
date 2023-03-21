@@ -27,6 +27,13 @@ class HasEclReferencePageNavigatorSpec extends SpecBase {
   val pageNavigator = new HasEclReferencePageNavigator()
 
   "nextPage" should {
+    "return a Call to the ECL reference number page in NormalMode when the answer is 'Yes'" in forAll {
+      userAnswers: UserAnswers =>
+        val updatedAnswers: UserAnswers = userAnswers.copy(hasEclReference = Some(Yes))
+
+        pageNavigator.nextPage(NormalMode, updatedAnswers) shouldBe routes.EclReferenceController.onPageLoad()
+    }
+
     "return a Call to the you need to register for ECL page in NormalMode when the answer is 'No'" in forAll {
       userAnswers: UserAnswers =>
         val updatedAnswers: UserAnswers = userAnswers.copy(hasEclReference = Some(No))

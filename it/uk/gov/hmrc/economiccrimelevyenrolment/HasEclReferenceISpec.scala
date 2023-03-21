@@ -40,6 +40,19 @@ class HasEclReferenceISpec extends ISpecBase with AuthorisedBehaviour {
   s"POST ${routes.HasEclReferenceController.onSubmit().url}"  should {
     behave like authorisedActionWithEnrolmentCheckRoute(routes.HasEclReferenceController.onSubmit())
 
+    "save the selected ECL reference option then redirect to the ECL reference number page when the answer is 'Yes'" in {
+      stubAuthorised()
+
+      val result = callRoute(
+        FakeRequest(routes.HasEclReferenceController.onSubmit())
+          .withFormUrlEncodedBody(("value", "Yes"))
+      )
+
+      status(result) shouldBe SEE_OTHER
+
+      redirectLocation(result) shouldBe Some(routes.EclReferenceController.onPageLoad().url)
+    }
+
     "save the selected ECL reference option then redirect to the need to register for ECL page when the answer is 'No'" in {
       stubAuthorised()
 
@@ -51,6 +64,19 @@ class HasEclReferenceISpec extends ISpecBase with AuthorisedBehaviour {
       status(result) shouldBe SEE_OTHER
 
       redirectLocation(result) shouldBe Some(routes.RegistrationController.onPageLoad().url)
+    }
+
+    "save the selected ECL reference option then redirect to the find your ECL reference page when the answer is 'Unknown'" in {
+      stubAuthorised()
+
+      val result = callRoute(
+        FakeRequest(routes.HasEclReferenceController.onSubmit())
+          .withFormUrlEncodedBody(("value", "Unknown"))
+      )
+
+      status(result) shouldBe SEE_OTHER
+
+      redirectLocation(result) shouldBe Some(routes.FindEclReferenceController.onPageLoad().url)
     }
   }
 

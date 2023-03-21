@@ -16,21 +16,21 @@
 
 package uk.gov.hmrc.economiccrimelevyenrolment.navigation
 
-import play.api.mvc.Call
+import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
-import uk.gov.hmrc.economiccrimelevyenrolment.models.TriState._
-import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
+import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
+import uk.gov.hmrc.economiccrimelevyenrolment.models.{NormalMode, UserAnswers}
 
-class HasEclReferencePageNavigator extends PageNavigator {
+class EclReferencePageNavigatorSpec extends SpecBase {
 
-  override protected def navigateInNormalMode(userAnswers: UserAnswers): Call =
-    userAnswers.hasEclReference match {
-      case Some(Yes)     => routes.EclReferenceController.onPageLoad()
-      case Some(No)      => routes.RegistrationController.onPageLoad()
-      case Some(Unknown) => routes.FindEclReferenceController.onPageLoad()
-      case _             => routes.NotableErrorController.answersAreInvalid()
+  val pageNavigator = new EclReferencePageNavigator()
+
+  "nextPage" should {
+    "return a Call to the ??? page in NormalMode" in forAll { (userAnswers: UserAnswers, eclReferenceNumber: String) =>
+      val updatedAnswers: UserAnswers = userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
+
+    // TODO: Add route when next page routing logic
     }
-
-  override protected def navigateInCheckMode(userAnswers: UserAnswers): Call = ???
+  }
 
 }

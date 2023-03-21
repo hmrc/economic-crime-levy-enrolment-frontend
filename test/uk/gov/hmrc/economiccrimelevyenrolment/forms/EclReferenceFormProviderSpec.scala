@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.economiccrimelevyenrolment.models
+package uk.gov.hmrc.economiccrimelevyenrolment.forms
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.data.FormError
+import uk.gov.hmrc.economiccrimelevyenrolment.forms.behaviours.OptionFieldBehaviours
 
-import java.time.Instant
+class EclReferenceFormProviderSpec extends OptionFieldBehaviours {
+  val form = new EclReferenceFormProvider()()
 
-final case class UserAnswers(
-  internalId: String,
-  hasEclReference: Option[TriState],
-  eclReferenceNumber: Option[String],
-  lastUpdated: Option[Instant] = None
-)
+  "value" should {
+    val fieldName   = "value"
+    val requiredKey = "eclReference.error.required"
 
-object UserAnswers {
-  implicit val format: OFormat[UserAnswers] = Json.format[UserAnswers]
+    behave like fieldThatBindsValidData(form, fieldName, nonBlankString)
 
-  def empty(internalId: String): UserAnswers = UserAnswers(
-    internalId = internalId,
-    hasEclReference = None,
-    eclReferenceNumber = None
-  )
+    behave like mandatoryField(form, fieldName, FormError(fieldName, requiredKey))
+  }
 }

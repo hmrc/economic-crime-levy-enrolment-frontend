@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.economiccrimelevyenrolment.models
+package uk.gov.hmrc.economiccrimelevyenrolment.navigation
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.mvc.Call
+import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
+import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
 
-import java.time.Instant
+class EclReferencePageNavigator extends PageNavigator {
 
-final case class UserAnswers(
-  internalId: String,
-  hasEclReference: Option[TriState],
-  eclReferenceNumber: Option[String],
-  lastUpdated: Option[Instant] = None
-)
+  override protected def navigateInNormalMode(userAnswers: UserAnswers): Call =
+    userAnswers.eclReferenceNumber match {
+      case Some(_) => ???
+      case _       => routes.NotableErrorController.answersAreInvalid()
+    }
 
-object UserAnswers {
-  implicit val format: OFormat[UserAnswers] = Json.format[UserAnswers]
+  override protected def navigateInCheckMode(userAnswers: UserAnswers): Call = ???
 
-  def empty(internalId: String): UserAnswers = UserAnswers(
-    internalId = internalId,
-    hasEclReference = None,
-    eclReferenceNumber = None
-  )
 }
