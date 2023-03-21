@@ -7,6 +7,8 @@ GET         /assets/*file                                controllers.Assets.vers
 GET         /do-you-have-an-ecl-reference-number         uk.gov.hmrc.economiccrimelevyenrolment.controllers.HasEclReferenceController.onPageLoad()
 POST        /do-you-have-an-ecl-reference-number         uk.gov.hmrc.economiccrimelevyenrolment.controllers.HasEclReferenceController.onSubmit()
 
+GET         /you-need-to-register-ecl                    uk.gov.hmrc.economiccrimelevyenrolment.controllers.RegistrationController.onPageLoad()
+
 GET         /answers-are-not-valid                       uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.answersAreInvalid()
 
 GET         /agent-cannot-register                       uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.agentCannotRegister()

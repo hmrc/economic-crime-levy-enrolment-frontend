@@ -17,11 +17,19 @@
 package uk.gov.hmrc.economiccrimelevyenrolment.navigation
 
 import play.api.mvc.Call
+import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
+import uk.gov.hmrc.economiccrimelevyenrolment.models.TriState._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
 
 class HasEclReferencePageNavigator extends PageNavigator {
 
-  override protected def navigateInNormalMode(userAnswers: UserAnswers): Call = ???
+  override protected def navigateInNormalMode(userAnswers: UserAnswers): Call =
+    userAnswers.hasEclReference match {
+      case Some(Yes)     => ???
+      case Some(No)      => routes.RegistrationController.onPageLoad()
+      case Some(Unknown) => ???
+      case _             => routes.NotableErrorController.answersAreInvalid()
+    }
 
   override protected def navigateInCheckMode(userAnswers: UserAnswers): Call = ???
 

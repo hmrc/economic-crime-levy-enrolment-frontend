@@ -17,18 +17,21 @@
 package uk.gov.hmrc.economiccrimelevyenrolment.navigation
 
 import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase
+import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
-import uk.gov.hmrc.economiccrimelevyenrolment.models.{TriState, UserAnswers}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.TriState._
+import uk.gov.hmrc.economiccrimelevyenrolment.models.{NormalMode, UserAnswers}
 
 class HasEclReferencePageNavigatorSpec extends SpecBase {
 
   val pageNavigator = new HasEclReferencePageNavigator()
 
   "nextPage" should {
-    "return a Call to the ??? page in NormalMode" in forAll { (userAnswers: UserAnswers, hasEclReference: TriState) =>
-      val updatedAnswers: UserAnswers = userAnswers.copy(hasEclReference = Some(hasEclReference))
+    "return a Call to the you need to register for ECL page in NormalMode when the answer is 'No'" in forAll {
+      userAnswers: UserAnswers =>
+        val updatedAnswers: UserAnswers = userAnswers.copy(hasEclReference = Some(No))
 
-    // TODO: Implement navigation test when navigation is in place
+        pageNavigator.nextPage(NormalMode, updatedAnswers) shouldBe routes.RegistrationController.onPageLoad()
     }
   }
 

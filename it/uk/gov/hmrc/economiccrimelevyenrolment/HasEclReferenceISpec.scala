@@ -37,4 +37,21 @@ class HasEclReferenceISpec extends ISpecBase with AuthorisedBehaviour {
     }
   }
 
+  s"POST ${routes.HasEclReferenceController.onSubmit().url}"  should {
+    behave like authorisedActionWithEnrolmentCheckRoute(routes.HasEclReferenceController.onSubmit())
+
+    "save the selected ECL reference option then redirect to the need to register for ECL page when the answer is 'No'" in {
+      stubAuthorised()
+
+      val result = callRoute(
+        FakeRequest(routes.HasEclReferenceController.onSubmit())
+          .withFormUrlEncodedBody(("value", "No"))
+      )
+
+      status(result) shouldBe SEE_OTHER
+
+      redirectLocation(result) shouldBe Some(routes.RegistrationController.onPageLoad().url)
+    }
+  }
+
 }

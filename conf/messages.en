@@ -52,6 +52,11 @@ hasEclReference.No = No
 hasEclReference.Unknown = I do not know my ECL reference number
 hasEclReference.error.required = Select if you have an ECL reference number
 
+registration.title = You need to register for the Economic Crime Levy
+registration.heading = You need to register for the Economic Crime Levy
+registration.p1 = You need to register for the Economic Crime Levy (ECL).
+registration.register = Register for the Economic Crime Levy
+
 userAlreadyEnrolled.title = You have already registered for the Economic Crime Levy
 userAlreadyEnrolled.heading = You have already registered for the Economic Crime Levy
 userAlreadyEnrolled.body.p1 = Your ECL reference number is {0}.
