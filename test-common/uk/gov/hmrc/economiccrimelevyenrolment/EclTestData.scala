@@ -20,9 +20,11 @@ import com.danielasfregola.randomdatagenerator.RandomDataGenerator.derivedArbitr
 import org.scalacheck.{Arbitrary, Gen}
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core.{AffinityGroup, EnrolmentIdentifier, Enrolments, Enrolment => AuthEnrolment}
+import uk.gov.hmrc.economiccrimelevyenrolment.generators.Generators
 import uk.gov.hmrc.economiccrimelevyenrolment.models._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolment, GroupEnrolmentsResponse}
 
+import java.time.format.DateTimeFormatter
 import java.time.{Instant, LocalDate}
 
 final case class EnrolmentsWithEcl(enrolments: Enrolments, eclReferenceNumber: String)
@@ -36,7 +38,7 @@ final case class GroupEnrolmentsResponseWithEcl(
 
 final case class GroupEnrolmentsResponseWithoutEcl(groupEnrolmentsResponse: GroupEnrolmentsResponse)
 
-trait EclTestData {
+trait EclTestData { self: Generators =>
 
   implicit val arbInstant: Arbitrary[Instant] = Arbitrary {
     Instant.now()
@@ -98,8 +100,15 @@ trait EclTestData {
 
   def alphaNumericString: String = Gen.alphaNumStr.retryUntil(_.nonEmpty).sample.get
 
-  val testInternalId: String               = alphaNumericString
-  val testGroupId: String                  = alphaNumericString
-  val testEclRegistrationReference: String = alphaNumericString
+  val minDate: LocalDate = LocalDate.of(1970, 1, 1)
+  val maxDate: LocalDate = LocalDate.of(2999, 12, 31)
+
+  def localDate: LocalDate = datesBetween(minDate, maxDate).sample.get
+
+  val testInternalId: String                = alphaNumericString
+  val testGroupId: String                   = alphaNumericString
+  val testEclRegistrationReference: String  = alphaNumericString
+  val testEclRegistrationDate: LocalDate    = localDate
+  val testEclRegistrationDateString: String = testEclRegistrationDate.format(DateTimeFormatter.BASIC_ISO_DATE)
 
 }

@@ -20,6 +20,7 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.economiccrimelevyenrolment.base.ISpecBase
 import uk.gov.hmrc.economiccrimelevyenrolment.behaviours.AuthorisedBehaviour
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
+import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
 
 class HasEclReferenceISpec extends ISpecBase with AuthorisedBehaviour {
 
@@ -43,6 +44,8 @@ class HasEclReferenceISpec extends ISpecBase with AuthorisedBehaviour {
     "save the selected ECL reference option then redirect to the ECL reference number page when the answer is 'Yes'" in {
       stubAuthorised()
 
+      sessionRepository.upsert(UserAnswers.empty(testInternalId))
+
       val result = callRoute(
         FakeRequest(routes.HasEclReferenceController.onSubmit())
           .withFormUrlEncodedBody(("value", "Yes"))
@@ -56,6 +59,8 @@ class HasEclReferenceISpec extends ISpecBase with AuthorisedBehaviour {
     "save the selected ECL reference option then redirect to the need to register for ECL page when the answer is 'No'" in {
       stubAuthorised()
 
+      sessionRepository.upsert(UserAnswers.empty(testInternalId))
+
       val result = callRoute(
         FakeRequest(routes.HasEclReferenceController.onSubmit())
           .withFormUrlEncodedBody(("value", "No"))
@@ -68,6 +73,8 @@ class HasEclReferenceISpec extends ISpecBase with AuthorisedBehaviour {
 
     "save the selected ECL reference option then redirect to the find your ECL reference page when the answer is 'Unknown'" in {
       stubAuthorised()
+
+      sessionRepository.upsert(UserAnswers.empty(testInternalId))
 
       val result = callRoute(
         FakeRequest(routes.HasEclReferenceController.onSubmit())

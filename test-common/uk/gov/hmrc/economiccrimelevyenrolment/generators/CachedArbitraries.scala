@@ -23,7 +23,7 @@ import uk.gov.hmrc.economiccrimelevyenrolment.models._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd._
 import com.danielasfregola.randomdatagenerator.RandomDataGenerator.derivedArbitrary
 
-object CachedArbitraries extends EclTestData {
+object CachedArbitraries extends EclTestData with Generators {
 
   private def mkArb[T](implicit mkArb: MkArbitrary[T]): Arbitrary[T] = MkArbitrary[T].arbitrary
 
@@ -31,5 +31,6 @@ object CachedArbitraries extends EclTestData {
   implicit lazy val arbMode: Arbitrary[Mode]                                       = mkArb
   implicit lazy val arbUserAnswers: Arbitrary[UserAnswers]                         = mkArb
   implicit lazy val arbTriState: Arbitrary[TriState]                               = mkArb
+  implicit lazy val arbQueryKnownFactsResponse: Arbitrary[QueryKnownFactsResponse] = mkArb
 
 }

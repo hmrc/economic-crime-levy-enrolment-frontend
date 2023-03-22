@@ -16,11 +16,18 @@
 
 package uk.gov.hmrc.economiccrimelevyenrolment.navigation
 
+import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
 import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase
 import uk.gov.hmrc.economiccrimelevyenrolment.connectors.EnrolmentStoreProxyConnector
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
-import uk.gov.hmrc.economiccrimelevyenrolment.models.{NormalMode, UserAnswers}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolment, QueryKnownFactsResponse}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, NormalMode, UserAnswers}
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import scala.concurrent.Future
 
 class EclRegistrationDatePageNavigatorSpec extends SpecBase {
 
@@ -29,17 +36,69 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
 
   "nextPage" should {
     "return a Call to the confirmation page in NormalMode when the date of registration matches" in forAll {
-      (userAnswers: UserAnswers, eclReferenceNumber: String) =>
-        val updatedAnswers: UserAnswers = userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
+      (userAnswers: UserAnswers, eclReferenceNumber: String, eclRegistrationDate: LocalDate) =>
+        val updatedAnswers: UserAnswers = userAnswers.copy(
+          eclReferenceNumber = Some(eclReferenceNumber),
+          eclRegistrationDate = Some(eclRegistrationDate)
+        )
 
-      // TODO: Add route when next page routing logic
+        val eclRegistrationDateString: String = eclRegistrationDate.format(DateTimeFormatter.BASIC_ISO_DATE)
+
+        val knownFacts: Seq[KeyValue] = Seq(
+          KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber),
+          KeyValue(key = EclEnrolment.VerifierKey, value = eclRegistrationDateString)
+        )
+
+        val expectedResponse: QueryKnownFactsResponse = QueryKnownFactsResponse(
+          service = EclEnrolment.ServiceName,
+          enrolments = Seq(
+            Enrolment(
+              service = EclEnrolment.ServiceName,
+              identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber)),
+              verifiers = Seq(KeyValue(key = EclEnrolment.VerifierKey, value = eclRegistrationDateString))
+            )
+          )
+        )
+
+        when(mockEnrolmentStoreProxyConnector.queryKnownFacts(ArgumentMatchers.eq(knownFacts))(any()))
+          .thenReturn(Future.successful(expectedResponse))
+
+        await(
+          pageNavigator.nextPage(NormalMode, updatedAnswers)(fakeRequest)
+        ) shouldBe routes.ConfirmationController.onPageLoad()
     }
 
     "return a Call to the details do not match page in NormalMode when the date of registration does not match" in forAll {
-      (userAnswers: UserAnswers, eclReferenceNumber: String) =>
-        val updatedAnswers: UserAnswers = userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
+      (userAnswers: UserAnswers, eclReferenceNumber: String, eclRegistrationDate: LocalDate) =>
+        val updatedAnswers: UserAnswers = userAnswers.copy(
+          eclReferenceNumber = Some(eclReferenceNumber),
+          eclRegistrationDate = Some(eclRegistrationDate)
+        )
 
-      // TODO: Add route when next page routing logic
+        val eclRegistrationDateString: String = eclRegistrationDate.format(DateTimeFormatter.BASIC_ISO_DATE)
+
+        val knownFacts: Seq[KeyValue] = Seq(
+          KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber),
+          KeyValue(key = EclEnrolment.VerifierKey, value = eclRegistrationDateString)
+        )
+
+        val expectedResponse: QueryKnownFactsResponse = QueryKnownFactsResponse(
+          service = EclEnrolment.ServiceName,
+          enrolments = Seq(
+            Enrolment(
+              service = EclEnrolment.ServiceName,
+              identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber)),
+              verifiers = Seq(KeyValue(key = EclEnrolment.VerifierKey, value = "99991231"))
+            )
+          )
+        )
+
+        when(mockEnrolmentStoreProxyConnector.queryKnownFacts(ArgumentMatchers.eq(knownFacts))(any()))
+          .thenReturn(Future.successful(expectedResponse))
+
+        await(
+          pageNavigator.nextPage(NormalMode, updatedAnswers)(fakeRequest)
+        ) shouldBe routes.NotableErrorController.detailsDoNotMatch()
     }
 
     "return a Call to the answers are invalid page in NormalMode when no answer has been provided" in forAll {

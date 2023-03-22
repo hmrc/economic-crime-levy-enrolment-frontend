@@ -23,47 +23,51 @@ import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 import uk.gov.hmrc.economiccrimelevyenrolment.models.TriState.Yes
 import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
 
-class EclReferenceISpec extends ISpecBase with AuthorisedBehaviour {
+class EclRegistrationDateISpec extends ISpecBase with AuthorisedBehaviour {
 
-  s"GET ${routes.EclReferenceController.onPageLoad().url}" should {
-    behave like authorisedActionWithEnrolmentCheckRoute(routes.EclReferenceController.onPageLoad())
+  s"GET ${routes.EclRegistrationDateController.onPageLoad().url}" should {
+    behave like authorisedActionWithEnrolmentCheckRoute(routes.EclRegistrationDateController.onPageLoad())
 
-    "respond with 200 status and the ECL reference number HTML view" in {
+    "respond with 200 status and the ECL registration date HTML view" in {
       stubAuthorised()
 
-      val result = callRoute(FakeRequest(routes.EclReferenceController.onPageLoad()))
+      val result = callRoute(FakeRequest(routes.EclRegistrationDateController.onPageLoad()))
 
       status(result) shouldBe OK
 
-      html(result) should include("Your Economic Crime Levy (ECL) reference number")
+      html(result) should include("Your ECL registration date")
     }
   }
 
-  s"POST ${routes.EclReferenceController.onSubmit().url}"  should {
-    behave like authorisedActionWithEnrolmentCheckRoute(routes.EclReferenceController.onSubmit())
+  s"POST ${routes.EclRegistrationDateController.onSubmit().url}"  should {
+    behave like authorisedActionWithEnrolmentCheckRoute(routes.EclRegistrationDateController.onSubmit())
 
-    "save the provided ECL reference number then redirect to the ECL registration date page" in {
+    "save the provided ECL registration date then redirect to the details confirmed page" in {
       stubAuthorised()
-      stubQueryKnownFacts(testEclRegistrationReference)
+      stubQueryKnownFacts(testEclRegistrationReference, testEclRegistrationDateString)
 
       sessionRepository.upsert(
         UserAnswers
           .empty(testInternalId)
           .copy(
             hasEclReference = Some(Yes),
-            eclReferenceNumber = None,
+            eclReferenceNumber = Some(testEclRegistrationReference),
             eclRegistrationDate = None
           )
       )
 
       val result = callRoute(
-        FakeRequest(routes.EclReferenceController.onSubmit())
-          .withFormUrlEncodedBody(("value", testEclRegistrationReference))
+        FakeRequest(routes.EclRegistrationDateController.onSubmit())
+          .withFormUrlEncodedBody(
+            ("value.day", testEclRegistrationDate.getDayOfMonth.toString),
+            ("value.month", testEclRegistrationDate.getMonthValue.toString),
+            ("value.year", testEclRegistrationDate.getYear.toString)
+          )
       )
 
       status(result) shouldBe SEE_OTHER
 
-      redirectLocation(result) shouldBe Some(routes.EclRegistrationDateController.onPageLoad().url)
+      redirectLocation(result) shouldBe Some(routes.ConfirmationController.onPageLoad().url)
     }
   }
 
