@@ -66,5 +66,6 @@ class AppConfig @Inject() (configuration: Configuration, servicesConfig: Service
     configuration.get[Boolean]("features.enrolmentStoreProxyStubReturnsEclReference")
 
   val enrolmentStoreProxyBaseUrl: String = servicesConfig.baseUrl("enrolment-store-proxy")
+  val taxEnrolmentsBaseUrl: String       = servicesConfig.baseUrl("tax-enrolments")
 
 }

@@ -21,7 +21,7 @@ import play.api.data.Form
 import play.api.mvc.{Call, RequestHeader, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase
-import uk.gov.hmrc.economiccrimelevyenrolment.connectors.EnrolmentStoreProxyConnector
+import uk.gov.hmrc.economiccrimelevyenrolment.connectors.{EnrolmentStoreProxyConnector, TaxEnrolmentsConnector}
 import uk.gov.hmrc.economiccrimelevyenrolment.forms.EclRegistrationDateFormProvider
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
@@ -39,9 +39,11 @@ class EclRegistrationDateControllerSpec extends SpecBase {
   val form: Form[LocalDate]                                          = formProvider()
   val mockSessionRepository: SessionRepository                       = mock[SessionRepository]
   val mockEnrolmentStoreProxyConnector: EnrolmentStoreProxyConnector = mock[EnrolmentStoreProxyConnector]
+  val mockTaxEnrolmentsConnector: TaxEnrolmentsConnector             = mock[TaxEnrolmentsConnector]
 
   val pageNavigator: EclRegistrationDatePageNavigator = new EclRegistrationDatePageNavigator(
-    mockEnrolmentStoreProxyConnector
+    mockEnrolmentStoreProxyConnector,
+    mockTaxEnrolmentsConnector
   ) {
     override protected def navigateInNormalMode(userAnswers: UserAnswers)(implicit
       request: RequestHeader

@@ -13,6 +13,7 @@ trait WireMockStubs
     extends EclTestData
     with AuthStubs
     with EnrolmentStoreProxyStubs
+    with TaxEnrolmentsStubs
     with Generators {
 
   def stubAuthorisedWithNoGroupEnrolment(): StubMapping = {

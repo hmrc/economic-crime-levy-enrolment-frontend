@@ -57,7 +57,8 @@ abstract class ISpecBase
     "features.enrolmentStoreProxyStubEnabled" -> false
   ) ++ setWireMockPort(
     "auth",
-    "enrolment-store-proxy"
+    "enrolment-store-proxy",
+    "tax-enrolments"
   )
 
   override def fakeApplication(): Application =

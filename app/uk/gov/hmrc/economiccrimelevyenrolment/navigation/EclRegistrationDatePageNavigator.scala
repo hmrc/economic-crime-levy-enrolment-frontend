@@ -17,9 +17,9 @@
 package uk.gov.hmrc.economiccrimelevyenrolment.navigation
 
 import play.api.mvc.{Call, RequestHeader}
-import uk.gov.hmrc.economiccrimelevyenrolment.connectors.EnrolmentStoreProxyConnector
+import uk.gov.hmrc.economiccrimelevyenrolment.connectors.{EnrolmentStoreProxyConnector, TaxEnrolmentsConnector}
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
-import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.EclEnrolment
+import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{AllocateEnrolmentRequest, EclEnrolment}
 import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, UserAnswers}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
@@ -28,7 +28,10 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EclRegistrationDatePageNavigator @Inject() (enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector)(implicit
+class EclRegistrationDatePageNavigator @Inject() (
+  enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector,
+  taxEnrolmentsConnector: TaxEnrolmentsConnector
+)(implicit
   ec: ExecutionContext
 ) extends AsyncPageNavigator
     with FrontendHeaderCarrierProvider {
@@ -53,12 +56,25 @@ class EclRegistrationDatePageNavigator @Inject() (enrolmentStoreProxyConnector: 
       KeyValue(key = EclEnrolment.VerifierKey, value = eclRegistrationDateString)
     )
 
-    enrolmentStoreProxyConnector.queryKnownFacts(knownFacts).map { response =>
+    enrolmentStoreProxyConnector.queryKnownFacts(knownFacts).flatMap { response =>
       response.enrolments.find(_.verifiers.exists(_.value == eclRegistrationDateString)) match {
-        case Some(_) => routes.ConfirmationController.onPageLoad()
-        case _       => routes.NotableErrorController.detailsDoNotMatch()
+        case Some(_) =>
+          allocateEnrolment(eclReferenceNumber, eclRegistrationDateString)
+            .map(_ => routes.ConfirmationController.onPageLoad())
+        case _       => Future.successful(routes.NotableErrorController.detailsDoNotMatch())
       }
     }
   }
+
+  private def allocateEnrolment(eclReferenceNumber: String, eclRegistrationDate: String)(implicit
+    request: RequestHeader
+  ): Future[Unit] = taxEnrolmentsConnector.allocateEnrolment(
+    "TODO: groupId",
+    eclReferenceNumber,
+    AllocateEnrolmentRequest(
+      userId = "TODO: internalId?",
+      verifiers = Seq(KeyValue(EclEnrolment.VerifierKey, eclRegistrationDate))
+    )
+  )
 
 }

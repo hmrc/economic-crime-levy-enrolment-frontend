@@ -19,7 +19,7 @@ package uk.gov.hmrc.economiccrimelevyenrolment.navigation
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase
-import uk.gov.hmrc.economiccrimelevyenrolment.connectors.EnrolmentStoreProxyConnector
+import uk.gov.hmrc.economiccrimelevyenrolment.connectors.{EnrolmentStoreProxyConnector, TaxEnrolmentsConnector}
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolment, QueryKnownFactsResponse}
@@ -32,7 +32,8 @@ import scala.concurrent.Future
 class EclRegistrationDatePageNavigatorSpec extends SpecBase {
 
   val mockEnrolmentStoreProxyConnector: EnrolmentStoreProxyConnector = mock[EnrolmentStoreProxyConnector]
-  val pageNavigator                                                  = new EclRegistrationDatePageNavigator(mockEnrolmentStoreProxyConnector)
+  val mockTaxEnrolmentsConnector: TaxEnrolmentsConnector             = mock[TaxEnrolmentsConnector]
+  val pageNavigator                                                  = new EclRegistrationDatePageNavigator(mockEnrolmentStoreProxyConnector, mockTaxEnrolmentsConnector)
 
   "nextPage" should {
     "return a Call to the confirmation page in NormalMode when the date of registration matches" in forAll {
@@ -62,6 +63,10 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
 
         when(mockEnrolmentStoreProxyConnector.queryKnownFacts(ArgumentMatchers.eq(knownFacts))(any()))
           .thenReturn(Future.successful(expectedResponse))
+
+        // TODO:
+        when(mockTaxEnrolmentsConnector.allocateEnrolment(any(), ArgumentMatchers.eq(eclReferenceNumber), any())(any()))
+          .thenReturn(Future.successful(()))
 
         await(
           pageNavigator.nextPage(NormalMode, updatedAnswers)(fakeRequest)

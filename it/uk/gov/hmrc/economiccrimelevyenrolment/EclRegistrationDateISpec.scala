@@ -21,7 +21,8 @@ import uk.gov.hmrc.economiccrimelevyenrolment.base.ISpecBase
 import uk.gov.hmrc.economiccrimelevyenrolment.behaviours.AuthorisedBehaviour
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 import uk.gov.hmrc.economiccrimelevyenrolment.models.TriState.Yes
-import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
+import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, UserAnswers}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{AllocateEnrolmentRequest, EclEnrolment}
 
 class EclRegistrationDateISpec extends ISpecBase with AuthorisedBehaviour {
 
@@ -45,6 +46,12 @@ class EclRegistrationDateISpec extends ISpecBase with AuthorisedBehaviour {
     "save the provided ECL registration date then redirect to the details confirmed page" in {
       stubAuthorised()
       stubQueryKnownFacts(testEclRegistrationReference, testEclRegistrationDateString)
+      stubAllocateEnrolment(
+        AllocateEnrolmentRequest(
+          userId = testInternalId,
+          verifiers = Seq(KeyValue(EclEnrolment.VerifierKey, testEclRegistrationDateString))
+        )
+      )
 
       sessionRepository.upsert(
         UserAnswers
