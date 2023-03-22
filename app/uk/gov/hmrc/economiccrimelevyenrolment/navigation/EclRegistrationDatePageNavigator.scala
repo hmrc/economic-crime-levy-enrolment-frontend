@@ -16,10 +16,11 @@
 
 package uk.gov.hmrc.economiccrimelevyenrolment.navigation
 
-import play.api.mvc.{Call, RequestHeader}
+import play.api.mvc.Call
 import uk.gov.hmrc.economiccrimelevyenrolment.connectors.{EnrolmentStoreProxyConnector, TaxEnrolmentsConnector}
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{AllocateEnrolmentRequest, EclEnrolment}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
 import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, UserAnswers}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
@@ -36,18 +37,20 @@ class EclRegistrationDatePageNavigator @Inject() (
 ) extends AsyncPageNavigator
     with FrontendHeaderCarrierProvider {
 
-  override protected def navigateInNormalMode(userAnswers: UserAnswers)(implicit request: RequestHeader): Future[Call] =
+  override protected def navigateInNormalMode(
+    userAnswers: UserAnswers
+  )(implicit request: DataRequest[_]): Future[Call] =
     (userAnswers.eclReferenceNumber, userAnswers.eclRegistrationDate) match {
       case (Some(eclReferenceNumber), Some(eclRegistrationDate)) =>
         verifyEclRegistrationDate(eclReferenceNumber, eclRegistrationDate)
       case _                                                     => Future.successful(routes.NotableErrorController.answersAreInvalid())
     }
 
-  override protected def navigateInCheckMode(userAnswers: UserAnswers)(implicit request: RequestHeader): Future[Call] =
+  override protected def navigateInCheckMode(userAnswers: UserAnswers)(implicit request: DataRequest[_]): Future[Call] =
     ???
 
   private def verifyEclRegistrationDate(eclReferenceNumber: String, eclRegistrationDate: LocalDate)(implicit
-    request: RequestHeader
+    request: DataRequest[_]
   ): Future[Call] = {
     val eclRegistrationDateString = eclRegistrationDate.format(DateTimeFormatter.BASIC_ISO_DATE)
 
@@ -67,12 +70,12 @@ class EclRegistrationDatePageNavigator @Inject() (
   }
 
   private def allocateEnrolment(eclReferenceNumber: String, eclRegistrationDate: String)(implicit
-    request: RequestHeader
+    request: DataRequest[_]
   ): Future[Unit] = taxEnrolmentsConnector.allocateEnrolment(
-    "TODO: groupId",
+    request.groupId,
     eclReferenceNumber,
     AllocateEnrolmentRequest(
-      userId = "TODO: internalId?",
+      userId = request.credentials.providerId,
       verifiers = Seq(KeyValue(EclEnrolment.VerifierKey, eclRegistrationDate))
     )
   )

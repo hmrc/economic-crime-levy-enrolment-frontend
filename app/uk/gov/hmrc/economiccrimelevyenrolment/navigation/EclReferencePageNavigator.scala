@@ -16,10 +16,11 @@
 
 package uk.gov.hmrc.economiccrimelevyenrolment.navigation
 
-import play.api.mvc.{Call, RequestHeader}
+import play.api.mvc.Call
 import uk.gov.hmrc.economiccrimelevyenrolment.connectors.EnrolmentStoreProxyConnector
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.EclEnrolment
+import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
 import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, UserAnswers}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
@@ -31,16 +32,18 @@ class EclReferencePageNavigator @Inject() (enrolmentStoreProxyConnector: Enrolme
 ) extends AsyncPageNavigator
     with FrontendHeaderCarrierProvider {
 
-  override protected def navigateInNormalMode(userAnswers: UserAnswers)(implicit request: RequestHeader): Future[Call] =
+  override protected def navigateInNormalMode(
+    userAnswers: UserAnswers
+  )(implicit request: DataRequest[_]): Future[Call] =
     userAnswers.eclReferenceNumber match {
       case Some(eclReferenceNumber) => verifyEclReferenceNumber(eclReferenceNumber)
       case _                        => Future.successful(routes.NotableErrorController.answersAreInvalid())
     }
 
-  override protected def navigateInCheckMode(userAnswers: UserAnswers)(implicit request: RequestHeader): Future[Call] =
+  override protected def navigateInCheckMode(userAnswers: UserAnswers)(implicit request: DataRequest[_]): Future[Call] =
     ???
 
-  private def verifyEclReferenceNumber(eclReferenceNumber: String)(implicit request: RequestHeader): Future[Call] = {
+  private def verifyEclReferenceNumber(eclReferenceNumber: String)(implicit request: DataRequest[_]): Future[Call] = {
     val knownFacts = Seq(
       KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber)
     )

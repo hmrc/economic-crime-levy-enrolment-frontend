@@ -17,10 +17,12 @@
 package uk.gov.hmrc.economiccrimelevyenrolment.models.requests
 
 import play.api.mvc.{Request, WrappedRequest}
+import uk.gov.hmrc.auth.core.retrieve.Credentials
 
 case class AuthorisedRequest[A](
   request: Request[A],
   internalId: String,
   groupId: String,
-  eclRegistrationReference: Option[String]
+  eclRegistrationReference: Option[String],
+  credentials: Credentials
 ) extends WrappedRequest[A](request)

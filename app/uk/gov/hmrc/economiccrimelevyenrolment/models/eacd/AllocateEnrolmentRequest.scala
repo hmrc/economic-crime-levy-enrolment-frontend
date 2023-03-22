@@ -21,8 +21,7 @@ import uk.gov.hmrc.economiccrimelevyenrolment.models.KeyValue
 
 final case class AllocateEnrolmentRequest(
   userId: String,
-  friendlyName: String = "My Economic Crime Levy Account",
-  qtype: String = "principal", // TODO: The JSON element is 'type' but this is a reserved word
+  `type`: String = "principal",
   verifiers: Seq[KeyValue]
 )
 

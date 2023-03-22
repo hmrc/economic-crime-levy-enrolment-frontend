@@ -17,7 +17,13 @@
 package uk.gov.hmrc.economiccrimelevyenrolment.models.requests
 
 import play.api.mvc.{Request, WrappedRequest}
+import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
 
-case class DataRequest[A](request: Request[A], internalId: String, userAnswers: UserAnswers)
-    extends WrappedRequest[A](request)
+case class DataRequest[A](
+  request: Request[A],
+  internalId: String,
+  groupId: String,
+  credentials: Credentials,
+  userAnswers: UserAnswers
+) extends WrappedRequest[A](request)
