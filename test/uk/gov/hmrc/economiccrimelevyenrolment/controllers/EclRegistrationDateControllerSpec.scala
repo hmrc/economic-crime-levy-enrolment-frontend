@@ -18,13 +18,14 @@ package uk.gov.hmrc.economiccrimelevyenrolment.controllers
 
 import org.mockito.ArgumentMatchers
 import play.api.data.Form
-import play.api.mvc.{Call, RequestHeader, Result}
+import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase
 import uk.gov.hmrc.economiccrimelevyenrolment.connectors.{EnrolmentStoreProxyConnector, TaxEnrolmentsConnector}
 import uk.gov.hmrc.economiccrimelevyenrolment.forms.EclRegistrationDateFormProvider
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
+import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
 import uk.gov.hmrc.economiccrimelevyenrolment.navigation.EclRegistrationDatePageNavigator
 import uk.gov.hmrc.economiccrimelevyenrolment.repositories.SessionRepository
 import uk.gov.hmrc.economiccrimelevyenrolment.views.html.EclRegistrationDateView
@@ -46,14 +47,14 @@ class EclRegistrationDateControllerSpec extends SpecBase {
     mockTaxEnrolmentsConnector
   ) {
     override protected def navigateInNormalMode(userAnswers: UserAnswers)(implicit
-      request: RequestHeader
+      request: DataRequest[_]
     ): Future[Call] = Future.successful(onwardRoute)
   }
 
-  class TestContext(userAnswers: UserAnswers) {
+  class TestContext(userAnswers: UserAnswers, groupId: String, providerId: String) {
     val controller = new EclRegistrationDateController(
       mcc,
-      fakeAuthorisedActionWithEnrolmentCheck(userAnswers.internalId),
+      fakeAuthorisedActionWithEnrolmentCheck(userAnswers.internalId, groupId, providerId),
       fakeDataRetrievalAction(userAnswers),
       mockSessionRepository,
       formProvider,
@@ -64,7 +65,7 @@ class EclRegistrationDateControllerSpec extends SpecBase {
 
   "onPageLoad" should {
     "return OK and the correct view when no answer has already been provided" in forAll { userAnswers: UserAnswers =>
-      new TestContext(userAnswers.copy(eclRegistrationDate = None)) {
+      new TestContext(userAnswers.copy(eclRegistrationDate = None), testGroupId, testProviderId) {
         val result: Future[Result] = controller.onPageLoad()(fakeRequest)
 
         status(result) shouldBe OK
@@ -75,7 +76,11 @@ class EclRegistrationDateControllerSpec extends SpecBase {
 
     "populate the view correctly when the question has previously been answered" in forAll {
       (userAnswers: UserAnswers, eclRegistrationDate: LocalDate) =>
-        new TestContext(userAnswers.copy(eclRegistrationDate = Some(eclRegistrationDate))) {
+        new TestContext(
+          userAnswers.copy(eclRegistrationDate = Some(eclRegistrationDate)),
+          testGroupId,
+          testProviderId
+        ) {
           val result: Future[Result] = controller.onPageLoad()(fakeRequest)
 
           status(result) shouldBe OK
@@ -88,7 +93,7 @@ class EclRegistrationDateControllerSpec extends SpecBase {
   "onSubmit" should {
     "save the selected answer then redirect to the next page" in forAll {
       (userAnswers: UserAnswers, eclRegistrationDate: LocalDate) =>
-        new TestContext(userAnswers) {
+        new TestContext(userAnswers, testGroupId, testProviderId) {
           val updatedAnswers: UserAnswers = userAnswers.copy(
             eclRegistrationDate = Some(eclRegistrationDate)
           )
@@ -112,7 +117,7 @@ class EclRegistrationDateControllerSpec extends SpecBase {
     }
 
     "return a Bad Request with form errors when invalid data is submitted" in forAll { userAnswers: UserAnswers =>
-      new TestContext(userAnswers) {
+      new TestContext(userAnswers, testGroupId, testProviderId) {
         val result: Future[Result]          = controller.onSubmit()(fakeRequest.withFormUrlEncodedBody(("value", "")))
         val formWithErrors: Form[LocalDate] = form.bind(Map("value" -> ""))
 

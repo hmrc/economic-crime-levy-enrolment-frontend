@@ -40,10 +40,10 @@ class HasEclReferenceControllerSpec extends SpecBase {
   }
   val mockSessionRepository: SessionRepository    = mock[SessionRepository]
 
-  class TestContext(userAnswers: UserAnswers) {
+  class TestContext(userAnswers: UserAnswers, groupId: String, providerId: String) {
     val controller = new HasEclReferenceController(
       mcc,
-      fakeAuthorisedActionWithEnrolmentCheck(userAnswers.internalId),
+      fakeAuthorisedActionWithEnrolmentCheck(userAnswers.internalId, groupId, providerId),
       fakeDataRetrievalAction(userAnswers),
       mockSessionRepository,
       formProvider,
@@ -54,7 +54,7 @@ class HasEclReferenceControllerSpec extends SpecBase {
 
   "onPageLoad" should {
     "return OK and the correct view when no answer has already been provided" in forAll { userAnswers: UserAnswers =>
-      new TestContext(userAnswers.copy(hasEclReference = None)) {
+      new TestContext(userAnswers.copy(hasEclReference = None), testGroupId, testProviderId) {
         val result: Future[Result] = controller.onPageLoad()(fakeRequest)
 
         status(result) shouldBe OK
@@ -65,7 +65,7 @@ class HasEclReferenceControllerSpec extends SpecBase {
 
     "populate the view correctly when the question has previously been answered" in forAll {
       (userAnswers: UserAnswers, hasEclReference: TriState) =>
-        new TestContext(userAnswers.copy(hasEclReference = Some(hasEclReference))) {
+        new TestContext(userAnswers.copy(hasEclReference = Some(hasEclReference)), testGroupId, testProviderId) {
           val result: Future[Result] = controller.onPageLoad()(fakeRequest)
 
           status(result) shouldBe OK
@@ -78,7 +78,7 @@ class HasEclReferenceControllerSpec extends SpecBase {
   "onSubmit" should {
     "save the selected option then redirect to the next page" in forAll {
       (userAnswers: UserAnswers, hasEclReference: TriState) =>
-        new TestContext(userAnswers) {
+        new TestContext(userAnswers, testGroupId, testProviderId) {
           val updatedAnswers: UserAnswers = userAnswers.copy(
             hasEclReference = Some(hasEclReference)
           )
@@ -96,7 +96,7 @@ class HasEclReferenceControllerSpec extends SpecBase {
     }
 
     "return a Bad Request with form errors when invalid data is submitted" in forAll { userAnswers: UserAnswers =>
-      new TestContext(userAnswers) {
+      new TestContext(userAnswers, testGroupId, testProviderId) {
         val result: Future[Result]         = controller.onSubmit()(fakeRequest.withFormUrlEncodedBody(("value", "")))
         val formWithErrors: Form[TriState] = form.bind(Map("value" -> ""))
 

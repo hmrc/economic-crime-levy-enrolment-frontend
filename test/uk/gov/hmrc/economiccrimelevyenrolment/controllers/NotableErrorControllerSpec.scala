@@ -35,11 +35,16 @@ class NotableErrorControllerSpec extends SpecBase {
   val agentCannotRegisterView: AgentCannotRegisterView         = app.injector.instanceOf[AgentCannotRegisterView]
   val assistantCannotRegisterView: AssistantCannotRegisterView = app.injector.instanceOf[AssistantCannotRegisterView]
 
-  class TestContext(userAnswers: UserAnswers, eclRegistrationReference: Option[String] = None) {
+  class TestContext(
+    userAnswers: UserAnswers,
+    groupId: String,
+    providerId: String,
+    eclRegistrationReference: Option[String] = None
+  ) {
     val controller = new NotableErrorController(
       mcc,
-      fakeAuthorisedActionWithoutEnrolmentCheck(userAnswers.internalId, eclRegistrationReference),
-      fakeAuthorisedActionWithEnrolmentCheck(userAnswers.internalId),
+      fakeAuthorisedActionWithoutEnrolmentCheck(userAnswers.internalId, groupId, providerId, eclRegistrationReference),
+      fakeAuthorisedActionWithEnrolmentCheck(userAnswers.internalId, groupId, providerId),
       fakeAuthorisedActionAgentsAllowed,
       fakeAuthorisedActionAssistantsAllowed,
       fakeDataRetrievalAction(userAnswers),
@@ -55,7 +60,7 @@ class NotableErrorControllerSpec extends SpecBase {
 
   "answerAreInvalid" should {
     "return OK and the correct view" in forAll { userAnswers: UserAnswers =>
-      new TestContext(userAnswers) {
+      new TestContext(userAnswers, testGroupId, testProviderId) {
         val result: Future[Result] = controller.answersAreInvalid()(fakeRequest)
 
         status(result) shouldBe OK
@@ -67,7 +72,7 @@ class NotableErrorControllerSpec extends SpecBase {
 
   "detailsDoNotMatch" should {
     "return OK and the correct view" in forAll { userAnswers: UserAnswers =>
-      new TestContext(userAnswers) {
+      new TestContext(userAnswers, testGroupId, testProviderId) {
         val result: Future[Result] = controller.detailsDoNotMatch()(fakeRequest)
 
         status(result) shouldBe OK
@@ -79,7 +84,7 @@ class NotableErrorControllerSpec extends SpecBase {
 
   "userAlreadyEnrolled" should {
     "return OK and the correct view" in forAll { (userAnswers: UserAnswers, eclRegistrationReference: String) =>
-      new TestContext(userAnswers, Some(eclRegistrationReference)) {
+      new TestContext(userAnswers, testGroupId, testProviderId, Some(eclRegistrationReference)) {
         val result: Future[Result] = controller.userAlreadyEnrolled()(fakeRequest)
 
         status(result) shouldBe OK
@@ -94,7 +99,7 @@ class NotableErrorControllerSpec extends SpecBase {
 
   "groupAlreadyEnrolled" should {
     "return OK and the correct view" in forAll { (userAnswers: UserAnswers, eclRegistrationReference: String) =>
-      new TestContext(userAnswers, Some(eclRegistrationReference)) {
+      new TestContext(userAnswers, testGroupId, testProviderId, Some(eclRegistrationReference)) {
         val result: Future[Result]    = controller.groupAlreadyEnrolled()(fakeRequest)
         val taxAndSchemeManagementUrl =
           s"${appConfig.taxAndSchemeManagement}/services/${EclEnrolment.ServiceName}/${EclEnrolment.IdentifierKey}~$eclRegistrationReference/users"
@@ -111,7 +116,7 @@ class NotableErrorControllerSpec extends SpecBase {
 
   "agentCannotRegister" should {
     "return OK and the correct view" in forAll { userAnswers: UserAnswers =>
-      new TestContext(userAnswers) {
+      new TestContext(userAnswers, testGroupId, testProviderId) {
         val result: Future[Result] = controller.agentCannotRegister()(fakeRequest)
 
         status(result) shouldBe OK
@@ -123,7 +128,7 @@ class NotableErrorControllerSpec extends SpecBase {
 
   "assistantCannotRegister" should {
     "return OK and the correct view" in forAll { userAnswers: UserAnswers =>
-      new TestContext(userAnswers) {
+      new TestContext(userAnswers, testGroupId, testProviderId) {
         val result: Future[Result] = controller.assistantCannotRegister()(fakeRequest)
 
         status(result) shouldBe OK

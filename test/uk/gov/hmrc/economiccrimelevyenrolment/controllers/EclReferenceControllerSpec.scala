@@ -19,13 +19,14 @@ package uk.gov.hmrc.economiccrimelevyenrolment.controllers
 import org.mockito.ArgumentMatchers
 import org.scalacheck.Arbitrary
 import play.api.data.Form
-import play.api.mvc.{Call, RequestHeader, Result}
+import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase
 import uk.gov.hmrc.economiccrimelevyenrolment.connectors.EnrolmentStoreProxyConnector
 import uk.gov.hmrc.economiccrimelevyenrolment.forms.EclReferenceFormProvider
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
+import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
 import uk.gov.hmrc.economiccrimelevyenrolment.navigation.EclReferencePageNavigator
 import uk.gov.hmrc.economiccrimelevyenrolment.repositories.SessionRepository
 import uk.gov.hmrc.economiccrimelevyenrolment.views.html.EclReferenceView
@@ -42,14 +43,14 @@ class EclReferenceControllerSpec extends SpecBase {
 
   val pageNavigator: EclReferencePageNavigator = new EclReferencePageNavigator(mockEnrolmentStoreProxyConnector) {
     override protected def navigateInNormalMode(userAnswers: UserAnswers)(implicit
-      request: RequestHeader
+      request: DataRequest[_]
     ): Future[Call] = Future.successful(onwardRoute)
   }
 
-  class TestContext(userAnswers: UserAnswers) {
+  class TestContext(userAnswers: UserAnswers, groupId: String, providerId: String) {
     val controller = new EclReferenceController(
       mcc,
-      fakeAuthorisedActionWithEnrolmentCheck(userAnswers.internalId),
+      fakeAuthorisedActionWithEnrolmentCheck(userAnswers.internalId, groupId, providerId),
       fakeDataRetrievalAction(userAnswers),
       mockSessionRepository,
       formProvider,
@@ -60,7 +61,7 @@ class EclReferenceControllerSpec extends SpecBase {
 
   "onPageLoad" should {
     "return OK and the correct view when no answer has already been provided" in forAll { userAnswers: UserAnswers =>
-      new TestContext(userAnswers.copy(eclReferenceNumber = None)) {
+      new TestContext(userAnswers.copy(eclReferenceNumber = None), testGroupId, testProviderId) {
         val result: Future[Result] = controller.onPageLoad()(fakeRequest)
 
         status(result) shouldBe OK
@@ -71,7 +72,7 @@ class EclReferenceControllerSpec extends SpecBase {
 
     "populate the view correctly when the question has previously been answered" in forAll {
       (userAnswers: UserAnswers, eclReferenceNumber: String) =>
-        new TestContext(userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))) {
+        new TestContext(userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber)), testGroupId, testProviderId) {
           val result: Future[Result] = controller.onPageLoad()(fakeRequest)
 
           status(result) shouldBe OK
@@ -86,7 +87,7 @@ class EclReferenceControllerSpec extends SpecBase {
       Arbitrary.arbitrary[UserAnswers],
       nonBlankString
     ) { (userAnswers: UserAnswers, eclReferenceNumber: String) =>
-      new TestContext(userAnswers) {
+      new TestContext(userAnswers, testGroupId, testProviderId) {
         val updatedAnswers: UserAnswers = userAnswers.copy(
           eclReferenceNumber = Some(eclReferenceNumber)
         )
@@ -104,7 +105,7 @@ class EclReferenceControllerSpec extends SpecBase {
     }
 
     "return a Bad Request with form errors when invalid data is submitted" in forAll { userAnswers: UserAnswers =>
-      new TestContext(userAnswers) {
+      new TestContext(userAnswers, testGroupId, testProviderId) {
         val result: Future[Result]       = controller.onSubmit()(fakeRequest.withFormUrlEncodedBody(("value", "")))
         val formWithErrors: Form[String] = form.bind(Map("value" -> ""))
 

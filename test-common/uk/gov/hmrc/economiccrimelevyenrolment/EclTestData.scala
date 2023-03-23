@@ -107,6 +107,7 @@ trait EclTestData { self: Generators =>
 
   val testInternalId: String                = alphaNumericString
   val testGroupId: String                   = alphaNumericString
+  val testProviderId: String                = alphaNumericString
   val testEclRegistrationReference: String  = alphaNumericString
   val testEclRegistrationDate: LocalDate    = localDate
   val testEclRegistrationDateString: String = testEclRegistrationDate.format(DateTimeFormatter.BASIC_ISO_DATE)

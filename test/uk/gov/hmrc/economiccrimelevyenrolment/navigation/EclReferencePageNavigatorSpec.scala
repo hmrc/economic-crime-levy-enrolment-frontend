@@ -23,6 +23,7 @@ import uk.gov.hmrc.economiccrimelevyenrolment.connectors.EnrolmentStoreProxyConn
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolment, QueryKnownFactsResponse}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
 import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, NormalMode, UserAnswers}
 
 import scala.concurrent.Future
@@ -34,7 +35,7 @@ class EclReferencePageNavigatorSpec extends SpecBase {
 
   "nextPage" should {
     "return a Call to the date of registration page in NormalMode when the ECL reference number matches" in forAll {
-      (userAnswers: UserAnswers, eclReferenceNumber: String) =>
+      (userAnswers: UserAnswers, eclReferenceNumber: String, request: DataRequest[_]) =>
         val updatedAnswers: UserAnswers               = userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
         val knownFacts: Seq[KeyValue]                 = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber))
         val expectedResponse: QueryKnownFactsResponse = QueryKnownFactsResponse(
@@ -52,12 +53,12 @@ class EclReferencePageNavigatorSpec extends SpecBase {
           .thenReturn(Future.successful(expectedResponse))
 
         await(
-          pageNavigator.nextPage(NormalMode, updatedAnswers)(fakeRequest)
+          pageNavigator.nextPage(NormalMode, updatedAnswers)(request)
         ) shouldBe routes.EclRegistrationDateController.onPageLoad()
     }
 
     "return a Call to the details are invalid page in NormalMode when the ECL reference number does not match" in forAll {
-      (userAnswers: UserAnswers, eclReferenceNumber: String) =>
+      (userAnswers: UserAnswers, eclReferenceNumber: String, request: DataRequest[_]) =>
         val updatedAnswers: UserAnswers               = userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
         val knownFacts: Seq[KeyValue]                 = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber))
         val expectedResponse: QueryKnownFactsResponse = QueryKnownFactsResponse(
@@ -75,15 +76,15 @@ class EclReferencePageNavigatorSpec extends SpecBase {
           .thenReturn(Future.successful(expectedResponse))
 
         await(
-          pageNavigator.nextPage(NormalMode, updatedAnswers)(fakeRequest)
+          pageNavigator.nextPage(NormalMode, updatedAnswers)(request)
         ) shouldBe routes.NotableErrorController.detailsDoNotMatch()
     }
 
     "return a Call to the answers are invalid page in NormalMode when no answer has been provided" in forAll {
-      userAnswers: UserAnswers =>
+      (userAnswers: UserAnswers, request: DataRequest[_]) =>
         val updatedAnswers: UserAnswers = userAnswers.copy(eclReferenceNumber = None)
 
-        await(pageNavigator.nextPage(NormalMode, updatedAnswers)(fakeRequest)) shouldBe
+        await(pageNavigator.nextPage(NormalMode, updatedAnswers)(request)) shouldBe
           routes.NotableErrorController.answersAreInvalid()
     }
   }

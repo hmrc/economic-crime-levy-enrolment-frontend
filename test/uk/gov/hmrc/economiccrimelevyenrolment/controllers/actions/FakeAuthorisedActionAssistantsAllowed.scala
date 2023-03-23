@@ -17,6 +17,7 @@
 package uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions
 
 import play.api.mvc._
+import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.AuthorisedRequest
 
 import javax.inject.Inject
@@ -28,7 +29,15 @@ class FakeAuthorisedActionAssistantsAllowed @Inject() (bodyParsers: PlayBodyPars
   override def parser: BodyParser[AnyContent] = bodyParsers.defaultBodyParser
 
   override def invokeBlock[A](request: Request[A], block: AuthorisedRequest[A] => Future[Result]): Future[Result] =
-    block(AuthorisedRequest(request, "test-internal-id", "test-group-id", None))
+    block(
+      AuthorisedRequest(
+        request,
+        "test-internal-id",
+        "test-group-id",
+        None,
+        Credentials("test-provider-id", "test-provider-type")
+      )
+    )
 
   override protected def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 

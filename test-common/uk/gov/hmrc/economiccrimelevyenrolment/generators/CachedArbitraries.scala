@@ -22,6 +22,8 @@ import uk.gov.hmrc.economiccrimelevyenrolment.EclTestData
 import uk.gov.hmrc.economiccrimelevyenrolment.models._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd._
 import com.danielasfregola.randomdatagenerator.RandomDataGenerator.derivedArbitrary
+import uk.gov.hmrc.auth.core.retrieve.Credentials
+import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
 
 object CachedArbitraries extends EclTestData with Generators {
 
@@ -33,5 +35,7 @@ object CachedArbitraries extends EclTestData with Generators {
   implicit lazy val arbTriState: Arbitrary[TriState]                                 = mkArb
   implicit lazy val arbQueryKnownFactsResponse: Arbitrary[QueryKnownFactsResponse]   = mkArb
   implicit lazy val arbAllocateEnrolmentRequest: Arbitrary[AllocateEnrolmentRequest] = mkArb
+  implicit lazy val arbCredentials: Arbitrary[Credentials]                           = mkArb
+  implicit lazy val arbDataRequest: Arbitrary[DataRequest[_]]                        = mkArb
 
 }

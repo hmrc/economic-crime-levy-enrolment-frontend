@@ -30,17 +30,17 @@ class RegistrationControllerSpec extends SpecBase {
 
   val view: RegistrationView = app.injector.instanceOf[RegistrationView]
 
-  class TestContext(userAnswers: UserAnswers) {
+  class TestContext(userAnswers: UserAnswers, groupId: String, providerId: String) {
     val controller = new RegistrationController(
       mcc,
-      fakeAuthorisedActionWithEnrolmentCheck(userAnswers.internalId),
+      fakeAuthorisedActionWithEnrolmentCheck(userAnswers.internalId, groupId, providerId),
       view
     )
   }
 
   "onPageLoad" should {
     "return OK and the correct view" in forAll { userAnswers: UserAnswers =>
-      new TestContext(userAnswers.copy(hasEclReference = Some(No))) {
+      new TestContext(userAnswers.copy(hasEclReference = Some(No)), testGroupId, testProviderId) {
         val result: Future[Result] = controller.onPageLoad()(fakeRequest)
 
         status(result) shouldBe OK

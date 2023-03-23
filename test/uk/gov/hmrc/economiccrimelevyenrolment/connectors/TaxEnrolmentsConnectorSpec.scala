@@ -33,7 +33,7 @@ class TaxEnrolmentsConnectorSpec extends SpecBase {
   "allocateEnrolment" should {
     "return unit when the http client successfully returns a http response" in forAll {
       allocateEnrolmentRequest: AllocateEnrolmentRequest =>
-        val groupId      = "TODO"
+        val groupId      = testGroupId
         val enrolmentKey = s"${EclEnrolment.ServiceName}~${EclEnrolment.IdentifierKey}~$testEclRegistrationReference"
 
         val expectedUrl = s"${appConfig.taxEnrolmentsBaseUrl}/tax-enrolments/groups/$groupId/enrolments/$enrolmentKey"
@@ -73,7 +73,7 @@ class TaxEnrolmentsConnectorSpec extends SpecBase {
 
     "throw an UpstreamErrorResponse exception when the http client fails to return a success response" in forAll {
       allocateEnrolmentRequest: AllocateEnrolmentRequest =>
-        val groupId      = "TODO"
+        val groupId      = testGroupId
         val enrolmentKey = s"${EclEnrolment.ServiceName}~${EclEnrolment.IdentifierKey}~$testEclRegistrationReference"
 
         val expectedUrl = s"${appConfig.taxEnrolmentsBaseUrl}/tax-enrolments/groups/$groupId/enrolments/$enrolmentKey"

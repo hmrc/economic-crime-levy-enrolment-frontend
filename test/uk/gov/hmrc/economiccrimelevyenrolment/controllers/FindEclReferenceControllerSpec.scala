@@ -30,17 +30,17 @@ class FindEclReferenceControllerSpec extends SpecBase {
 
   val view: FindEclReferenceView = app.injector.instanceOf[FindEclReferenceView]
 
-  class TestContext(userAnswers: UserAnswers) {
+  class TestContext(userAnswers: UserAnswers, groupId: String, providerId: String) {
     val controller = new FindEclReferenceController(
       mcc,
-      fakeAuthorisedActionWithEnrolmentCheck(userAnswers.internalId),
+      fakeAuthorisedActionWithEnrolmentCheck(userAnswers.internalId, groupId, providerId),
       view
     )
   }
 
   "onPageLoad" should {
     "return OK and the correct view" in forAll { userAnswers: UserAnswers =>
-      new TestContext(userAnswers.copy(hasEclReference = Some(Unknown))) {
+      new TestContext(userAnswers.copy(hasEclReference = Some(Unknown)), testGroupId, testProviderId) {
         val result: Future[Result] = controller.onPageLoad()(fakeRequest)
 
         status(result) shouldBe OK

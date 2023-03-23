@@ -23,6 +23,7 @@ import uk.gov.hmrc.economiccrimelevyenrolment.connectors.{EnrolmentStoreProxyCon
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolment, QueryKnownFactsResponse}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
 import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, NormalMode, UserAnswers}
 
 import java.time.LocalDate
@@ -37,7 +38,7 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
 
   "nextPage" should {
     "return a Call to the confirmation page in NormalMode when the date of registration matches" in forAll {
-      (userAnswers: UserAnswers, eclReferenceNumber: String, eclRegistrationDate: LocalDate) =>
+      (userAnswers: UserAnswers, eclReferenceNumber: String, eclRegistrationDate: LocalDate, request: DataRequest[_]) =>
         val updatedAnswers: UserAnswers = userAnswers.copy(
           eclReferenceNumber = Some(eclReferenceNumber),
           eclRegistrationDate = Some(eclRegistrationDate)
@@ -69,12 +70,12 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
           .thenReturn(Future.successful(()))
 
         await(
-          pageNavigator.nextPage(NormalMode, updatedAnswers)(fakeRequest)
+          pageNavigator.nextPage(NormalMode, updatedAnswers)(request)
         ) shouldBe routes.ConfirmationController.onPageLoad()
     }
 
     "return a Call to the details do not match page in NormalMode when the date of registration does not match" in forAll {
-      (userAnswers: UserAnswers, eclReferenceNumber: String, eclRegistrationDate: LocalDate) =>
+      (userAnswers: UserAnswers, eclReferenceNumber: String, eclRegistrationDate: LocalDate, request: DataRequest[_]) =>
         val updatedAnswers: UserAnswers = userAnswers.copy(
           eclReferenceNumber = Some(eclReferenceNumber),
           eclRegistrationDate = Some(eclRegistrationDate)
@@ -102,15 +103,15 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
           .thenReturn(Future.successful(expectedResponse))
 
         await(
-          pageNavigator.nextPage(NormalMode, updatedAnswers)(fakeRequest)
+          pageNavigator.nextPage(NormalMode, updatedAnswers)(request)
         ) shouldBe routes.NotableErrorController.detailsDoNotMatch()
     }
 
     "return a Call to the answers are invalid page in NormalMode when no answer has been provided" in forAll {
-      userAnswers: UserAnswers =>
+      (userAnswers: UserAnswers, request: DataRequest[_]) =>
         val updatedAnswers: UserAnswers = userAnswers.copy(eclRegistrationDate = None)
 
-        await(pageNavigator.nextPage(NormalMode, updatedAnswers)(fakeRequest)) shouldBe
+        await(pageNavigator.nextPage(NormalMode, updatedAnswers)(request)) shouldBe
           routes.NotableErrorController.answersAreInvalid()
     }
   }

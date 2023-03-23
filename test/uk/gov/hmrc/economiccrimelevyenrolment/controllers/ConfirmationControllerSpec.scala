@@ -30,17 +30,17 @@ class ConfirmationControllerSpec extends SpecBase {
 
   val view: ConfirmationView = app.injector.instanceOf[ConfirmationView]
 
-  class TestContext(userAnswers: UserAnswers) {
+  class TestContext(userAnswers: UserAnswers, groupId: String, providerId: String) {
     val controller = new ConfirmationController(
       mcc,
-      fakeAuthorisedActionWithEnrolmentCheck(userAnswers.internalId),
+      fakeAuthorisedActionWithEnrolmentCheck(userAnswers.internalId, groupId, providerId),
       view
     )
   }
 
   "onPageLoad" should {
     "return OK and the correct view" in forAll { userAnswers: UserAnswers =>
-      new TestContext(userAnswers.copy(hasEclReference = Some(Yes))) {
+      new TestContext(userAnswers.copy(hasEclReference = Some(Yes)), testGroupId, testProviderId) {
         val result: Future[Result] = controller.onPageLoad()(fakeRequest)
 
         status(result) shouldBe OK
