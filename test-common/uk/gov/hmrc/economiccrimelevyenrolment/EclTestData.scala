@@ -18,11 +18,14 @@ package uk.gov.hmrc.economiccrimelevyenrolment
 
 import com.danielasfregola.randomdatagenerator.RandomDataGenerator.derivedArbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
+import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.auth.core.{AffinityGroup, EnrolmentIdentifier, Enrolments, Enrolment => AuthEnrolment}
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.Generators
 import uk.gov.hmrc.economiccrimelevyenrolment.models._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolment, GroupEnrolmentsResponse}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
 
 import java.time.format.DateTimeFormatter
 import java.time.{Instant, LocalDate}
@@ -93,6 +96,18 @@ trait EclTestData { self: Generators =>
     Gen.oneOf(Seq(Organisation, Individual, Agent))
   }
 
+  implicit val arbDataRequest: Arbitrary[DataRequest[_]] = Arbitrary {
+    for {
+      userAnswers <- Arbitrary.arbitrary[UserAnswers]
+    } yield DataRequest(
+      FakeRequest(),
+      alphaNumericString,
+      alphaNumericString,
+      Credentials(alphaNumericString, alphaNumericString),
+      userAnswers
+    )
+  }
+
   private def authEnrolmentsToEnrolments(authEnrolments: Enrolments) =
     authEnrolments.enrolments
       .map(e => Enrolment(e.key, e.identifiers.map(i => KeyValue(i.key, i.value)), Seq.empty))
@@ -108,6 +123,7 @@ trait EclTestData { self: Generators =>
   val testInternalId: String                = alphaNumericString
   val testGroupId: String                   = alphaNumericString
   val testProviderId: String                = alphaNumericString
+  val testProviderType: String              = alphaNumericString
   val testEclRegistrationReference: String  = alphaNumericString
   val testEclRegistrationDate: LocalDate    = localDate
   val testEclRegistrationDateString: String = testEclRegistrationDate.format(DateTimeFormatter.BASIC_ISO_DATE)

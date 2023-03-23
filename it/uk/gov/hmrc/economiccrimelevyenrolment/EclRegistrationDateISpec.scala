@@ -48,7 +48,7 @@ class EclRegistrationDateISpec extends ISpecBase with AuthorisedBehaviour {
       stubQueryKnownFacts(testEclRegistrationReference, testEclRegistrationDateString)
       stubAllocateEnrolment(
         AllocateEnrolmentRequest(
-          userId = testInternalId,
+          userId = testProviderId,
           verifiers = Seq(KeyValue(EclEnrolment.VerifierKey, testEclRegistrationDateString))
         )
       )

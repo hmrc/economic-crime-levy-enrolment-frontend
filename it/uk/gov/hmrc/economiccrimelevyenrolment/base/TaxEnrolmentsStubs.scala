@@ -9,7 +9,7 @@ import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.AllocateEnrolmentReque
 trait TaxEnrolmentsStubs { self: WireMockStubs =>
 
   def stubAllocateEnrolment(allocateEnrolmentRequest: AllocateEnrolmentRequest): StubMapping = {
-    val groupId = "TODO"
+    val groupId = s"$testGroupId"
     val enrolmentKey = s"HMRC-ECL-ORG~EclRegistrationReference~$testEclRegistrationReference"
 
     stub(

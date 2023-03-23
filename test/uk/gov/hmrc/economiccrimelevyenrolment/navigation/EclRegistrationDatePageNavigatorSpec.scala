@@ -65,7 +65,7 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
         when(mockEnrolmentStoreProxyConnector.queryKnownFacts(ArgumentMatchers.eq(knownFacts))(any()))
           .thenReturn(Future.successful(expectedResponse))
 
-        // TODO:
+        // TODO: Do we need argument matchers on all explicit parameters?
         when(mockTaxEnrolmentsConnector.allocateEnrolment(any(), ArgumentMatchers.eq(eclReferenceNumber), any())(any()))
           .thenReturn(Future.successful(()))
 
