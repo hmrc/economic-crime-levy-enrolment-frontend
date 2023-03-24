@@ -49,6 +49,7 @@ hasEclReference.p1 = You will need to register for the Economic Crime Levy (ECL)
 hasEclReference.p2 = If you have forgotten your ECL reference number, you will need to contact us to recover it.
 hasEclReference.Yes = Yes
 hasEclReference.No = No
+hasEclReference.divider = or
 hasEclReference.Unknown = I do not know my ECL reference number
 hasEclReference.error.required = Select if you have an ECL reference number
 

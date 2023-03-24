@@ -39,7 +39,7 @@ object TriState {
       case (value, index) if value == Unknown && divider =>
         Seq(
           RadioItem(
-            divider = Some("or")
+            divider = Some(messages(s"$contextKey.divider"))
           ),
           RadioItem(
             content = Text(messages(s"$contextKey.${value.toString}")),
