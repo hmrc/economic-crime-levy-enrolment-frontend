@@ -29,7 +29,6 @@ object CachedArbitraries extends EclTestData with Generators {
   private def mkArb[T](implicit mkArb: MkArbitrary[T]): Arbitrary[T] = MkArbitrary[T].arbitrary
 
   implicit lazy val arbGroupEnrolmentsResponse: Arbitrary[GroupEnrolmentsResponse]   = mkArb
-  implicit lazy val arbMode: Arbitrary[Mode]                                         = mkArb
   implicit lazy val arbUserAnswers: Arbitrary[UserAnswers]                           = mkArb
   implicit lazy val arbTriState: Arbitrary[TriState]                                 = mkArb
   implicit lazy val arbQueryKnownFactsResponse: Arbitrary[QueryKnownFactsResponse]   = mkArb

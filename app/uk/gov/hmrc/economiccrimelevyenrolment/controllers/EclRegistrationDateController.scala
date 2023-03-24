@@ -22,7 +22,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions.{AuthorisedActionWithEnrolmentCheck, DataRetrievalAction}
 import uk.gov.hmrc.economiccrimelevyenrolment.forms.EclRegistrationDateFormProvider
 import uk.gov.hmrc.economiccrimelevyenrolment.forms.FormImplicits.FormOps
-import uk.gov.hmrc.economiccrimelevyenrolment.models.NormalMode
 import uk.gov.hmrc.economiccrimelevyenrolment.navigation.EclRegistrationDatePageNavigator
 import uk.gov.hmrc.economiccrimelevyenrolment.repositories.SessionRepository
 import uk.gov.hmrc.economiccrimelevyenrolment.views.html.EclRegistrationDateView
@@ -60,7 +59,7 @@ class EclRegistrationDateController @Inject() (
           val updatedAnswers = request.userAnswers.copy(eclRegistrationDate = Some(eclRegistrationDate))
           repository
             .upsert(updatedAnswers)
-            .flatMap(_ => pageNavigator.nextPage(NormalMode, updatedAnswers).map(Redirect))
+            .flatMap(_ => pageNavigator.nextPage(updatedAnswers).map(Redirect))
         }
       )
   }

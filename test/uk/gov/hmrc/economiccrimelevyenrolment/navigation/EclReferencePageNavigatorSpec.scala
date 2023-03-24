@@ -24,7 +24,7 @@ import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolment, QueryKnownFactsResponse}
 import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
-import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, NormalMode, UserAnswers}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, UserAnswers}
 
 import scala.concurrent.Future
 
@@ -53,7 +53,7 @@ class EclReferencePageNavigatorSpec extends SpecBase {
           .thenReturn(Future.successful(expectedResponse))
 
         await(
-          pageNavigator.nextPage(NormalMode, updatedAnswers)(request)
+          pageNavigator.nextPage(updatedAnswers)(request)
         ) shouldBe routes.EclRegistrationDateController.onPageLoad()
     }
 
@@ -76,7 +76,7 @@ class EclReferencePageNavigatorSpec extends SpecBase {
           .thenReturn(Future.successful(expectedResponse))
 
         await(
-          pageNavigator.nextPage(NormalMode, updatedAnswers)(request)
+          pageNavigator.nextPage(updatedAnswers)(request)
         ) shouldBe routes.NotableErrorController.detailsDoNotMatch()
     }
 
@@ -84,7 +84,7 @@ class EclReferencePageNavigatorSpec extends SpecBase {
       (userAnswers: UserAnswers, request: DataRequest[_]) =>
         val updatedAnswers: UserAnswers = userAnswers.copy(eclReferenceNumber = None)
 
-        await(pageNavigator.nextPage(NormalMode, updatedAnswers)(request)) shouldBe
+        await(pageNavigator.nextPage(updatedAnswers)(request)) shouldBe
           routes.NotableErrorController.answersAreInvalid()
     }
   }

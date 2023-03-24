@@ -46,9 +46,8 @@ class EclRegistrationDateControllerSpec extends SpecBase {
     mockEnrolmentStoreProxyConnector,
     mockTaxEnrolmentsConnector
   ) {
-    override protected def navigateInNormalMode(userAnswers: UserAnswers)(implicit
-      request: DataRequest[_]
-    ): Future[Call] = Future.successful(onwardRoute)
+    override protected def navigate(userAnswers: UserAnswers)(implicit request: DataRequest[_]): Future[Call] =
+      Future.successful(onwardRoute)
   }
 
   class TestContext(userAnswers: UserAnswers, groupId: String, providerId: String) {

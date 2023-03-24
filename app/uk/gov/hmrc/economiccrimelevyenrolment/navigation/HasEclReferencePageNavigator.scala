@@ -23,14 +23,12 @@ import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
 
 class HasEclReferencePageNavigator extends PageNavigator {
 
-  override protected def navigateInNormalMode(userAnswers: UserAnswers): Call =
+  override protected def navigate(userAnswers: UserAnswers): Call =
     userAnswers.hasEclReference match {
       case Some(Yes)     => routes.EclReferenceController.onPageLoad()
       case Some(No)      => routes.RegistrationController.onPageLoad()
       case Some(Unknown) => routes.FindEclReferenceController.onPageLoad()
       case _             => routes.NotableErrorController.answersAreInvalid()
     }
-
-  override protected def navigateInCheckMode(userAnswers: UserAnswers): Call = ???
 
 }

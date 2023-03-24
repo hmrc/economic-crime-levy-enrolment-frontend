@@ -32,16 +32,11 @@ class EclReferencePageNavigator @Inject() (enrolmentStoreProxyConnector: Enrolme
 ) extends AsyncPageNavigator
     with FrontendHeaderCarrierProvider {
 
-  override protected def navigateInNormalMode(
-    userAnswers: UserAnswers
-  )(implicit request: DataRequest[_]): Future[Call] =
+  override protected def navigate(userAnswers: UserAnswers)(implicit request: DataRequest[_]): Future[Call] =
     userAnswers.eclReferenceNumber match {
       case Some(eclReferenceNumber) => verifyEclReferenceNumber(eclReferenceNumber)
       case _                        => Future.successful(routes.NotableErrorController.answersAreInvalid())
     }
-
-  override protected def navigateInCheckMode(userAnswers: UserAnswers)(implicit request: DataRequest[_]): Future[Call] =
-    ???
 
   private def verifyEclReferenceNumber(eclReferenceNumber: String)(implicit request: DataRequest[_]): Future[Call] = {
     val knownFacts = Seq(

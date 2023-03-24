@@ -24,7 +24,7 @@ import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolment, QueryKnownFactsResponse}
 import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
-import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, NormalMode, UserAnswers}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, UserAnswers}
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -65,12 +65,11 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
         when(mockEnrolmentStoreProxyConnector.queryKnownFacts(ArgumentMatchers.eq(knownFacts))(any()))
           .thenReturn(Future.successful(expectedResponse))
 
-        // TODO: Do we need argument matchers on all explicit parameters?
         when(mockTaxEnrolmentsConnector.allocateEnrolment(any(), ArgumentMatchers.eq(eclReferenceNumber), any())(any()))
           .thenReturn(Future.successful(()))
 
         await(
-          pageNavigator.nextPage(NormalMode, updatedAnswers)(request)
+          pageNavigator.nextPage(updatedAnswers)(request)
         ) shouldBe routes.ConfirmationController.onPageLoad()
     }
 
@@ -103,7 +102,7 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
           .thenReturn(Future.successful(expectedResponse))
 
         await(
-          pageNavigator.nextPage(NormalMode, updatedAnswers)(request)
+          pageNavigator.nextPage(updatedAnswers)(request)
         ) shouldBe routes.NotableErrorController.detailsDoNotMatch()
     }
 
@@ -111,7 +110,7 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
       (userAnswers: UserAnswers, request: DataRequest[_]) =>
         val updatedAnswers: UserAnswers = userAnswers.copy(eclRegistrationDate = None)
 
-        await(pageNavigator.nextPage(NormalMode, updatedAnswers)(request)) shouldBe
+        await(pageNavigator.nextPage(updatedAnswers)(request)) shouldBe
           routes.NotableErrorController.answersAreInvalid()
     }
   }

@@ -42,9 +42,8 @@ class EclReferenceControllerSpec extends SpecBase {
   val mockEnrolmentStoreProxyConnector: EnrolmentStoreProxyConnector = mock[EnrolmentStoreProxyConnector]
 
   val pageNavigator: EclReferencePageNavigator = new EclReferencePageNavigator(mockEnrolmentStoreProxyConnector) {
-    override protected def navigateInNormalMode(userAnswers: UserAnswers)(implicit
-      request: DataRequest[_]
-    ): Future[Call] = Future.successful(onwardRoute)
+    override protected def navigate(userAnswers: UserAnswers)(implicit request: DataRequest[_]): Future[Call] =
+      Future.successful(onwardRoute)
   }
 
   class TestContext(userAnswers: UserAnswers, groupId: String, providerId: String) {

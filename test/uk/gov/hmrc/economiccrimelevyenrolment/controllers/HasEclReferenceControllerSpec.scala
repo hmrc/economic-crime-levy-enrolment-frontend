@@ -36,7 +36,7 @@ class HasEclReferenceControllerSpec extends SpecBase {
   val formProvider: HasEclReferenceFormProvider   = new HasEclReferenceFormProvider()
   val form: Form[TriState]                        = formProvider()
   val pageNavigator: HasEclReferencePageNavigator = new HasEclReferencePageNavigator() {
-    override protected def navigateInNormalMode(userAnswers: UserAnswers): Call = onwardRoute
+    override protected def navigate(userAnswers: UserAnswers): Call = onwardRoute
   }
   val mockSessionRepository: SessionRepository    = mock[SessionRepository]
 

@@ -20,7 +20,7 @@ import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.TriState._
-import uk.gov.hmrc.economiccrimelevyenrolment.models.{NormalMode, UserAnswers}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
 
 class HasEclReferencePageNavigatorSpec extends SpecBase {
 
@@ -31,28 +31,28 @@ class HasEclReferencePageNavigatorSpec extends SpecBase {
       userAnswers: UserAnswers =>
         val updatedAnswers: UserAnswers = userAnswers.copy(hasEclReference = Some(Yes))
 
-        pageNavigator.nextPage(NormalMode, updatedAnswers) shouldBe routes.EclReferenceController.onPageLoad()
+        pageNavigator.nextPage(updatedAnswers) shouldBe routes.EclReferenceController.onPageLoad()
     }
 
     "return a Call to the you need to register for ECL page in NormalMode when the answer is 'No'" in forAll {
       userAnswers: UserAnswers =>
         val updatedAnswers: UserAnswers = userAnswers.copy(hasEclReference = Some(No))
 
-        pageNavigator.nextPage(NormalMode, updatedAnswers) shouldBe routes.RegistrationController.onPageLoad()
+        pageNavigator.nextPage(updatedAnswers) shouldBe routes.RegistrationController.onPageLoad()
     }
 
     "return a Call to the find your ECL reference page in NormalMode when the answer is 'Unknown'" in forAll {
       userAnswers: UserAnswers =>
         val updatedAnswers: UserAnswers = userAnswers.copy(hasEclReference = Some(Unknown))
 
-        pageNavigator.nextPage(NormalMode, updatedAnswers) shouldBe routes.FindEclReferenceController.onPageLoad()
+        pageNavigator.nextPage(updatedAnswers) shouldBe routes.FindEclReferenceController.onPageLoad()
     }
 
     "return a Call to the answers are invalid page in NormalMode when no answer has been provided" in forAll {
       userAnswers: UserAnswers =>
         val updatedAnswers: UserAnswers = userAnswers.copy(hasEclReference = None)
 
-        pageNavigator.nextPage(NormalMode, updatedAnswers) shouldBe routes.NotableErrorController.answersAreInvalid()
+        pageNavigator.nextPage(updatedAnswers) shouldBe routes.NotableErrorController.answersAreInvalid()
     }
   }
 

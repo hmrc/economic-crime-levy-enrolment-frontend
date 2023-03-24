@@ -37,17 +37,12 @@ class EclRegistrationDatePageNavigator @Inject() (
 ) extends AsyncPageNavigator
     with FrontendHeaderCarrierProvider {
 
-  override protected def navigateInNormalMode(
-    userAnswers: UserAnswers
-  )(implicit request: DataRequest[_]): Future[Call] =
+  override protected def navigate(userAnswers: UserAnswers)(implicit request: DataRequest[_]): Future[Call] =
     (userAnswers.eclReferenceNumber, userAnswers.eclRegistrationDate) match {
       case (Some(eclReferenceNumber), Some(eclRegistrationDate)) =>
         verifyEclRegistrationDate(eclReferenceNumber, eclRegistrationDate)
       case _                                                     => Future.successful(routes.NotableErrorController.answersAreInvalid())
     }
-
-  override protected def navigateInCheckMode(userAnswers: UserAnswers)(implicit request: DataRequest[_]): Future[Call] =
-    ???
 
   private def verifyEclRegistrationDate(eclReferenceNumber: String, eclRegistrationDate: LocalDate)(implicit
     request: DataRequest[_]

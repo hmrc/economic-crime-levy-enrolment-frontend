@@ -22,7 +22,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions.{AuthorisedActionWithEnrolmentCheck, DataRetrievalAction}
 import uk.gov.hmrc.economiccrimelevyenrolment.forms.FormImplicits.FormOps
 import uk.gov.hmrc.economiccrimelevyenrolment.forms.EclReferenceFormProvider
-import uk.gov.hmrc.economiccrimelevyenrolment.models.NormalMode
 import uk.gov.hmrc.economiccrimelevyenrolment.navigation.EclReferencePageNavigator
 import uk.gov.hmrc.economiccrimelevyenrolment.repositories.SessionRepository
 import uk.gov.hmrc.economiccrimelevyenrolment.views.html.EclReferenceView
@@ -59,7 +58,7 @@ class EclReferenceController @Inject() (
           val updatedAnswers = request.userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
           repository
             .upsert(updatedAnswers)
-            .flatMap(_ => pageNavigator.nextPage(NormalMode, updatedAnswers).map(Redirect))
+            .flatMap(_ => pageNavigator.nextPage(updatedAnswers).map(Redirect))
         }
       )
   }
