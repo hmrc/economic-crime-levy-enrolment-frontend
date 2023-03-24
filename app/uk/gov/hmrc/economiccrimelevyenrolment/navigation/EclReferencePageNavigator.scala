@@ -43,11 +43,13 @@ class EclReferencePageNavigator @Inject() (enrolmentStoreProxyConnector: Enrolme
       KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber)
     )
 
-    enrolmentStoreProxyConnector.queryKnownFacts(knownFacts).map { response =>
-      response.enrolments.find(_.identifiers.exists(_.value == eclReferenceNumber)) match {
-        case Some(_) => routes.EclRegistrationDateController.onPageLoad()
-        case _       => routes.NotableErrorController.detailsDoNotMatch()
-      }
+    enrolmentStoreProxyConnector.queryKnownFacts(knownFacts).map {
+      case Some(response) =>
+        response.enrolments.find(_.identifiers.exists(_.value == eclReferenceNumber)) match {
+          case Some(_) => routes.EclRegistrationDateController.onPageLoad()
+          case _       => routes.NotableErrorController.detailsDoNotMatch()
+        }
+      case _              => routes.NotableErrorController.detailsDoNotMatch()
     }
   }
 

@@ -37,7 +37,7 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
   val pageNavigator                                                  = new EclRegistrationDatePageNavigator(mockEnrolmentStoreProxyConnector, mockTaxEnrolmentsConnector)
 
   "nextPage" should {
-    "return a Call to the confirmation page in NormalMode when the date of registration matches" in forAll {
+    "return a Call to the confirmation page when the date of registration matches" in forAll {
       (userAnswers: UserAnswers, eclReferenceNumber: String, eclRegistrationDate: LocalDate, request: DataRequest[_]) =>
         val updatedAnswers: UserAnswers = userAnswers.copy(
           eclReferenceNumber = Some(eclReferenceNumber),
@@ -63,7 +63,7 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
         )
 
         when(mockEnrolmentStoreProxyConnector.queryKnownFacts(ArgumentMatchers.eq(knownFacts))(any()))
-          .thenReturn(Future.successful(expectedResponse))
+          .thenReturn(Future.successful(Some(expectedResponse)))
 
         when(mockTaxEnrolmentsConnector.allocateEnrolment(any(), ArgumentMatchers.eq(eclReferenceNumber), any())(any()))
           .thenReturn(Future.successful(()))
@@ -73,7 +73,7 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
         ) shouldBe routes.ConfirmationController.onPageLoad()
     }
 
-    "return a Call to the details do not match page in NormalMode when the date of registration does not match" in forAll {
+    "return a Call to the details do not match page when the date of registration does not match" in forAll {
       (userAnswers: UserAnswers, eclReferenceNumber: String, eclRegistrationDate: LocalDate, request: DataRequest[_]) =>
         val updatedAnswers: UserAnswers = userAnswers.copy(
           eclReferenceNumber = Some(eclReferenceNumber),
@@ -99,14 +99,36 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
         )
 
         when(mockEnrolmentStoreProxyConnector.queryKnownFacts(ArgumentMatchers.eq(knownFacts))(any()))
-          .thenReturn(Future.successful(expectedResponse))
+          .thenReturn(Future.successful(Some(expectedResponse)))
 
         await(
           pageNavigator.nextPage(updatedAnswers)(request)
         ) shouldBe routes.NotableErrorController.detailsDoNotMatch()
     }
 
-    "return a Call to the answers are invalid page in NormalMode when no answer has been provided" in forAll {
+    "return a Call to the details do not match page when the API does not return any results" in forAll {
+      (userAnswers: UserAnswers, eclReferenceNumber: String, eclRegistrationDate: LocalDate, request: DataRequest[_]) =>
+        val updatedAnswers: UserAnswers = userAnswers.copy(
+          eclReferenceNumber = Some(eclReferenceNumber),
+          eclRegistrationDate = Some(eclRegistrationDate)
+        )
+
+        val eclRegistrationDateString: String = eclRegistrationDate.format(DateTimeFormatter.BASIC_ISO_DATE)
+
+        val knownFacts: Seq[KeyValue] = Seq(
+          KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber),
+          KeyValue(key = EclEnrolment.VerifierKey, value = eclRegistrationDateString)
+        )
+
+        when(mockEnrolmentStoreProxyConnector.queryKnownFacts(ArgumentMatchers.eq(knownFacts))(any()))
+          .thenReturn(Future.successful(None))
+
+        await(
+          pageNavigator.nextPage(updatedAnswers)(request)
+        ) shouldBe routes.NotableErrorController.detailsDoNotMatch()
+    }
+
+    "return a Call to the answers are invalid page when no answer has been provided" in forAll {
       (userAnswers: UserAnswers, request: DataRequest[_]) =>
         val updatedAnswers: UserAnswers = userAnswers.copy(eclRegistrationDate = None)
 

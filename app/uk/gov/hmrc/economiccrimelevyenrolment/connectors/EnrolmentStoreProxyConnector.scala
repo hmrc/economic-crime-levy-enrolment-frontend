@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait EnrolmentStoreProxyConnector {
   def getEnrolmentsForGroup(groupId: String)(implicit hc: HeaderCarrier): Future[Option[GroupEnrolmentsResponse]]
-  def queryKnownFacts(knownFacts: Seq[KeyValue])(implicit hc: HeaderCarrier): Future[QueryKnownFactsResponse]
+  def queryKnownFacts(knownFacts: Seq[KeyValue])(implicit hc: HeaderCarrier): Future[Option[QueryKnownFactsResponse]]
 }
 
 class EnrolmentStoreProxyConnectorImpl @Inject() (appConfig: AppConfig, httpClient: HttpClient)(implicit
@@ -42,8 +42,8 @@ class EnrolmentStoreProxyConnectorImpl @Inject() (appConfig: AppConfig, httpClie
       s"$enrolmentStoreUrl/groups/$groupId/enrolments"
     )(readOptionOfNotFoundOrNoContent[GroupEnrolmentsResponse], hc, ec)
 
-  def queryKnownFacts(knownFacts: Seq[KeyValue])(implicit hc: HeaderCarrier): Future[QueryKnownFactsResponse] =
-    httpClient.POST[QueryKnownFactsRequest, QueryKnownFactsResponse](
+  def queryKnownFacts(knownFacts: Seq[KeyValue])(implicit hc: HeaderCarrier): Future[Option[QueryKnownFactsResponse]] =
+    httpClient.POST[QueryKnownFactsRequest, Option[QueryKnownFactsResponse]](
       s"$enrolmentStoreUrl/enrolments",
       QueryKnownFactsRequest(
         EclEnrolment.ServiceName,

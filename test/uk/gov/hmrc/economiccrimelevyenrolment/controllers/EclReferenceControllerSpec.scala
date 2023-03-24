@@ -84,7 +84,7 @@ class EclReferenceControllerSpec extends SpecBase {
   "onSubmit" should {
     "save the selected answer then redirect to the next page" in forAll(
       Arbitrary.arbitrary[UserAnswers],
-      nonBlankString
+      eclRegistrationReference
     ) { (userAnswers: UserAnswers, eclReferenceNumber: String) =>
       new TestContext(userAnswers, testGroupId, testProviderId) {
         val updatedAnswers: UserAnswers = userAnswers.copy(

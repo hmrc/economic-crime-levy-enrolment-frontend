@@ -34,7 +34,7 @@ class EclReferencePageNavigatorSpec extends SpecBase {
   val pageNavigator                                                  = new EclReferencePageNavigator(mockEnrolmentStoreProxyConnector)
 
   "nextPage" should {
-    "return a Call to the date of registration page in NormalMode when the ECL reference number matches" in forAll {
+    "return a Call to the date of registration page when the ECL reference number matches" in forAll {
       (userAnswers: UserAnswers, eclReferenceNumber: String, request: DataRequest[_]) =>
         val updatedAnswers: UserAnswers               = userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
         val knownFacts: Seq[KeyValue]                 = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber))
@@ -50,14 +50,14 @@ class EclReferencePageNavigatorSpec extends SpecBase {
         )
 
         when(mockEnrolmentStoreProxyConnector.queryKnownFacts(ArgumentMatchers.eq(knownFacts))(any()))
-          .thenReturn(Future.successful(expectedResponse))
+          .thenReturn(Future.successful(Some(expectedResponse)))
 
         await(
           pageNavigator.nextPage(updatedAnswers)(request)
         ) shouldBe routes.EclRegistrationDateController.onPageLoad()
     }
 
-    "return a Call to the details are invalid page in NormalMode when the ECL reference number does not match" in forAll {
+    "return a Call to the details are invalid page when the ECL reference number does not match" in forAll {
       (userAnswers: UserAnswers, eclReferenceNumber: String, request: DataRequest[_]) =>
         val updatedAnswers: UserAnswers               = userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
         val knownFacts: Seq[KeyValue]                 = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber))
@@ -73,14 +73,27 @@ class EclReferencePageNavigatorSpec extends SpecBase {
         )
 
         when(mockEnrolmentStoreProxyConnector.queryKnownFacts(ArgumentMatchers.eq(knownFacts))(any()))
-          .thenReturn(Future.successful(expectedResponse))
+          .thenReturn(Future.successful(Some(expectedResponse)))
 
         await(
           pageNavigator.nextPage(updatedAnswers)(request)
         ) shouldBe routes.NotableErrorController.detailsDoNotMatch()
     }
 
-    "return a Call to the answers are invalid page in NormalMode when no answer has been provided" in forAll {
+    "return a Call to the details are invalid page when the API does not return any results" in forAll {
+      (userAnswers: UserAnswers, eclReferenceNumber: String, request: DataRequest[_]) =>
+        val updatedAnswers: UserAnswers = userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
+        val knownFacts: Seq[KeyValue]   = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber))
+
+        when(mockEnrolmentStoreProxyConnector.queryKnownFacts(ArgumentMatchers.eq(knownFacts))(any()))
+          .thenReturn(Future.successful(None))
+
+        await(
+          pageNavigator.nextPage(updatedAnswers)(request)
+        ) shouldBe routes.NotableErrorController.detailsDoNotMatch()
+    }
+
+    "return a Call to the answers are invalid page when no answer has been provided" in forAll {
       (userAnswers: UserAnswers, request: DataRequest[_]) =>
         val updatedAnswers: UserAnswers = userAnswers.copy(eclReferenceNumber = None)
 

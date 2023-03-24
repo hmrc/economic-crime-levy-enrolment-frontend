@@ -45,15 +45,17 @@ class StubEnrolmentStoreProxyConnector @Inject() (appConfig: AppConfig) extends 
       Future.successful(None)
     }
 
-  def queryKnownFacts(knownFacts: Seq[KeyValue])(implicit hc: HeaderCarrier): Future[QueryKnownFactsResponse] =
+  def queryKnownFacts(knownFacts: Seq[KeyValue])(implicit hc: HeaderCarrier): Future[Option[QueryKnownFactsResponse]] =
     Future.successful(
-      QueryKnownFactsResponse(
-        service = EclEnrolment.ServiceName,
-        enrolments = Seq(
-          Enrolment(
-            service = EclEnrolment.ServiceName,
-            identifiers = Seq(KeyValue(EclEnrolment.IdentifierKey, "XMECL0000000001")),
-            verifiers = Seq(KeyValue(EclEnrolment.VerifierKey, "20230901"))
+      Some(
+        QueryKnownFactsResponse(
+          service = EclEnrolment.ServiceName,
+          enrolments = Seq(
+            Enrolment(
+              service = EclEnrolment.ServiceName,
+              identifiers = Seq(KeyValue(EclEnrolment.IdentifierKey, "XMECL0000000001")),
+              verifiers = Seq(KeyValue(EclEnrolment.VerifierKey, "20230901"))
+            )
           )
         )
       )

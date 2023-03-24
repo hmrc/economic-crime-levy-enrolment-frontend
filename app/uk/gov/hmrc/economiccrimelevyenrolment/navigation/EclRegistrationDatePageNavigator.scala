@@ -54,13 +54,15 @@ class EclRegistrationDatePageNavigator @Inject() (
       KeyValue(key = EclEnrolment.VerifierKey, value = eclRegistrationDateString)
     )
 
-    enrolmentStoreProxyConnector.queryKnownFacts(knownFacts).flatMap { response =>
-      response.enrolments.find(_.verifiers.exists(_.value == eclRegistrationDateString)) match {
-        case Some(_) =>
-          allocateEnrolment(eclReferenceNumber, eclRegistrationDateString)
-            .map(_ => routes.ConfirmationController.onPageLoad())
-        case _       => Future.successful(routes.NotableErrorController.detailsDoNotMatch())
-      }
+    enrolmentStoreProxyConnector.queryKnownFacts(knownFacts).flatMap {
+      case Some(response) =>
+        response.enrolments.find(_.verifiers.exists(_.value == eclRegistrationDateString)) match {
+          case Some(_) =>
+            allocateEnrolment(eclReferenceNumber, eclRegistrationDateString)
+              .map(_ => routes.ConfirmationController.onPageLoad())
+          case _       => Future.successful(routes.NotableErrorController.detailsDoNotMatch())
+        }
+      case _              => Future.successful(routes.NotableErrorController.detailsDoNotMatch())
     }
   }
 

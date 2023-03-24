@@ -123,7 +123,7 @@ trait EclTestData { self: Generators =>
   val testGroupId: String                   = alphaNumericString
   val testProviderId: String                = alphaNumericString
   val testProviderType: String              = alphaNumericString
-  val testEclRegistrationReference: String  = alphaNumericString
+  val testEclRegistrationReference: String  = eclRegistrationReference.sample.get
   val testEclRegistrationDate: LocalDate    = localDate
   val testEclRegistrationDateString: String = testEclRegistrationDate.format(DateTimeFormatter.BASIC_ISO_DATE)
 

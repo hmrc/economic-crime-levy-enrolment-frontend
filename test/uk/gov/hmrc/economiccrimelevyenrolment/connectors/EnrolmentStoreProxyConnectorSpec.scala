@@ -66,7 +66,7 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase {
       (
         eclRegistrationReference: String,
         eclRegistrationDate: LocalDate,
-        queryKnownFactsResponse: QueryKnownFactsResponse
+        queryKnownFactsResponse: Option[QueryKnownFactsResponse]
       ) =>
         val expectedUrl                    = s"$enrolmentStoreUrl/enrolments"
         val expectedKnownFacts             = Seq(
@@ -80,7 +80,7 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase {
 
         when(
           mockHttpClient
-            .POST[QueryKnownFactsRequest, QueryKnownFactsResponse](
+            .POST[QueryKnownFactsRequest, Option[QueryKnownFactsResponse]](
               ArgumentMatchers.eq(expectedUrl),
               ArgumentMatchers.eq(expectedQueryKnownFactsRequest),
               any()
@@ -98,7 +98,7 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase {
         result shouldBe queryKnownFactsResponse
 
         verify(mockHttpClient, times(1))
-          .POST[QueryKnownFactsRequest, QueryKnownFactsResponse](
+          .POST[QueryKnownFactsRequest, Option[QueryKnownFactsResponse]](
             ArgumentMatchers.eq(expectedUrl),
             ArgumentMatchers.eq(expectedQueryKnownFactsRequest),
             any()
