@@ -22,6 +22,7 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.auth.core.{AffinityGroup, EnrolmentIdentifier, Enrolments, Enrolment => AuthEnrolment}
+import uk.gov.hmrc.economiccrimelevyenrolment.forms.mappings.MinMaxValues
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.Generators
 import uk.gov.hmrc.economiccrimelevyenrolment.models._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolment, GroupEnrolmentsResponse}
@@ -115,10 +116,8 @@ trait EclTestData { self: Generators =>
 
   def alphaNumericString: String = Gen.alphaNumStr.retryUntil(_.nonEmpty).sample.get
 
-  val minDate: LocalDate = LocalDate.of(1970, 1, 1)
-  val maxDate: LocalDate = LocalDate.of(2999, 12, 31)
-
-  def localDate: LocalDate = datesBetween(minDate, maxDate).sample.get
+  def localDate: LocalDate =
+    datesBetween(MinMaxValues.MinEclRegistrationDate, MinMaxValues.maxEclRegistrationDate).sample.get
 
   val testInternalId: String                = alphaNumericString
   val testGroupId: String                   = alphaNumericString

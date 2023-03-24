@@ -17,7 +17,7 @@
 package uk.gov.hmrc.economiccrimelevyenrolment.forms
 
 import play.api.data.Form
-import uk.gov.hmrc.economiccrimelevyenrolment.forms.mappings.Mappings
+import uk.gov.hmrc.economiccrimelevyenrolment.forms.mappings.{Mappings, MinMaxValues}
 
 import java.time.LocalDate
 import javax.inject.Inject
@@ -25,6 +25,23 @@ import javax.inject.Inject
 class EclRegistrationDateFormProvider @Inject() extends Mappings {
 
   def apply(): Form[LocalDate] =
-    Form("value" -> localDate("error.date.invalid", "error.date.required"))
+    Form(
+      "value" -> localDate(
+        "error.date.invalid",
+        "error.date.required",
+        Some(
+          minDate(
+            MinMaxValues.MinEclRegistrationDate,
+            "eclRegistrationDate.error.notWithinRange"
+          )
+        ),
+        Some(
+          maxDate(
+            MinMaxValues.maxEclRegistrationDate,
+            "eclRegistrationDate.error.notWithinRange"
+          )
+        )
+      )
+    )
 
 }

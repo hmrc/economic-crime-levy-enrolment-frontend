@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.economiccrimelevyenrolment.forms
 
+import play.api.data.FormError
 import uk.gov.hmrc.economiccrimelevyenrolment.forms.behaviours.DateBehaviours
+import uk.gov.hmrc.economiccrimelevyenrolment.forms.mappings.MinMaxValues
 
 class EclRegistrationDateFormProviderSpec extends DateBehaviours {
   val form = new EclRegistrationDateFormProvider()()
@@ -28,13 +30,30 @@ class EclRegistrationDateFormProviderSpec extends DateBehaviours {
     behave like dateField(
       form,
       fieldName,
-      datesBetween(minDate, maxDate)
+      datesBetween(MinMaxValues.MinEclRegistrationDate, MinMaxValues.maxEclRegistrationDate)
     )
 
     behave like mandatoryDateField(
       form,
       s"$fieldName.day",
       requiredKey
+    )
+
+    behave like dateFieldWithMin(
+      form,
+      fieldName,
+      MinMaxValues.MinEclRegistrationDate,
+      FormError(
+        s"$fieldName.day",
+        "eclRegistrationDate.error.notWithinRange"
+      )
+    )
+
+    behave like dateFieldWithMax(
+      form,
+      fieldName,
+      MinMaxValues.maxEclRegistrationDate,
+      FormError(s"$fieldName.day", "eclRegistrationDate.error.notWithinRange")
     )
   }
 }

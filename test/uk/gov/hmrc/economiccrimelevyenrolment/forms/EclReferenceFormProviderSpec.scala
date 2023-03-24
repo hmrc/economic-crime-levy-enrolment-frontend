@@ -16,18 +16,27 @@
 
 package uk.gov.hmrc.economiccrimelevyenrolment.forms
 
-import play.api.data.FormError
-import uk.gov.hmrc.economiccrimelevyenrolment.forms.behaviours.OptionFieldBehaviours
+import play.api.data.{Form, FormError}
+import uk.gov.hmrc.economiccrimelevyenrolment.forms.behaviours.StringFieldBehaviours
+import uk.gov.hmrc.economiccrimelevyenrolment.forms.mappings.Regex
 
-class EclReferenceFormProviderSpec extends OptionFieldBehaviours {
+class EclReferenceFormProviderSpec extends StringFieldBehaviours {
   val form = new EclReferenceFormProvider()()
 
   "value" should {
     val fieldName   = "value"
     val requiredKey = "eclReference.error.required"
 
-    behave like fieldThatBindsValidData(form, fieldName, nonBlankString)
+    behave like fieldThatBindsValidData(form, fieldName, eclRegistrationReference)
 
     behave like mandatoryField(form, fieldName, FormError(fieldName, requiredKey))
+
+    "fail to bind an invalid registration reference" in forAll(
+      nonBlankString.retryUntil(!_.matches(Regex.EclRegistrationReferenceRegex))
+    ) { invalidRegistrationReference: String =>
+      val result: Form[String] = form.bind(Map("value" -> invalidRegistrationReference))
+
+      result.errors.map(_.message) should contain("eclReference.error.invalid")
+    }
   }
 }

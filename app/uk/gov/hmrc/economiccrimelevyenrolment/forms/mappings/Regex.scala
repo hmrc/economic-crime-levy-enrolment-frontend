@@ -14,20 +14,10 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.economiccrimelevyenrolment.forms
+package uk.gov.hmrc.economiccrimelevyenrolment.forms.mappings
 
-import play.api.data.Form
-import uk.gov.hmrc.economiccrimelevyenrolment.forms.mappings.{Mappings, Regex}
+object Regex {
 
-import javax.inject.Inject
-
-class EclReferenceFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("eclReference.error.required").verifying(
-        regexp(Regex.EclRegistrationReferenceRegex, "eclReference.error.invalid")
-      )
-    )
+  val EclRegistrationReferenceRegex: String = "^X[A-Z]{1}ECL[0-9]{10}$"
 
 }

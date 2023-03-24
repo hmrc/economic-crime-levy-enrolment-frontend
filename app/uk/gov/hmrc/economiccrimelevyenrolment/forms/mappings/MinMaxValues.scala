@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.economiccrimelevyenrolment.forms
+package uk.gov.hmrc.economiccrimelevyenrolment.forms.mappings
 
-import play.api.data.Form
-import uk.gov.hmrc.economiccrimelevyenrolment.forms.mappings.{Mappings, Regex}
+import java.time.LocalDate
 
-import javax.inject.Inject
+object MinMaxValues {
 
-class EclReferenceFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("eclReference.error.required").verifying(
-        regexp(Regex.EclRegistrationReferenceRegex, "eclReference.error.invalid")
-      )
-    )
-
+  val MinEclRegistrationDate: LocalDate = LocalDate.of(2022, 4, 1)
+  def maxEclRegistrationDate: LocalDate = LocalDate.now()
 }
