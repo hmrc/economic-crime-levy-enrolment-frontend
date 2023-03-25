@@ -22,6 +22,7 @@ import play.api.{Application, Mode}
 import uk.gov.hmrc.economiccrimelevyenrolment.base.WireMockHelper.setWireMockPort
 import uk.gov.hmrc.economiccrimelevyenrolment.config.AppConfig
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.Generators
+import uk.gov.hmrc.economiccrimelevyenrolment.repositories.SessionRepository
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -56,7 +57,8 @@ abstract class ISpecBase
     "features.enrolmentStoreProxyStubEnabled" -> false
   ) ++ setWireMockPort(
     "auth",
-    "enrolment-store-proxy"
+    "enrolment-store-proxy",
+    "tax-enrolments"
   )
 
   override def fakeApplication(): Application =
@@ -66,8 +68,9 @@ abstract class ISpecBase
       .in(Mode.Test)
       .build()
 
-  val appConfig: AppConfig              = app.injector.instanceOf[AppConfig]
-  implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  val appConfig: AppConfig                 = app.injector.instanceOf[AppConfig]
+  implicit val messagesApi: MessagesApi    = app.injector.instanceOf[MessagesApi]
+  val sessionRepository: SessionRepository = app.injector.instanceOf[SessionRepository]
 
   /*
   This is to initialise the app before running any tests, as it is lazy by default in org.scalatestplus.play.BaseOneAppPerSuite.

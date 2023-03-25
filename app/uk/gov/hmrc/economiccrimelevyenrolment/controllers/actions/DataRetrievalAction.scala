@@ -33,7 +33,7 @@ class UserAnswersDataRetrievalAction @Inject() (
 
   override protected def transform[A](request: AuthorisedRequest[A]): Future[DataRequest[A]] =
     getOrCreateUserAnswers(request.internalId).map {
-      DataRequest(request.request, request.internalId, _)
+      DataRequest(request.request, request.internalId, request.groupId, request.credentials, _)
     }
 
   private def getOrCreateUserAnswers(internalId: String): Future[UserAnswers] =

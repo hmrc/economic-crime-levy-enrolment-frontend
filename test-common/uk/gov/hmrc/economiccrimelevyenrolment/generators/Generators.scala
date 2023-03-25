@@ -19,6 +19,8 @@ package uk.gov.hmrc.economiccrimelevyenrolment.generators
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Gen, Shrink}
+import uk.gov.hmrc.economiccrimelevyenrolment.forms.mappings.Regex
+import wolfendale.scalacheck.regexp.RegexpGen
 
 import java.time.{Instant, LocalDate, ZoneOffset}
 
@@ -123,4 +125,6 @@ trait Generators {
       Instant.ofEpochMilli(millis).atOffset(ZoneOffset.UTC).toLocalDate
     }
   }
+
+  def eclRegistrationReference: Gen[String] = RegexpGen.from(s"${Regex.EclRegistrationReferenceRegex}")
 }

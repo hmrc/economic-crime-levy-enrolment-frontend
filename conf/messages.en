@@ -1,4 +1,4 @@
-service.name = Add Economic Crime Levy
+service.name = Add a levy to your account
 
 site.back = Back
 site.remove = Remove
@@ -43,9 +43,50 @@ answersAreInvalid.p2 = This might have happened because you bookmarked a URL in 
 answersAreInvalid.p3 = You will need to submit your answers again.
 answersAreInvalid.button = Register for the Economic Crime Levy
 
-start.title = Add Economic Crime Levy to your account
-start.heading = Add Economic Crime Levy to your account
-start.p1 = Coming soon! Use this service to add the Economic Crime Levy to your Business Tax Account
+hasEclReference.title = Do you have an Economic Crime Levy (ECL) reference number?
+hasEclReference.heading = Do you have an Economic Crime Levy (ECL) reference number?
+hasEclReference.p1 = You will need to register for the Economic Crime Levy (ECL) if you do not have a reference number.
+hasEclReference.p2 = If you have forgotten your ECL reference number, you will need to contact us to recover it.
+hasEclReference.Yes = Yes
+hasEclReference.No = No
+hasEclReference.divider = or
+hasEclReference.Unknown = I do not know my ECL reference number
+hasEclReference.error.required = Select if you have an ECL reference number
+
+registration.title = You need to register for the Economic Crime Levy
+registration.heading = You need to register for the Economic Crime Levy
+registration.p1 = You need to register for the Economic Crime Levy (ECL).
+registration.register = Register for the Economic Crime Levy
+
+findEclReference.title = How to find your Economic Crime Levy reference number
+findEclReference.heading = How to find your Economic Crime Levy reference number
+findEclReference.p1 = You can find your ECL reference number in the letter you received from HMRC, or in the email confirmation you received when you registered.
+findEclReference.p2 = If you cannot find your ECL reference number, you will need to contact HMRC.
+
+eclReference.title = Your Economic Crime Levy (ECL) reference number
+eclReference.heading = Your Economic Crime Levy (ECL) reference number
+eclReference.p1 = You can find your ECL reference number in the letter you received from HMRC, or in the confirmation email you received when you registered.
+eclReference.hint = For example, XMECL0000000001
+eclReference.error.required = Enter a reference number, for example XMECL0000000001
+eclReference.error.invalid = Enter a valid reference number, for example XMECL0000000001
+
+eclRegistrationDate.title = Your ECL registration date
+eclRegistrationDate.heading = Your ECL registration date
+eclRegistrationDate.p1 = Tell us the date you registered for the ECL. You can find this in the letter you received from HMRC, or in the confirmation email you received when you registered.
+eclRegistrationDate.hint = For example, 13 9 2023
+eclRegistrationDate.error.notWithinRange = The date must be between 1 April 2022 and today
+
+confirmation.title = Your details have been confirmed
+confirmation.heading = Your details have been confirmed
+confirmation.subHeading = What you need to do next
+confirmation.p1 = Your Economic Crime Levy (ECL) details have been confirmed.
+confirmation.eclAccount = Go to your {0}.
+confirmation.eclAccount.link = <a href="{0}" class="govuk-link">ECL account</a>
+
+detailsDoNotMatch.title = Your details do not match our records
+detailsDoNotMatch.heading = Your details do not match our records
+detailsDoNotMatch.p1 = The details you have provided do not match our records.
+detailsDoNotMatch.p2 = Check the letter you received from HMRC, or the email you received when you registered for the Economic Crime Levy (ECL).
 
 userAlreadyEnrolled.title = You have already registered for the Economic Crime Levy
 userAlreadyEnrolled.heading = You have already registered for the Economic Crime Levy

@@ -2,9 +2,24 @@
 
 ->          /hmrc-frontend                               hmrcfrontend.Routes
 
-GET         /                                            uk.gov.hmrc.economiccrimelevyenrolment.controllers.StartController.onPageLoad()
-
 GET         /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
+
+GET         /do-you-have-an-ecl-reference-number         uk.gov.hmrc.economiccrimelevyenrolment.controllers.HasEclReferenceController.onPageLoad()
+POST        /do-you-have-an-ecl-reference-number         uk.gov.hmrc.economiccrimelevyenrolment.controllers.HasEclReferenceController.onSubmit()
+
+GET         /you-need-to-register-ecl                    uk.gov.hmrc.economiccrimelevyenrolment.controllers.RegistrationController.onPageLoad()
+
+GET         /find-your-ecl-reference-number              uk.gov.hmrc.economiccrimelevyenrolment.controllers.FindEclReferenceController.onPageLoad()
+
+GET         /your-ecl-reference-number                   uk.gov.hmrc.economiccrimelevyenrolment.controllers.EclReferenceController.onPageLoad()
+POST        /your-ecl-reference-number                   uk.gov.hmrc.economiccrimelevyenrolment.controllers.EclReferenceController.onSubmit()
+
+GET         /ecl-registration-date                       uk.gov.hmrc.economiccrimelevyenrolment.controllers.EclRegistrationDateController.onPageLoad()
+POST        /ecl-registration-date                       uk.gov.hmrc.economiccrimelevyenrolment.controllers.EclRegistrationDateController.onSubmit()
+
+GET         /success-page                                uk.gov.hmrc.economiccrimelevyenrolment.controllers.ConfirmationController.onPageLoad()
+
+GET         /details-do-not-match                        uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.detailsDoNotMatch()
 
 GET         /answers-are-not-valid                       uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.answersAreInvalid()
 

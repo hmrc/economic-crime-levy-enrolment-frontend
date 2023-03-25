@@ -23,6 +23,19 @@ import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 
 class NotableErrorISpec extends ISpecBase with AuthorisedBehaviour {
 
+  s"GET ${routes.NotableErrorController.detailsDoNotMatch().url}" should {
+    behave like authorisedActionWithEnrolmentCheckRoute(routes.NotableErrorController.detailsDoNotMatch())
+
+    "respond with 200 status and the details do not match HTML view" in {
+      stubAuthorisedWithNoGroupEnrolment()
+
+      val result = callRoute(FakeRequest(routes.NotableErrorController.detailsDoNotMatch()))
+
+      status(result) shouldBe OK
+      html(result) should include("Your details do not match our records")
+    }
+  }
+
   s"GET ${routes.NotableErrorController.answersAreInvalid().url}"                                         should {
     behave like authorisedActionWithEnrolmentCheckRoute(routes.NotableErrorController.answersAreInvalid())
 

@@ -18,6 +18,7 @@ package uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions
 
 import org.mockito.ArgumentMatchers
 import play.api.mvc.{AnyContentAsEmpty, Request, Result}
+import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
@@ -44,13 +45,21 @@ class DataRetrievalActionSpec extends SpecBase {
 
   "transform" should {
     "transform an AuthorisedRequest into a DataRequest" in forAll {
-      (internalId: String, groupId: String, userAnswers: UserAnswers) =>
+      (
+        internalId: String,
+        groupId: String,
+        userAnswers: UserAnswers,
+        eclRegistrationReference: String,
+        credentials: Credentials
+      ) =>
         when(mockSessionRepository.get(ArgumentMatchers.eq(internalId))).thenReturn(Future(Some(userAnswers)))
 
         val result: Future[DataRequest[AnyContentAsEmpty.type]] =
-          dataRetrievalAction.transform(AuthorisedRequest(fakeRequest, internalId, groupId, None))
+          dataRetrievalAction.transform(
+            AuthorisedRequest(fakeRequest, internalId, groupId, Some(eclRegistrationReference), credentials)
+          )
 
-        await(result) shouldBe DataRequest(fakeRequest, internalId, userAnswers)
+        await(result) shouldBe DataRequest(fakeRequest, internalId, groupId, credentials, userAnswers)
     }
   }
 

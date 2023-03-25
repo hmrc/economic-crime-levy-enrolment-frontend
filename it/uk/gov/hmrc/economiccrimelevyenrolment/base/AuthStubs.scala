@@ -17,7 +17,7 @@ trait AuthStubs { self: WireMockStubs =>
             s"""
                |{
                |  "authorise": [],
-               |  "retrieve": [ "internalId", "allEnrolments", "groupIdentifier", "affinityGroup", "credentialRole" ]
+               |  "retrieve": [ "internalId", "allEnrolments", "groupIdentifier", "affinityGroup", "credentialRole", "optionalCredentials" ]
                |}
            """.stripMargin,
             true,
@@ -32,6 +32,10 @@ trait AuthStubs { self: WireMockStubs =>
              |  "groupIdentifier": "$testGroupId",
              |  "affinityGroup": "Organisation",
              |  "credentialRole": "User",
+             |  "optionalCredentials": {
+             |                   "providerId": "$testProviderId",
+             |                   "providerType": "$testProviderType"
+             |                 },
              |  "allEnrolments": []
              |}
            """.stripMargin)
@@ -45,7 +49,7 @@ trait AuthStubs { self: WireMockStubs =>
             s"""
                |{
                |  "authorise": [],
-               |  "retrieve": [ "internalId", "allEnrolments", "groupIdentifier", "affinityGroup", "credentialRole" ]
+               |  "retrieve": [ "internalId", "allEnrolments", "groupIdentifier", "affinityGroup", "credentialRole", "optionalCredentials" ]
                |}
            """.stripMargin,
             true,
@@ -65,7 +69,7 @@ trait AuthStubs { self: WireMockStubs =>
             s"""
                |{
                |  "authorise": [],
-               |  "retrieve": [ "internalId", "allEnrolments", "groupIdentifier", "affinityGroup", "credentialRole" ]
+               |  "retrieve": [ "internalId", "allEnrolments", "groupIdentifier", "affinityGroup", "credentialRole", "optionalCredentials" ]
                |}
            """.stripMargin,
             true,
@@ -80,6 +84,10 @@ trait AuthStubs { self: WireMockStubs =>
              |  "groupIdentifier": "$testGroupId",
              |  "affinityGroup": "Agent",
              |  "credentialRole": "User",
+             |  "optionalCredentials": {
+             |                   "providerId": "$testProviderId",
+             |                   "providerType": "$testProviderType"
+             |                 },
              |  "allEnrolments": []
              |}
            """.stripMargin)
@@ -93,7 +101,7 @@ trait AuthStubs { self: WireMockStubs =>
             s"""
                |{
                |  "authorise": [],
-               |  "retrieve": [ "internalId", "allEnrolments", "groupIdentifier", "affinityGroup", "credentialRole" ]
+               |  "retrieve": [ "internalId", "allEnrolments", "groupIdentifier", "affinityGroup", "credentialRole", "optionalCredentials" ]
                |}
            """.stripMargin,
             true,
@@ -108,6 +116,10 @@ trait AuthStubs { self: WireMockStubs =>
              |  "groupIdentifier": "$testGroupId",
              |  "affinityGroup": "Organisation",
              |  "credentialRole": "User",
+             |  "optionalCredentials": {
+             |                   "providerId": "$testProviderId",
+             |                   "providerType": "$testProviderType"
+             |                 },
              |  "allEnrolments": [{
              |    "key":"${EclEnrolment.ServiceName}",
              |    "identifiers": [{ "key":"${EclEnrolment.IdentifierKey}", "value": "$testEclRegistrationReference" }],
@@ -125,7 +137,7 @@ trait AuthStubs { self: WireMockStubs =>
             s"""
                |{
                |  "authorise": [],
-               |  "retrieve": [ "internalId", "allEnrolments", "groupIdentifier", "affinityGroup", "credentialRole" ]
+               |  "retrieve": [ "internalId", "allEnrolments", "groupIdentifier", "affinityGroup", "credentialRole", "optionalCredentials" ]
                |}
          """.stripMargin,
             true,
@@ -140,6 +152,10 @@ trait AuthStubs { self: WireMockStubs =>
              |  "groupIdentifier": "$testGroupId",
              |  "affinityGroup": "Organisation",
              |  "credentialRole": "Assistant",
+             |  "optionalCredentials": {
+             |                   "providerId": "$testProviderId",
+             |                   "providerType": "$testProviderType"
+             |                 },
              |  "allEnrolments": [{
              |    "key":"${EclEnrolment.ServiceName}",
              |    "identifiers": [{ "key":"${EclEnrolment.IdentifierKey}", "value": "$testEclRegistrationReference" }],

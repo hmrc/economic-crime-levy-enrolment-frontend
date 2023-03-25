@@ -18,11 +18,17 @@ package uk.gov.hmrc.economiccrimelevyenrolment
 
 import com.danielasfregola.randomdatagenerator.RandomDataGenerator.derivedArbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
+import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.auth.core.{AffinityGroup, EnrolmentIdentifier, Enrolments, Enrolment => AuthEnrolment}
+import uk.gov.hmrc.economiccrimelevyenrolment.forms.mappings.MinMaxValues
+import uk.gov.hmrc.economiccrimelevyenrolment.generators.Generators
 import uk.gov.hmrc.economiccrimelevyenrolment.models._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolment, GroupEnrolmentsResponse}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
 
+import java.time.format.DateTimeFormatter
 import java.time.{Instant, LocalDate}
 
 final case class EnrolmentsWithEcl(enrolments: Enrolments, eclReferenceNumber: String)
@@ -36,7 +42,7 @@ final case class GroupEnrolmentsResponseWithEcl(
 
 final case class GroupEnrolmentsResponseWithoutEcl(groupEnrolmentsResponse: GroupEnrolmentsResponse)
 
-trait EclTestData {
+trait EclTestData { self: Generators =>
 
   implicit val arbInstant: Arbitrary[Instant] = Arbitrary {
     Instant.now()
@@ -91,15 +97,34 @@ trait EclTestData {
     Gen.oneOf(Seq(Organisation, Individual, Agent))
   }
 
+  implicit val arbDataRequest: Arbitrary[DataRequest[_]] = Arbitrary {
+    for {
+      userAnswers <- Arbitrary.arbitrary[UserAnswers]
+    } yield DataRequest(
+      FakeRequest(),
+      alphaNumericString,
+      alphaNumericString,
+      Credentials(alphaNumericString, alphaNumericString),
+      userAnswers
+    )
+  }
+
   private def authEnrolmentsToEnrolments(authEnrolments: Enrolments) =
     authEnrolments.enrolments
-      .map(e => Enrolment(e.key, e.identifiers.map(i => KeyValue(i.key, i.value))))
+      .map(e => Enrolment(e.key, e.identifiers.map(i => KeyValue(i.key, i.value)), Seq.empty))
       .toSeq
 
   def alphaNumericString: String = Gen.alphaNumStr.retryUntil(_.nonEmpty).sample.get
 
-  val testInternalId: String               = alphaNumericString
-  val testGroupId: String                  = alphaNumericString
-  val testEclRegistrationReference: String = alphaNumericString
+  def localDate: LocalDate =
+    datesBetween(MinMaxValues.MinEclRegistrationDate, MinMaxValues.maxEclRegistrationDate).sample.get
+
+  val testInternalId: String                = alphaNumericString
+  val testGroupId: String                   = alphaNumericString
+  val testProviderId: String                = alphaNumericString
+  val testProviderType: String              = alphaNumericString
+  val testEclRegistrationReference: String  = eclRegistrationReference.sample.get
+  val testEclRegistrationDate: LocalDate    = localDate
+  val testEclRegistrationDateString: String = testEclRegistrationDate.format(DateTimeFormatter.BASIC_ISO_DATE)
 
 }

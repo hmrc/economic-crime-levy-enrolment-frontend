@@ -17,6 +17,7 @@
 package uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions
 
 import play.api.mvc._
+import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.AuthorisedRequest
 
 import javax.inject.Inject
@@ -25,13 +26,23 @@ import scala.concurrent.{ExecutionContext, Future}
 class FakeAuthorisedActionWithoutEnrolmentCheck @Inject() (
   eclRegistrationReference: Option[String],
   internalId: String,
+  groupId: String,
+  providerId: String,
   bodyParsers: PlayBodyParsers
 ) extends AuthorisedActionWithoutEnrolmentCheck {
 
   override def parser: BodyParser[AnyContent] = bodyParsers.defaultBodyParser
 
   override def invokeBlock[A](request: Request[A], block: AuthorisedRequest[A] => Future[Result]): Future[Result] =
-    block(AuthorisedRequest(request, internalId, "test-group-id", eclRegistrationReference))
+    block(
+      AuthorisedRequest(
+        request,
+        internalId,
+        groupId,
+        eclRegistrationReference,
+        Credentials(providerId, "test-provider-type")
+      )
+    )
 
   override protected def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 

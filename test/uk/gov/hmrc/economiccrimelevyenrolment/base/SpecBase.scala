@@ -60,15 +60,26 @@ trait SpecBase
   val messages: Messages                               = messagesApi.preferred(fakeRequest)
   val bodyParsers: PlayBodyParsers                     = app.injector.instanceOf[PlayBodyParsers]
 
-  def fakeAuthorisedActionWithEnrolmentCheck(internalId: String)                                                     =
-    new FakeAuthorisedActionWithEnrolmentCheck(internalId, bodyParsers)
-  def fakeAuthorisedActionWithoutEnrolmentCheck(internalId: String, eclRegistrationReference: Option[String] = None) =
-    new FakeAuthorisedActionWithoutEnrolmentCheck(eclRegistrationReference, internalId, bodyParsers)
-  def fakeAuthorisedActionAgentsAllowed                                                                              =
+  def fakeAuthorisedActionWithEnrolmentCheck(internalId: String, groupId: String, providerId: String) =
+    new FakeAuthorisedActionWithEnrolmentCheck(internalId, groupId, providerId, bodyParsers)
+  def fakeAuthorisedActionWithoutEnrolmentCheck(
+    internalId: String,
+    groupId: String,
+    providerId: String,
+    eclRegistrationReference: Option[String] = None
+  )                                                                                                   =
+    new FakeAuthorisedActionWithoutEnrolmentCheck(
+      eclRegistrationReference,
+      internalId,
+      groupId,
+      providerId,
+      bodyParsers
+    )
+  def fakeAuthorisedActionAgentsAllowed                                                               =
     new FakeAuthorisedActionAgentsAllowed(bodyParsers)
-  def fakeAuthorisedActionAssistantsAllowed                                                                          =
+  def fakeAuthorisedActionAssistantsAllowed                                                           =
     new FakeAuthorisedActionAssistantsAllowed(bodyParsers)
-  def fakeDataRetrievalAction(data: UserAnswers)                                                                     =
+  def fakeDataRetrievalAction(data: UserAnswers)                                                      =
     new FakeDataRetrievalAction(data)
 
   def onwardRoute: Call = Call(GET, "/foo")

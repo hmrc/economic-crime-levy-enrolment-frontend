@@ -38,6 +38,7 @@ class NotableErrorController @Inject() (
   userAlreadyEnrolledView: UserAlreadyEnrolledView,
   groupAlreadyEnrolledView: GroupAlreadyEnrolledView,
   answersAreInvalidView: AnswersAreInvalidView,
+  detailsDoNotMatchView: DetailsDoNotMatchView,
   agentCannotRegisterView: AgentCannotRegisterView,
   assistantCannotRegisterView: AssistantCannotRegisterView
 ) extends FrontendBaseController
@@ -45,6 +46,10 @@ class NotableErrorController @Inject() (
 
   def answersAreInvalid: Action[AnyContent] = (authoriseWithEnrolmentCheck andThen getUserAnswers) { implicit request =>
     Ok(answersAreInvalidView())
+  }
+
+  def detailsDoNotMatch: Action[AnyContent] = authoriseWithEnrolmentCheck { implicit request =>
+    Ok(detailsDoNotMatchView())
   }
 
   def userAlreadyEnrolled: Action[AnyContent] = authoriseWithoutEnrolmentCheck { implicit request =>

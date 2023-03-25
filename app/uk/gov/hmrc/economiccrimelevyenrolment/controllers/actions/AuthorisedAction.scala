@@ -22,7 +22,7 @@ import play.api.mvc._
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
-import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.economiccrimelevyenrolment.config.AppConfig
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.EclEnrolment
 import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.AuthorisedRequest
@@ -116,58 +116,64 @@ abstract class BaseAuthorisedAction @Inject() (
   val assistantsAllowed: Boolean
 
   override def invokeBlock[A](request: Request[A], block: AuthorisedRequest[A] => Future[Result]): Future[Result] =
-    authorised().retrieve(internalId and allEnrolments and groupIdentifier and affinityGroup and credentialRole) {
-      case optInternalId ~ enrolments ~ optGroupId ~ optAffinityGroup ~ optCredentialRole =>
-        val internalId: String             = optInternalId.getOrElseFail("Unable to retrieve internalId")
-        val groupId: String                = optGroupId.getOrElseFail("Unable to retrieve groupIdentifier")
-        val affinityGroup: AffinityGroup   = optAffinityGroup.getOrElseFail("Unable to retrieve affinityGroup")
-        val credentialRole: CredentialRole = optCredentialRole.getOrElseFail("Unable to retrieve credentialRole")
+    authorised().retrieve(
+      internalId and allEnrolments and groupIdentifier and affinityGroup and credentialRole and credentials
+    ) { case optInternalId ~ enrolments ~ optGroupId ~ optAffinityGroup ~ optCredentialRole ~ optCredentials =>
+      val internalId: String             = optInternalId.getOrElseFail("Unable to retrieve internalId")
+      val groupId: String                = optGroupId.getOrElseFail("Unable to retrieve groupIdentifier")
+      val affinityGroup: AffinityGroup   = optAffinityGroup.getOrElseFail("Unable to retrieve affinityGroup")
+      val credentialRole: CredentialRole = optCredentialRole.getOrElseFail("Unable to retrieve credentialRole")
+      val credentials: Credentials       = optCredentials.getOrElseFail("Unable to retrieve credentials")
 
-        val eclEnrolment: Option[Enrolment]          = enrolments.enrolments.find(_.key == EclEnrolment.ServiceName)
-        val eclRegistrationReference: Option[String] =
-          eclEnrolment.flatMap(_.getIdentifier(EclEnrolment.IdentifierKey).map(_.value))
+      val eclEnrolment: Option[Enrolment]          = enrolments.enrolments.find(_.key == EclEnrolment.ServiceName)
+      val eclRegistrationReference: Option[String] =
+        eclEnrolment.flatMap(_.getIdentifier(EclEnrolment.IdentifierKey).map(_.value))
 
-        affinityGroup match {
-          case Agent =>
-            if (agentsAllowed) {
-              block(AuthorisedRequest(request, internalId, groupId, eclRegistrationReference))
-            } else {
-              Future.successful(Redirect(routes.NotableErrorController.agentCannotRegister()))
-            }
-          case _     =>
-            credentialRole match {
-              case Assistant =>
-                if (assistantsAllowed) {
-                  block(AuthorisedRequest(request, internalId, groupId, eclRegistrationReference))
-                } else {
-                  Future.successful(Redirect(routes.NotableErrorController.assistantCannotRegister()))
+      affinityGroup match {
+        case Agent =>
+          if (agentsAllowed) {
+            block(AuthorisedRequest(request, internalId, groupId, eclRegistrationReference, credentials))
+          } else {
+            Future.successful(Redirect(routes.NotableErrorController.agentCannotRegister()))
+          }
+        case _     =>
+          credentialRole match {
+            case Assistant =>
+              if (assistantsAllowed) {
+                block(AuthorisedRequest(request, internalId, groupId, eclRegistrationReference, credentials))
+              } else {
+                Future.successful(Redirect(routes.NotableErrorController.assistantCannotRegister()))
+              }
+            case _         =>
+              if (checkForEclEnrolment) {
+                eclEnrolment match {
+                  case Some(_) => Future.successful(Redirect(routes.NotableErrorController.userAlreadyEnrolled().url))
+                  case None    =>
+                    enrolmentStoreProxyService
+                      .getEclReferenceFromGroupEnrolment(groupId)(hc(request))
+                      .flatMap {
+                        case Some(_) =>
+                          Future.successful(Redirect(routes.NotableErrorController.groupAlreadyEnrolled().url))
+                        case None    =>
+                          block(AuthorisedRequest(request, internalId, groupId, eclRegistrationReference, credentials))
+                      }
                 }
-              case _         =>
-                if (checkForEclEnrolment) {
-                  eclEnrolment match {
-                    case Some(_) => Future.successful(Redirect(routes.NotableErrorController.userAlreadyEnrolled().url))
-                    case None    =>
-                      enrolmentStoreProxyService
-                        .getEclReferenceFromGroupEnrolment(groupId)(hc(request))
-                        .flatMap {
-                          case Some(_) =>
-                            Future.successful(Redirect(routes.NotableErrorController.groupAlreadyEnrolled().url))
-                          case None    => block(AuthorisedRequest(request, internalId, groupId, eclRegistrationReference))
-                        }
-                  }
-                } else {
-                  eclRegistrationReference match {
-                    case Some(_) => block(AuthorisedRequest(request, internalId, groupId, eclRegistrationReference))
-                    case None    =>
-                      enrolmentStoreProxyService
-                        .getEclReferenceFromGroupEnrolment(groupId)(hc(request))
-                        .flatMap { eclReferenceFromGroupEnrolment =>
-                          block(AuthorisedRequest(request, internalId, groupId, eclReferenceFromGroupEnrolment))
-                        }
-                  }
+              } else {
+                eclRegistrationReference match {
+                  case Some(_) =>
+                    block(AuthorisedRequest(request, internalId, groupId, eclRegistrationReference, credentials))
+                  case None    =>
+                    enrolmentStoreProxyService
+                      .getEclReferenceFromGroupEnrolment(groupId)(hc(request))
+                      .flatMap { eclReferenceFromGroupEnrolment =>
+                        block(
+                          AuthorisedRequest(request, internalId, groupId, eclReferenceFromGroupEnrolment, credentials)
+                        )
+                      }
                 }
-            }
-        }
+              }
+          }
+      }
 
     }(hc(request), executionContext) recover { case _: NoActiveSession =>
       Redirect(config.signInUrl, Map("continue" -> Seq(s"${config.host}${request.uri}")))

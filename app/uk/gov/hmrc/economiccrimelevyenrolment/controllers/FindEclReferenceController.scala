@@ -18,19 +18,22 @@ package uk.gov.hmrc.economiccrimelevyenrolment.controllers
 
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.economiccrimelevyenrolment.views.html.StartView
+import uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions.AuthorisedActionWithEnrolmentCheck
+import uk.gov.hmrc.economiccrimelevyenrolment.views.html.FindEclReferenceView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class StartController @Inject() (
+class FindEclReferenceController @Inject() (
   val controllerComponents: MessagesControllerComponents,
-  view: StartView
+  authorise: AuthorisedActionWithEnrolmentCheck,
+  view: FindEclReferenceView
 ) extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = Action { implicit request =>
+  def onPageLoad: Action[AnyContent] = authorise { implicit request =>
     Ok(view())
   }
+
 }

@@ -3,10 +3,85 @@ package uk.gov.hmrc.economiccrimelevyenrolment.base
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.Status.{NO_CONTENT, OK}
+import play.api.libs.json.Json
 import uk.gov.hmrc.economiccrimelevyenrolment.base.WireMockHelper.stub
-import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.EclEnrolment
+import uk.gov.hmrc.economiccrimelevyenrolment.models.KeyValue
+import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolment, QueryKnownFactsRequest, QueryKnownFactsResponse}
 
 trait EnrolmentStoreProxyStubs { self: WireMockStubs =>
+
+  def stubQueryKnownFacts(eclRegistrationReference: String): StubMapping =
+    stub(
+      post(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/enrolments")).withRequestBody(
+        equalToJson(
+          Json
+            .toJson(
+              QueryKnownFactsRequest(
+                service = EclEnrolment.ServiceName,
+                knownFacts = Seq(
+                  KeyValue(key = EclEnrolment.IdentifierKey, value = eclRegistrationReference)
+                )
+              )
+            )
+            .toString()
+        )
+      ),
+      aResponse()
+        .withStatus(OK)
+        .withBody(
+          Json
+            .toJson(
+              QueryKnownFactsResponse(
+                service = EclEnrolment.ServiceName,
+                enrolments = Seq(
+                  Enrolment(
+                    service = EclEnrolment.ServiceName,
+                    identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclRegistrationReference)),
+                    verifiers = Seq.empty
+                  )
+                )
+              )
+            )
+            .toString()
+        )
+    )
+
+  def stubQueryKnownFacts(eclRegistrationReference: String, eclRegistrationDate: String): StubMapping =
+    stub(
+      post(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/enrolments")).withRequestBody(
+        equalToJson(
+          Json
+            .toJson(
+              QueryKnownFactsRequest(
+                service = EclEnrolment.ServiceName,
+                knownFacts = Seq(
+                  KeyValue(key = EclEnrolment.IdentifierKey, value = eclRegistrationReference),
+                  KeyValue(key = EclEnrolment.VerifierKey, value = eclRegistrationDate)
+                )
+              )
+            )
+            .toString()
+        )
+      ),
+      aResponse()
+        .withStatus(OK)
+        .withBody(
+          Json
+            .toJson(
+              QueryKnownFactsResponse(
+                service = EclEnrolment.ServiceName,
+                enrolments = Seq(
+                  Enrolment(
+                    service = EclEnrolment.ServiceName,
+                    identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclRegistrationReference)),
+                    verifiers = Seq(KeyValue(key = EclEnrolment.VerifierKey, value = eclRegistrationDate))
+                  )
+                )
+              )
+            )
+            .toString()
+        )
+    )
 
   def stubNoGroupEnrolment(): StubMapping =
     stub(
@@ -36,6 +111,12 @@ trait EnrolmentStoreProxyStubs { self: WireMockStubs =>
             |              {
             |                 "key": "${EclEnrolment.IdentifierKey}",
             |                 "value": "$testEclRegistrationReference"
+            |              }
+            |           ],
+            |           "verifiers": [
+            |              {
+            |                 "key": "${EclEnrolment.VerifierKey}",
+            |                 "value": "$testEclRegistrationDateString"
             |              }
             |           ]
             |        }
