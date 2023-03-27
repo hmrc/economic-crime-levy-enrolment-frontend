@@ -24,10 +24,10 @@ import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 class ConfirmationISpec extends ISpecBase with AuthorisedBehaviour {
 
   s"GET ${routes.ConfirmationController.onPageLoad().url}" should {
-    behave like authorisedActionWithEnrolmentCheckRoute(routes.ConfirmationController.onPageLoad())
+    behave like authorisedActionWithoutEnrolmentCheckRoute(routes.ConfirmationController.onPageLoad())
 
     "respond with 200 status and the details confirmed HTML view" in {
-      stubAuthorised()
+      stubAuthorisedWithEclEnrolment()
 
       val result = callRoute(FakeRequest(routes.ConfirmationController.onPageLoad()))
 
