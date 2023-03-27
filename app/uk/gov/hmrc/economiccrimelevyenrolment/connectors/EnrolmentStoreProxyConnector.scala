@@ -49,6 +49,6 @@ class EnrolmentStoreProxyConnectorImpl @Inject() (appConfig: AppConfig, httpClie
         EclEnrolment.ServiceName,
         knownFacts = knownFacts
       )
-    )
+    )(QueryKnownFactsRequest.format, readOptionOfNotFoundOrNoContent[QueryKnownFactsResponse], hc, ec)
 
 }
