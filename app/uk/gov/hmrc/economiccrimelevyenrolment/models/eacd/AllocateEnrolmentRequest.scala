@@ -21,6 +21,7 @@ import uk.gov.hmrc.economiccrimelevyenrolment.models.KeyValue
 
 final case class AllocateEnrolmentRequest(
   userId: String,
+  friendlyName: String = "Economic Crime Levy (ECL)",
   `type`: String = "principal",
   verifiers: Seq[KeyValue]
 )
