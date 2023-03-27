@@ -35,7 +35,6 @@ trait EnrolmentStoreProxyStubs { self: WireMockStubs =>
                 service = EclEnrolment.ServiceName,
                 enrolments = Seq(
                   Enrolment(
-                    service = EclEnrolment.ServiceName,
                     identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclRegistrationReference)),
                     verifiers = Seq.empty
                   )
@@ -72,7 +71,6 @@ trait EnrolmentStoreProxyStubs { self: WireMockStubs =>
                 service = EclEnrolment.ServiceName,
                 enrolments = Seq(
                   Enrolment(
-                    service = EclEnrolment.ServiceName,
                     identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclRegistrationReference)),
                     verifiers = Seq(KeyValue(key = EclEnrolment.VerifierKey, value = eclRegistrationDate))
                   )

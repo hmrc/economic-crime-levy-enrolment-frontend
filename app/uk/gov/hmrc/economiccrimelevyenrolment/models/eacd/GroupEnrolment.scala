@@ -17,11 +17,14 @@
 package uk.gov.hmrc.economiccrimelevyenrolment.models.eacd
 
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.KeyValue
 
-final case class GroupEnrolmentsResponse(
-  enrolments: Seq[GroupEnrolment]
+final case class GroupEnrolment(
+  service: String,
+  identifiers: Seq[KeyValue],
+  verifiers: Seq[KeyValue]
 )
 
-object GroupEnrolmentsResponse {
-  implicit val format: OFormat[GroupEnrolmentsResponse] = Json.format[GroupEnrolmentsResponse]
+object GroupEnrolment {
+  implicit val format: OFormat[GroupEnrolment] = Json.format[GroupEnrolment]
 }

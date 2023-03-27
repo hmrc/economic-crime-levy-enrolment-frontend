@@ -25,7 +25,7 @@ import uk.gov.hmrc.auth.core.{AffinityGroup, EnrolmentIdentifier, Enrolments, En
 import uk.gov.hmrc.economiccrimelevyenrolment.forms.mappings.MinMaxValues
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.Generators
 import uk.gov.hmrc.economiccrimelevyenrolment.models._
-import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolment, GroupEnrolmentsResponse}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, GroupEnrolment, GroupEnrolmentsResponse}
 import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
 
 import java.time.format.DateTimeFormatter
@@ -111,7 +111,7 @@ trait EclTestData { self: Generators =>
 
   private def authEnrolmentsToEnrolments(authEnrolments: Enrolments) =
     authEnrolments.enrolments
-      .map(e => Enrolment(e.key, e.identifiers.map(i => KeyValue(i.key, i.value)), Seq.empty))
+      .map(e => GroupEnrolment(e.key, e.identifiers.map(i => KeyValue(i.key, i.value)), Seq.empty))
       .toSeq
 
   def alphaNumericString: String = Gen.alphaNumStr.retryUntil(_.nonEmpty).sample.get

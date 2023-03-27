@@ -42,7 +42,6 @@ class EclReferencePageNavigatorSpec extends SpecBase {
           service = EclEnrolment.ServiceName,
           enrolments = Seq(
             Enrolment(
-              service = EclEnrolment.ServiceName,
               identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber)),
               verifiers = Seq.empty
             )
@@ -65,7 +64,6 @@ class EclReferencePageNavigatorSpec extends SpecBase {
           service = EclEnrolment.ServiceName,
           enrolments = Seq(
             Enrolment(
-              service = EclEnrolment.ServiceName,
               identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = "invalid-reference")),
               verifiers = Seq.empty
             )
