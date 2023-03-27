@@ -20,7 +20,6 @@ import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.economiccrimelevyenrolment.models.KeyValue
 
 final case class Enrolment(
-  service: String,
   identifiers: Seq[KeyValue],
   verifiers: Seq[KeyValue]
 )

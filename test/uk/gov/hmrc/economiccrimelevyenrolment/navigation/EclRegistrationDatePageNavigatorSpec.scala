@@ -55,7 +55,6 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
           service = EclEnrolment.ServiceName,
           enrolments = Seq(
             Enrolment(
-              service = EclEnrolment.ServiceName,
               identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber)),
               verifiers = Seq(KeyValue(key = EclEnrolment.VerifierKey, value = eclRegistrationDateString))
             )
@@ -91,7 +90,6 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
           service = EclEnrolment.ServiceName,
           enrolments = Seq(
             Enrolment(
-              service = EclEnrolment.ServiceName,
               identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber)),
               verifiers = Seq(KeyValue(key = EclEnrolment.VerifierKey, value = "99991231"))
             )
