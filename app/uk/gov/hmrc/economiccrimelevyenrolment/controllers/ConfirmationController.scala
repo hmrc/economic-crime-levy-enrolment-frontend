@@ -18,7 +18,7 @@ package uk.gov.hmrc.economiccrimelevyenrolment.controllers
 
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions.AuthorisedActionWithEnrolmentCheck
+import uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions.AuthorisedActionWithoutEnrolmentCheck
 import uk.gov.hmrc.economiccrimelevyenrolment.views.html.ConfirmationView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
@@ -27,7 +27,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class ConfirmationController @Inject() (
   val controllerComponents: MessagesControllerComponents,
-  authorise: AuthorisedActionWithEnrolmentCheck,
+  authorise: AuthorisedActionWithoutEnrolmentCheck,
   view: ConfirmationView
 ) extends FrontendBaseController
     with I18nSupport {

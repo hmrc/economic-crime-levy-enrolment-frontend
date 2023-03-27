@@ -33,7 +33,7 @@ class ConfirmationControllerSpec extends SpecBase {
   class TestContext(userAnswers: UserAnswers, groupId: String, providerId: String) {
     val controller = new ConfirmationController(
       mcc,
-      fakeAuthorisedActionWithEnrolmentCheck(userAnswers.internalId, groupId, providerId),
+      fakeAuthorisedActionWithoutEnrolmentCheck(userAnswers.internalId, groupId, providerId),
       view
     )
   }
