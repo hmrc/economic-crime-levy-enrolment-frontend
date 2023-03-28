@@ -35,7 +35,7 @@ class StubEnrolmentStoreProxyConnector @Inject() (appConfig: AppConfig) extends 
           GroupEnrolment(
             service = EclEnrolment.ServiceName,
             identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = "XMECL0000000001")),
-            verifiers = Seq(KeyValue(EclEnrolment.VerifierKey, "20230901"))
+            verifiers = Seq(KeyValue(EclEnrolment.VerifierKey, "20230301"))
           )
         )
       )
@@ -53,7 +53,7 @@ class StubEnrolmentStoreProxyConnector @Inject() (appConfig: AppConfig) extends 
           enrolments = Seq(
             Enrolment(
               identifiers = Seq(KeyValue(EclEnrolment.IdentifierKey, "XMECL0000000001")),
-              verifiers = Seq(KeyValue(EclEnrolment.VerifierKey, "20230901"))
+              verifiers = Seq(KeyValue(EclEnrolment.VerifierKey, "20230301"))
             )
           )
         )
