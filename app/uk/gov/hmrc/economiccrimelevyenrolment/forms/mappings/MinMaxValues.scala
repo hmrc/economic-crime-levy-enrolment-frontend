@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.economiccrimelevyenrolment.forms.mappings
 
-import java.time.LocalDate
+import java.time.{LocalDate, ZoneOffset}
 
 object MinMaxValues {
 
   val MinEclRegistrationDate: LocalDate = LocalDate.of(2022, 4, 1)
-  def maxEclRegistrationDate: LocalDate = LocalDate.now()
+  def maxEclRegistrationDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
 }
