@@ -38,18 +38,12 @@ class AppConfig @Inject() (configuration: Configuration, servicesConfig: Service
   def feedbackUrl(backUrl: String): String =
     s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${SafeRedirectUrl(backUrl).encodedUrl}"
 
-  val signInUrl: String              = configuration.get[String]("urls.signIn")
-  val signOutUrl: String             = configuration.get[String]("urls.signOut")
-  val eclSignOutUrl: String          = configuration.get[String]("urls.eclSignOut")
-  val registrationUrl: String        = configuration.get[String]("urls.registration")
-  val submitReturnUrl: String        = configuration.get[String]("urls.submitReturn")
-  val taxAndSchemeManagement: String = configuration.get[String]("urls.taxAndSchemeManagement")
-
-  val accessibilityStatementServicePath: String =
-    configuration.get[String]("accessibility-statement.service-path")
-
-  val accessibilityStatementPath: String =
-    s"/accessibility-statement$accessibilityStatementServicePath"
+  val signInUrl: String                 = configuration.get[String]("urls.signIn")
+  val signOutUrl: String                = configuration.get[String]("urls.signOut")
+  val registrationUrl: String           = configuration.get[String]("urls.registration")
+  val submitReturnUrl: String           = configuration.get[String]("urls.submitReturn")
+  val taxAndSchemeManagementUrl: String = configuration.get[String]("urls.taxAndSchemeManagement")
+  val eclAccountUrl: String             = configuration.get[String]("urls.eclAccount")
 
   private val exitSurveyHost              = configuration.get[String]("feedback-frontend.host")
   private val exitSurveyServiceIdentifier = configuration.get[String]("feedback-frontend.serviceId")
@@ -67,5 +61,7 @@ class AppConfig @Inject() (configuration: Configuration, servicesConfig: Service
 
   val enrolmentStoreProxyBaseUrl: String = servicesConfig.baseUrl("enrolment-store-proxy")
   val taxEnrolmentsBaseUrl: String       = servicesConfig.baseUrl("tax-enrolments")
+
+  val eclAccountEnabled: Boolean = configuration.get[Boolean]("features.eclAccountEnabled")
 
 }
