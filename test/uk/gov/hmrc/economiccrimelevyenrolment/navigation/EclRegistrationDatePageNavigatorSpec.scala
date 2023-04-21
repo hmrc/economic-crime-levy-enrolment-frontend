@@ -25,6 +25,7 @@ import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolment, QueryKnownFactsResponse}
 import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
 import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, UserAnswers}
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -34,7 +35,13 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
 
   val mockEnrolmentStoreProxyConnector: EnrolmentStoreProxyConnector = mock[EnrolmentStoreProxyConnector]
   val mockTaxEnrolmentsConnector: TaxEnrolmentsConnector             = mock[TaxEnrolmentsConnector]
-  val pageNavigator                                                  = new EclRegistrationDatePageNavigator(mockEnrolmentStoreProxyConnector, mockTaxEnrolmentsConnector)
+  val mockAuditConnector: AuditConnector                             = mock[AuditConnector]
+
+  val pageNavigator = new EclRegistrationDatePageNavigator(
+    mockEnrolmentStoreProxyConnector,
+    mockTaxEnrolmentsConnector,
+    mockAuditConnector
+  )
 
   "nextPage" should {
     "return a Call to the confirmation page when the date of registration matches" in forAll {
@@ -102,6 +109,10 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
         await(
           pageNavigator.nextPage(updatedAnswers)(request)
         ) shouldBe routes.NotableErrorController.detailsDoNotMatch()
+
+        verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(any(), any())
+
+        reset(mockAuditConnector)
     }
 
     "return a Call to the details do not match page when the API does not return any results" in forAll {

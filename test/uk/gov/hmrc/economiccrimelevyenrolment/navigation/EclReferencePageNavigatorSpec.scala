@@ -25,13 +25,16 @@ import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolment, QueryKnownFactsResponse}
 import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
 import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, UserAnswers}
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import scala.concurrent.Future
 
 class EclReferencePageNavigatorSpec extends SpecBase {
 
   val mockEnrolmentStoreProxyConnector: EnrolmentStoreProxyConnector = mock[EnrolmentStoreProxyConnector]
-  val pageNavigator                                                  = new EclReferencePageNavigator(mockEnrolmentStoreProxyConnector)
+  val mockAuditConnector: AuditConnector                             = mock[AuditConnector]
+
+  val pageNavigator = new EclReferencePageNavigator(mockEnrolmentStoreProxyConnector, mockAuditConnector)
 
   "nextPage" should {
     "return a Call to the date of registration page when the ECL reference number matches" in forAll {
@@ -76,6 +79,10 @@ class EclReferencePageNavigatorSpec extends SpecBase {
         await(
           pageNavigator.nextPage(updatedAnswers)(request)
         ) shouldBe routes.NotableErrorController.detailsDoNotMatch()
+
+        verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(any(), any())
+
+        reset(mockAuditConnector)
     }
 
     "return a Call to the details are invalid page when the API does not return any results" in forAll {

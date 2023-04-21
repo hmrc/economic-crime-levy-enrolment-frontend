@@ -30,6 +30,7 @@ import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
 import uk.gov.hmrc.economiccrimelevyenrolment.navigation.EclReferencePageNavigator
 import uk.gov.hmrc.economiccrimelevyenrolment.repositories.SessionRepository
 import uk.gov.hmrc.economiccrimelevyenrolment.views.html.EclReferenceView
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import scala.concurrent.Future
 
@@ -40,11 +41,13 @@ class EclReferenceControllerSpec extends SpecBase {
   val form: Form[String]                                             = formProvider()
   val mockSessionRepository: SessionRepository                       = mock[SessionRepository]
   val mockEnrolmentStoreProxyConnector: EnrolmentStoreProxyConnector = mock[EnrolmentStoreProxyConnector]
+  val mockAuditConnector: AuditConnector                             = mock[AuditConnector]
 
-  val pageNavigator: EclReferencePageNavigator = new EclReferencePageNavigator(mockEnrolmentStoreProxyConnector) {
-    override protected def navigate(userAnswers: UserAnswers)(implicit request: DataRequest[_]): Future[Call] =
-      Future.successful(onwardRoute)
-  }
+  val pageNavigator: EclReferencePageNavigator =
+    new EclReferencePageNavigator(mockEnrolmentStoreProxyConnector, mockAuditConnector) {
+      override protected def navigate(userAnswers: UserAnswers)(implicit request: DataRequest[_]): Future[Call] =
+        Future.successful(onwardRoute)
+    }
 
   class TestContext(userAnswers: UserAnswers, groupId: String, providerId: String) {
     val controller = new EclReferenceController(
