@@ -69,7 +69,7 @@ class EclRegistrationDatePageNavigator @Inject() (
                 internalId,
                 ClaimEnrolmentDetailsMismatchReason.EclRegistrationDateMismatch,
                 eclReferenceNumber,
-                Some(eclRegistrationDateString)
+                Some(eclRegistrationDate.toString)
               ).extendedDataEvent
             )
             Future.successful(routes.NotableErrorController.detailsDoNotMatch())
