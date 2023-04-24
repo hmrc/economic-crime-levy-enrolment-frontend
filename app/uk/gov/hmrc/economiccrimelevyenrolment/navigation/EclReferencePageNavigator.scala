@@ -26,7 +26,6 @@ import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, UserAnswers}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -40,12 +39,12 @@ class EclReferencePageNavigator @Inject() (
   override protected def navigate(userAnswers: UserAnswers)(implicit request: DataRequest[_]): Future[Call] =
     userAnswers.eclReferenceNumber match {
       case Some(eclReferenceNumber) =>
-        verifyEclReferenceNumber(eclReferenceNumber, extractEclRegistrationDate(userAnswers), userAnswers.internalId)
+        verifyEclReferenceNumber(eclReferenceNumber, userAnswers.internalId)
       case _                        => Future.successful(routes.NotableErrorController.answersAreInvalid())
     }
 
-  private def verifyEclReferenceNumber(eclReferenceNumber: String, eclRegistrationDate: String, internalId: String)(
-    implicit request: DataRequest[_]
+  private def verifyEclReferenceNumber(eclReferenceNumber: String, internalId: String)(implicit
+    request: DataRequest[_]
   ): Future[Call] = {
     val knownFacts = Seq(
       KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber)
@@ -61,7 +60,7 @@ class EclReferencePageNavigator @Inject() (
                 internalId = internalId,
                 mismatchReason = ClaimEnrolmentDetailsMismatchReason.EclReferenceMismatch,
                 eclReference = eclReferenceNumber,
-                eclRegistrationDat = eclRegistrationDate
+                eclRegistrationDate = None
               ).extendedDataEvent
             )
             routes.NotableErrorController.detailsDoNotMatch()
@@ -69,10 +68,4 @@ class EclReferencePageNavigator @Inject() (
       case _              => routes.NotableErrorController.detailsDoNotMatch()
     }
   }
-
-  private def extractEclRegistrationDate(userAnswers: UserAnswers): String =
-    userAnswers.eclRegistrationDate match {
-      case Some(date) => date.format(DateTimeFormatter.BASIC_ISO_DATE)
-      case _          => ""
-    }
 }

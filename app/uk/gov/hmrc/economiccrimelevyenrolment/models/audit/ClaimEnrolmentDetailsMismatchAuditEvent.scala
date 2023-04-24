@@ -32,7 +32,7 @@ case class ClaimEnrolmentDetailsMismatchAuditEvent(
   internalId: String,
   mismatchReason: ClaimEnrolmentDetailsMismatchReason,
   eclReference: String,
-  eclRegistrationDat: String
+  eclRegistrationDate: Option[String]
 ) extends AuditEvent {
   override val auditType: String   = "ClaimEnrolmentDetailsMismatch"
   override val detailJson: JsValue = Json.toJson(this)
