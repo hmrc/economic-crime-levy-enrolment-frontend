@@ -23,7 +23,7 @@ import uk.gov.hmrc.economiccrimelevyenrolment.models.audit.{ClaimEnrolmentDetail
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.EclEnrolment
 import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
 import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, UserAnswers}
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
 import javax.inject.Inject
@@ -39,11 +39,11 @@ class EclReferencePageNavigator @Inject() (
   override protected def navigate(userAnswers: UserAnswers)(implicit request: DataRequest[_]): Future[Call] =
     userAnswers.eclReferenceNumber match {
       case Some(eclReferenceNumber) =>
-        verifyEclReferenceNumber(eclReferenceNumber, userAnswers.internalId)
+        verifyEclReferenceNumber(eclReferenceNumber)
       case _                        => Future.successful(routes.NotableErrorController.answersAreInvalid())
     }
 
-  private def verifyEclReferenceNumber(eclReferenceNumber: String, internalId: String)(implicit
+  private def verifyEclReferenceNumber(eclReferenceNumber: String)(implicit
     request: DataRequest[_]
   ): Future[Call] = {
     val knownFacts = Seq(
@@ -55,17 +55,24 @@ class EclReferencePageNavigator @Inject() (
         response.enrolments.find(_.identifiers.exists(_.value == eclReferenceNumber)) match {
           case Some(_) => routes.EclRegistrationDateController.onPageLoad()
           case _       =>
-            auditConnector.sendExtendedEvent(
-              ClaimEnrolmentDetailsMismatchAuditEvent(
-                internalId = internalId,
-                mismatchReason = ClaimEnrolmentDetailsMismatchReason.EclReferenceMismatch,
-                eclReference = eclReferenceNumber,
-                eclRegistrationDate = None
-              ).extendedDataEvent
-            )
+            auditEclReferenceMismatch(eclReferenceNumber)
             routes.NotableErrorController.detailsDoNotMatch()
         }
-      case _              => routes.NotableErrorController.detailsDoNotMatch()
+      case _              =>
+        auditEclReferenceMismatch(eclReferenceNumber)
+        routes.NotableErrorController.detailsDoNotMatch()
     }
   }
+
+  private def auditEclReferenceMismatch(eclReferenceNumber: String)(implicit
+    request: DataRequest[_]
+  ): Future[AuditResult] =
+    auditConnector.sendExtendedEvent(
+      ClaimEnrolmentDetailsMismatchAuditEvent(
+        internalId = request.internalId,
+        mismatchReason = ClaimEnrolmentDetailsMismatchReason.EclReferenceMismatch,
+        eclReference = eclReferenceNumber,
+        eclRegistrationDate = None
+      ).extendedDataEvent
+    )
 }
