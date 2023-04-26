@@ -96,6 +96,10 @@ class EclReferencePageNavigatorSpec extends SpecBase {
         await(
           pageNavigator.nextPage(updatedAnswers)(request)
         ) shouldBe routes.NotableErrorController.detailsDoNotMatch()
+
+        verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(any(), any())
+
+        reset(mockAuditConnector)
     }
 
     "return a Call to the answers are invalid page when no answer has been provided" in forAll {

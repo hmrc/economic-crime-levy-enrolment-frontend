@@ -19,11 +19,11 @@ package uk.gov.hmrc.economiccrimelevyenrolment.navigation
 import play.api.mvc.Call
 import uk.gov.hmrc.economiccrimelevyenrolment.connectors.{EnrolmentStoreProxyConnector, TaxEnrolmentsConnector}
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
-import uk.gov.hmrc.economiccrimelevyenrolment.models.audit.{ClaimEnrolmentDetailsMismatchAuditEvent, ClaimEnrolmentDetailsMismatchReason, EnrolmentClaimedAuditEvent}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.audit.{ClaimEnrolmentDetailsMismatchAuditEvent, ClaimEnrolmentDetailsMismatchReason}
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{AllocateEnrolmentRequest, EclEnrolment}
 import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
 import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, UserAnswers}
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
 import java.time.LocalDate
@@ -43,12 +43,12 @@ class EclRegistrationDatePageNavigator @Inject() (
   override protected def navigate(userAnswers: UserAnswers)(implicit request: DataRequest[_]): Future[Call] =
     (userAnswers.eclReferenceNumber, userAnswers.eclRegistrationDate) match {
       case (Some(eclReferenceNumber), Some(eclRegistrationDate)) =>
-        verifyEclRegistrationDate(eclReferenceNumber, eclRegistrationDate, userAnswers.internalId)
+        verifyEclRegistrationDate(eclReferenceNumber, eclRegistrationDate)
       case _                                                     => Future.successful(routes.NotableErrorController.answersAreInvalid())
     }
 
-  private def verifyEclRegistrationDate(eclReferenceNumber: String, eclRegistrationDate: LocalDate, internalId: String)(
-    implicit request: DataRequest[_]
+  private def verifyEclRegistrationDate(eclReferenceNumber: String, eclRegistrationDate: LocalDate)(implicit
+    request: DataRequest[_]
   ): Future[Call] = {
     val eclRegistrationDateString = eclRegistrationDate.format(DateTimeFormatter.BASIC_ISO_DATE)
 
@@ -59,22 +59,20 @@ class EclRegistrationDatePageNavigator @Inject() (
 
     enrolmentStoreProxyConnector.queryKnownFacts(knownFacts).flatMap {
       case Some(response) =>
-        response.enrolments.find(_.verifiers.exists(_.value == eclRegistrationDateString)) match {
+        response.enrolments.find(e =>
+          e.verifiers.exists(_.value == eclRegistrationDateString) && e.identifiers
+            .exists(_.value == eclReferenceNumber)
+        ) match {
           case Some(_) =>
             allocateEnrolment(eclReferenceNumber, eclRegistrationDateString)
               .map(_ => routes.ConfirmationController.onPageLoad())
           case _       =>
-            auditConnector.sendExtendedEvent(
-              ClaimEnrolmentDetailsMismatchAuditEvent(
-                internalId,
-                ClaimEnrolmentDetailsMismatchReason.EclRegistrationDateMismatch,
-                eclReferenceNumber,
-                Some(eclRegistrationDate.toString)
-              ).extendedDataEvent
-            )
+            auditEclRegistrationDateMismatch(eclReferenceNumber, eclRegistrationDate)
             Future.successful(routes.NotableErrorController.detailsDoNotMatch())
         }
-      case _              => Future.successful(routes.NotableErrorController.detailsDoNotMatch())
+      case _              =>
+        auditEclRegistrationDateMismatch(eclReferenceNumber, eclRegistrationDate)
+        Future.successful(routes.NotableErrorController.detailsDoNotMatch())
     }
   }
 
@@ -88,5 +86,17 @@ class EclRegistrationDatePageNavigator @Inject() (
       verifiers = Seq(KeyValue(EclEnrolment.VerifierKey, eclRegistrationDate))
     )
   )
+
+  private def auditEclRegistrationDateMismatch(eclReferenceNumber: String, eclRegistrationDate: LocalDate)(implicit
+    request: DataRequest[_]
+  ): Future[AuditResult] =
+    auditConnector.sendExtendedEvent(
+      ClaimEnrolmentDetailsMismatchAuditEvent(
+        internalId = request.internalId,
+        mismatchReason = ClaimEnrolmentDetailsMismatchReason.EclRegistrationDateMismatch,
+        eclReference = eclReferenceNumber,
+        eclRegistrationDate = Some(eclRegistrationDate)
+      ).extendedDataEvent
+    )
 
 }
