@@ -29,6 +29,7 @@ import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
 import uk.gov.hmrc.economiccrimelevyenrolment.navigation.EclRegistrationDatePageNavigator
 import uk.gov.hmrc.economiccrimelevyenrolment.repositories.SessionRepository
 import uk.gov.hmrc.economiccrimelevyenrolment.views.html.EclRegistrationDateView
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -41,10 +42,12 @@ class EclRegistrationDateControllerSpec extends SpecBase {
   val mockSessionRepository: SessionRepository                       = mock[SessionRepository]
   val mockEnrolmentStoreProxyConnector: EnrolmentStoreProxyConnector = mock[EnrolmentStoreProxyConnector]
   val mockTaxEnrolmentsConnector: TaxEnrolmentsConnector             = mock[TaxEnrolmentsConnector]
+  val mockAuditConnector: AuditConnector                             = mock[AuditConnector]
 
   val pageNavigator: EclRegistrationDatePageNavigator = new EclRegistrationDatePageNavigator(
     mockEnrolmentStoreProxyConnector,
-    mockTaxEnrolmentsConnector
+    mockTaxEnrolmentsConnector,
+    mockAuditConnector
   ) {
     override protected def navigate(userAnswers: UserAnswers)(implicit request: DataRequest[_]): Future[Call] =
       Future.successful(onwardRoute)

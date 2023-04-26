@@ -19,9 +19,11 @@ package uk.gov.hmrc.economiccrimelevyenrolment.navigation
 import play.api.mvc.Call
 import uk.gov.hmrc.economiccrimelevyenrolment.connectors.{EnrolmentStoreProxyConnector, TaxEnrolmentsConnector}
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
+import uk.gov.hmrc.economiccrimelevyenrolment.models.audit.{ClaimEnrolmentDetailsMismatchAuditEvent, ClaimEnrolmentDetailsMismatchReason, EnrolmentClaimedAuditEvent}
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{AllocateEnrolmentRequest, EclEnrolment}
 import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
 import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, UserAnswers}
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
 import java.time.LocalDate
@@ -31,7 +33,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EclRegistrationDatePageNavigator @Inject() (
   enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector,
-  taxEnrolmentsConnector: TaxEnrolmentsConnector
+  taxEnrolmentsConnector: TaxEnrolmentsConnector,
+  auditConnector: AuditConnector
 )(implicit
   ec: ExecutionContext
 ) extends AsyncPageNavigator
@@ -40,12 +43,12 @@ class EclRegistrationDatePageNavigator @Inject() (
   override protected def navigate(userAnswers: UserAnswers)(implicit request: DataRequest[_]): Future[Call] =
     (userAnswers.eclReferenceNumber, userAnswers.eclRegistrationDate) match {
       case (Some(eclReferenceNumber), Some(eclRegistrationDate)) =>
-        verifyEclRegistrationDate(eclReferenceNumber, eclRegistrationDate)
+        verifyEclRegistrationDate(eclReferenceNumber, eclRegistrationDate, userAnswers.internalId)
       case _                                                     => Future.successful(routes.NotableErrorController.answersAreInvalid())
     }
 
-  private def verifyEclRegistrationDate(eclReferenceNumber: String, eclRegistrationDate: LocalDate)(implicit
-    request: DataRequest[_]
+  private def verifyEclRegistrationDate(eclReferenceNumber: String, eclRegistrationDate: LocalDate, internalId: String)(
+    implicit request: DataRequest[_]
   ): Future[Call] = {
     val eclRegistrationDateString = eclRegistrationDate.format(DateTimeFormatter.BASIC_ISO_DATE)
 
@@ -60,7 +63,16 @@ class EclRegistrationDatePageNavigator @Inject() (
           case Some(_) =>
             allocateEnrolment(eclReferenceNumber, eclRegistrationDateString)
               .map(_ => routes.ConfirmationController.onPageLoad())
-          case _       => Future.successful(routes.NotableErrorController.detailsDoNotMatch())
+          case _       =>
+            auditConnector.sendExtendedEvent(
+              ClaimEnrolmentDetailsMismatchAuditEvent(
+                internalId,
+                ClaimEnrolmentDetailsMismatchReason.EclRegistrationDateMismatch,
+                eclReferenceNumber,
+                Some(eclRegistrationDate.toString)
+              ).extendedDataEvent
+            )
+            Future.successful(routes.NotableErrorController.detailsDoNotMatch())
         }
       case _              => Future.successful(routes.NotableErrorController.detailsDoNotMatch())
     }
