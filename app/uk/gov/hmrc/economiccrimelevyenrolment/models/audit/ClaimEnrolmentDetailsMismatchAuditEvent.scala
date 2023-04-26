@@ -18,6 +18,8 @@ package uk.gov.hmrc.economiccrimelevyenrolment.models.audit
 
 import play.api.libs.json._
 
+import java.time.LocalDate
+
 sealed trait ClaimEnrolmentDetailsMismatchReason
 
 object ClaimEnrolmentDetailsMismatchReason {
@@ -32,7 +34,7 @@ case class ClaimEnrolmentDetailsMismatchAuditEvent(
   internalId: String,
   mismatchReason: ClaimEnrolmentDetailsMismatchReason,
   eclReference: String,
-  eclRegistrationDate: Option[String]
+  eclRegistrationDate: Option[LocalDate]
 ) extends AuditEvent {
   override val auditType: String   = "ClaimEnrolmentDetailsMismatch"
   override val detailJson: JsValue = Json.toJson(this)

@@ -59,16 +59,19 @@ class EclRegistrationDatePageNavigator @Inject() (
 
     enrolmentStoreProxyConnector.queryKnownFacts(knownFacts).flatMap {
       case Some(response) =>
-        response.enrolments.find(_.verifiers.exists(_.value == eclRegistrationDateString)) match {
+        response.enrolments.find(e =>
+          e.verifiers.exists(_.value == eclRegistrationDateString) && e.identifiers
+            .exists(_.value == eclReferenceNumber)
+        ) match {
           case Some(_) =>
             allocateEnrolment(eclReferenceNumber, eclRegistrationDateString)
               .map(_ => routes.ConfirmationController.onPageLoad())
           case _       =>
-            auditEclRegistrationDateMismatch(eclReferenceNumber, eclRegistrationDate.toString)
+            auditEclRegistrationDateMismatch(eclReferenceNumber, eclRegistrationDate)
             Future.successful(routes.NotableErrorController.detailsDoNotMatch())
         }
       case _              =>
-        auditEclRegistrationDateMismatch(eclReferenceNumber, eclRegistrationDate.toString)
+        auditEclRegistrationDateMismatch(eclReferenceNumber, eclRegistrationDate)
         Future.successful(routes.NotableErrorController.detailsDoNotMatch())
     }
   }
@@ -84,13 +87,13 @@ class EclRegistrationDatePageNavigator @Inject() (
     )
   )
 
-  private def auditEclRegistrationDateMismatch(eclReferenceNumber: String, eclRegistrationDate: String)(implicit
+  private def auditEclRegistrationDateMismatch(eclReferenceNumber: String, eclRegistrationDate: LocalDate)(implicit
     request: DataRequest[_]
   ): Future[AuditResult] =
     auditConnector.sendExtendedEvent(
       ClaimEnrolmentDetailsMismatchAuditEvent(
         internalId = request.internalId,
-        mismatchReason = ClaimEnrolmentDetailsMismatchReason.EclReferenceMismatch,
+        mismatchReason = ClaimEnrolmentDetailsMismatchReason.EclRegistrationDateMismatch,
         eclReference = eclReferenceNumber,
         eclRegistrationDate = Some(eclRegistrationDate)
       ).extendedDataEvent
