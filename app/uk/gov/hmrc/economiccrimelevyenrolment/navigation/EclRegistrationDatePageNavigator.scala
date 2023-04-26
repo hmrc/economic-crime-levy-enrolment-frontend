@@ -19,7 +19,7 @@ package uk.gov.hmrc.economiccrimelevyenrolment.navigation
 import play.api.mvc.Call
 import uk.gov.hmrc.economiccrimelevyenrolment.connectors.{EnrolmentStoreProxyConnector, TaxEnrolmentsConnector}
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
-import uk.gov.hmrc.economiccrimelevyenrolment.models.audit.{ClaimEnrolmentDetailsMismatchAuditEvent, ClaimEnrolmentDetailsMismatchReason}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.audit.{ClaimEnrolmentDetailsMismatchAuditEvent, ClaimEnrolmentDetailsMismatchReason, EnrolmentClaimedAuditEvent}
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{AllocateEnrolmentRequest, EclEnrolment}
 import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
 import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, UserAnswers}
@@ -65,7 +65,16 @@ class EclRegistrationDatePageNavigator @Inject() (
         ) match {
           case Some(_) =>
             allocateEnrolment(eclReferenceNumber, eclRegistrationDateString)
-              .map(_ => routes.ConfirmationController.onPageLoad())
+              .map {
+                auditConnector.sendExtendedEvent(
+                  EnrolmentClaimedAuditEvent(
+                    request.internalId,
+                    eclReferenceNumber,
+                    eclRegistrationDate
+                  ).extendedDataEvent
+                )
+                _ => routes.ConfirmationController.onPageLoad()
+              }
           case _       =>
             auditEclRegistrationDateMismatch(eclReferenceNumber, eclRegistrationDate)
             Future.successful(routes.NotableErrorController.detailsDoNotMatch())

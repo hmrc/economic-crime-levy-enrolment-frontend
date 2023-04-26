@@ -18,7 +18,9 @@ package uk.gov.hmrc.economiccrimelevyenrolment.models.audit
 
 import play.api.libs.json.{JsValue, Json, OWrites}
 
-case class EnrolmentClaimedAuditEvent(internalId: String, eclReference: String, eclRegistrationDate: String)
+import java.time.LocalDate
+
+case class EnrolmentClaimedAuditEvent(internalId: String, eclReference: String, eclRegistrationDate: LocalDate)
     extends AuditEvent {
   override val auditType: String   = "EnrolmentClaimed"
   override val detailJson: JsValue = Json.toJson(this)

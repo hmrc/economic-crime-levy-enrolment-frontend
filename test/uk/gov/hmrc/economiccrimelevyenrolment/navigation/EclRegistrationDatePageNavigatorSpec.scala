@@ -77,6 +77,10 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
         await(
           pageNavigator.nextPage(updatedAnswers)(request)
         ) shouldBe routes.ConfirmationController.onPageLoad()
+
+        verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(any(), any())
+
+        reset(mockAuditConnector)
     }
 
     "return a Call to the details do not match page when the date of registration does not match" in forAll {
