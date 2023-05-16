@@ -17,7 +17,7 @@
 package uk.gov.hmrc.economiccrimelevyenrolment.handlers
 
 import javax.inject.{Inject, Singleton}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Request
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
@@ -34,4 +34,10 @@ class ErrorHandler @Inject() (
     rh: Request[_]
   ): Html =
     view(pageTitle, heading, message)
+
+  override def internalServerErrorTemplate(implicit request: Request[_]): Html = standardErrorTemplate(
+    Messages("error.problemWithService.title"),
+    Messages("error.problemWithService.heading"),
+    Messages("error.problemWithService.message")
+  )
 }
