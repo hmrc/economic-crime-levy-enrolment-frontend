@@ -59,4 +59,7 @@ class StubEnrolmentStoreProxyConnector @Inject() (appConfig: AppConfig) extends 
       )
     )
 
+  def queryGroupsWithEnrolment(eclReference: String)(implicit
+    hc: HeaderCarrier
+  ): Future[Option[QueryGroupsWithEnrolmentResponse]] = Future.successful(None)
 }

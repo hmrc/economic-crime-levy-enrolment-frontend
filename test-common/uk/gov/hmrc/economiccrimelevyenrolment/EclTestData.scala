@@ -111,7 +111,7 @@ trait EclTestData { self: Generators =>
 
   private def authEnrolmentsToEnrolments(authEnrolments: Enrolments) =
     authEnrolments.enrolments
-      .map(e => GroupEnrolment(e.key, e.identifiers.map(i => KeyValue(i.key, i.value)), Seq.empty))
+      .map(e => GroupEnrolment(e.key, e.identifiers.map(i => KeyValue(i.key, i.value))))
       .toSeq
 
   def alphaNumericString: String = Gen.alphaNumStr.retryUntil(_.nonEmpty).sample.get

@@ -21,7 +21,7 @@ import org.mockito.ArgumentMatchers.any
 import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.KeyValue
-import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, GroupEnrolmentsResponse, QueryKnownFactsRequest, QueryKnownFactsResponse}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd._
 import uk.gov.hmrc.http.HttpClient
 
 import java.time.LocalDate
@@ -35,7 +35,6 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase {
   val enrolmentStoreUrl: String  = s"${appConfig.enrolmentStoreProxyBaseUrl}/enrolment-store-proxy/enrolment-store"
 
   "getEnrolmentsForGroup" should {
-
     "return a list of enrolments for the specified group when the http client returns a list of enrolments" in forAll {
       (groupId: String, groupEnrolments: Option[GroupEnrolmentsResponse]) =>
         val expectedUrl = s"$enrolmentStoreUrl/groups/$groupId/enrolments"
@@ -61,7 +60,6 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase {
   }
 
   "queryKnownFacts" should {
-
     "return known facts when the http client returns known facts" in forAll {
       (
         eclRegistrationReference: String,
@@ -104,6 +102,47 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase {
             any()
           )(
             any(),
+            any(),
+            any(),
+            any()
+          )
+
+        reset(mockHttpClient)
+    }
+  }
+
+  "queryGroupsWithEnrolment" should {
+    "return the groups with enrolment response when the http client returns one" in forAll {
+      (
+        eclRegistrationReference: String,
+        queryGroupsWithEnrolmentResponse: Option[QueryGroupsWithEnrolmentResponse]
+      ) =>
+        val expectedUrl = s"$enrolmentStoreUrl/enrolments/${EclEnrolment.EnrolmentKey(eclRegistrationReference)}/groups"
+
+        when(
+          mockHttpClient
+            .GET[Option[QueryGroupsWithEnrolmentResponse]](
+              ArgumentMatchers.eq(expectedUrl),
+              any(),
+              any()
+            )(
+              any(),
+              any(),
+              any()
+            )
+        )
+          .thenReturn(Future.successful(queryGroupsWithEnrolmentResponse))
+
+        val result = await(connector.queryGroupsWithEnrolment(eclRegistrationReference))
+
+        result shouldBe queryGroupsWithEnrolmentResponse
+
+        verify(mockHttpClient, times(1))
+          .GET[Option[QueryGroupsWithEnrolmentResponse]](
+            ArgumentMatchers.eq(expectedUrl),
+            any(),
+            any()
+          )(
             any(),
             any(),
             any()

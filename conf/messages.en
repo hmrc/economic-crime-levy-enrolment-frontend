@@ -115,6 +115,14 @@ assistantCannotRegister.heading = You must be an administrator to register for t
 assistantCannotRegister.p1 = You are not an administrator for your organisation. You cannot use this service to register for the Economic Crime Levy (ECL).
 assistantCannotRegister.p2 = You will need to ask an administrator in your organisation to add you to the account.
 
+duplicateEnrolment.title = This Economic Crime Levy reference number is linked to another account
+duplicateEnrolment.heading = This Economic Crime Levy reference number is linked to another account
+duplicateEnrolment.p1 = You cannot use this reference number to add the Economic Crime Levy to your business tax account.
+duplicateEnrolment.p2 = This is because this number is already linked to another account.
+duplicateEnrolment.p3 = You can:
+duplicateEnrolment.b1 = speak to someone in your organisation if you think they might have already registered
+duplicateEnrolment.b1 = <a href="https://www.access.service.gov.uk/account-recovery/recover/userid/check-your-emails" class="govuk-link">recover your Government Gateway user ID</a> if you registered using a different account
+
 feedback.heading = Tell us what you think
 feedback.p1 = This is a new service and we want to know what you think of it.
 feedback.link = <a href="{0}" class="govuk-link">Send us your feedback</a>

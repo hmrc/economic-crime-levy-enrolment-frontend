@@ -44,6 +44,7 @@ class EclReferenceISpec extends ISpecBase with AuthorisedBehaviour {
 
     "save the provided ECL reference number then redirect to the ECL registration date page" in {
       stubAuthorised()
+      stubGroupsWithEnrolment(testEclRegistrationReference)
       stubQueryKnownFacts(testEclRegistrationReference)
 
       sessionRepository.upsert(

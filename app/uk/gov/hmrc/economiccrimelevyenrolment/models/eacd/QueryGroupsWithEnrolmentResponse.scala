@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.economiccrimelevyenrolment.models.eacd
 
-object EclEnrolment {
-  val ServiceName: String            = "HMRC-ECL-ORG"
-  val IdentifierKey: String          = "EclRegistrationReference"
-  val VerifierKey: String            = "EclRegistrationDate"
-  val EnrolmentKey: String => String = s => s"$ServiceName~$IdentifierKey~$s"
+import play.api.libs.json.{Json, OFormat}
+
+final case class QueryGroupsWithEnrolmentResponse(principalGroupIds: Seq[String], delegatedGroupIds: Seq[String])
+
+object QueryGroupsWithEnrolmentResponse {
+  implicit val format: OFormat[QueryGroupsWithEnrolmentResponse] = Json.format[QueryGroupsWithEnrolmentResponse]
 }

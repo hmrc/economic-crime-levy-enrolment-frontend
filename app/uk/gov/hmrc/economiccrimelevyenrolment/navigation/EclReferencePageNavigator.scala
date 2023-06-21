@@ -50,17 +50,21 @@ class EclReferencePageNavigator @Inject() (
       KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber)
     )
 
-    enrolmentStoreProxyConnector.queryKnownFacts(knownFacts).map {
-      case Some(response) =>
-        response.enrolments.find(_.identifiers.exists(_.value == eclReferenceNumber)) match {
-          case Some(_) => routes.EclRegistrationDateController.onPageLoad()
-          case _       =>
+    enrolmentStoreProxyConnector.queryGroupsWithEnrolment(eclReferenceNumber).flatMap {
+      case Some(_) => Future.successful(routes.NotableErrorController.duplicateEnrolment())
+      case None    =>
+        enrolmentStoreProxyConnector.queryKnownFacts(knownFacts).map {
+          case Some(response) =>
+            response.enrolments.find(_.identifiers.exists(_.value == eclReferenceNumber)) match {
+              case Some(_) => routes.EclRegistrationDateController.onPageLoad()
+              case _       =>
+                auditEclReferenceMismatch(eclReferenceNumber)
+                routes.NotableErrorController.detailsDoNotMatch()
+            }
+          case _              =>
             auditEclReferenceMismatch(eclReferenceNumber)
             routes.NotableErrorController.detailsDoNotMatch()
         }
-      case _              =>
-        auditEclReferenceMismatch(eclReferenceNumber)
-        routes.NotableErrorController.detailsDoNotMatch()
     }
   }
 

@@ -18,7 +18,7 @@ package uk.gov.hmrc.economiccrimelevyenrolment.connectors
 
 import uk.gov.hmrc.economiccrimelevyenrolment.config.AppConfig
 import uk.gov.hmrc.economiccrimelevyenrolment.models.KeyValue
-import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, GroupEnrolmentsResponse, QueryKnownFactsRequest, QueryKnownFactsResponse}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd._
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
@@ -28,6 +28,9 @@ import scala.concurrent.{ExecutionContext, Future}
 trait EnrolmentStoreProxyConnector {
   def getEnrolmentsForGroup(groupId: String)(implicit hc: HeaderCarrier): Future[Option[GroupEnrolmentsResponse]]
   def queryKnownFacts(knownFacts: Seq[KeyValue])(implicit hc: HeaderCarrier): Future[Option[QueryKnownFactsResponse]]
+  def queryGroupsWithEnrolment(eclReference: String)(implicit
+    hc: HeaderCarrier
+  ): Future[Option[QueryGroupsWithEnrolmentResponse]]
 }
 
 class EnrolmentStoreProxyConnectorImpl @Inject() (appConfig: AppConfig, httpClient: HttpClient)(implicit
@@ -51,4 +54,10 @@ class EnrolmentStoreProxyConnectorImpl @Inject() (appConfig: AppConfig, httpClie
       )
     )(QueryKnownFactsRequest.format, readOptionOfNotFoundOrNoContent[QueryKnownFactsResponse], hc, ec)
 
+  def queryGroupsWithEnrolment(eclReference: String)(implicit
+    hc: HeaderCarrier
+  ): Future[Option[QueryGroupsWithEnrolmentResponse]] =
+    httpClient.GET[Option[QueryGroupsWithEnrolmentResponse]](
+      s"$enrolmentStoreUrl/enrolments/${EclEnrolment.EnrolmentKey(eclReference)}/groups"
+    )(readOptionOfNotFoundOrNoContent[QueryGroupsWithEnrolmentResponse], hc, ec)
 }
