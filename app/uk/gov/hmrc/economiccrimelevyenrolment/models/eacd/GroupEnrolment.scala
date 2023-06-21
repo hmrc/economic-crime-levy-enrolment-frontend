@@ -21,8 +21,7 @@ import uk.gov.hmrc.economiccrimelevyenrolment.models.KeyValue
 
 final case class GroupEnrolment(
   service: String,
-  identifiers: Seq[KeyValue],
-  verifiers: Seq[KeyValue]
+  identifiers: Seq[KeyValue]
 )
 
 object GroupEnrolment {

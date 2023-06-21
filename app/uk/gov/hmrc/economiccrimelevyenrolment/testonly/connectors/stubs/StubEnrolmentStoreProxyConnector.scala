@@ -19,7 +19,7 @@ package uk.gov.hmrc.economiccrimelevyenrolment.testonly.connectors.stubs
 import uk.gov.hmrc.economiccrimelevyenrolment.config.AppConfig
 import uk.gov.hmrc.economiccrimelevyenrolment.connectors.EnrolmentStoreProxyConnector
 import uk.gov.hmrc.economiccrimelevyenrolment.models.KeyValue
-import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolment, GroupEnrolment, GroupEnrolmentsResponse, QueryKnownFactsResponse}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -34,8 +34,7 @@ class StubEnrolmentStoreProxyConnector @Inject() (appConfig: AppConfig) extends 
         Seq(
           GroupEnrolment(
             service = EclEnrolment.ServiceName,
-            identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = "XMECL0000000001")),
-            verifiers = Seq(KeyValue(EclEnrolment.VerifierKey, "20230301"))
+            identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = "XMECL0000000001"))
           )
         )
       )
