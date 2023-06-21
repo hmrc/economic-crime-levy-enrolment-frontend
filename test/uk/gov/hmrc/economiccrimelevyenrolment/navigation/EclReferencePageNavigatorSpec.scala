@@ -22,7 +22,7 @@ import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase
 import uk.gov.hmrc.economiccrimelevyenrolment.connectors.EnrolmentStoreProxyConnector
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
-import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolment, QueryKnownFactsResponse}
+import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolment, QueryGroupsWithEnrolmentResponse, QueryKnownFactsResponse}
 import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
 import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, UserAnswers}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -37,7 +37,7 @@ class EclReferencePageNavigatorSpec extends SpecBase {
   val pageNavigator = new EclReferencePageNavigator(mockEnrolmentStoreProxyConnector, mockAuditConnector)
 
   "nextPage" should {
-    "return a Call to the date of registration page when the ECL reference number matches" in forAll {
+    "return a Call to the date of registration page when the ECL reference number matches and isn't already allocated to another group" in forAll {
       (userAnswers: UserAnswers, eclReferenceNumber: String, request: DataRequest[_]) =>
         val updatedAnswers: UserAnswers               = userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
         val knownFacts: Seq[KeyValue]                 = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber))
@@ -51,15 +51,21 @@ class EclReferencePageNavigatorSpec extends SpecBase {
           )
         )
 
+        when(mockEnrolmentStoreProxyConnector.queryGroupsWithEnrolment(ArgumentMatchers.eq(eclReferenceNumber))(any()))
+          .thenReturn(Future.successful(None))
+
         when(mockEnrolmentStoreProxyConnector.queryKnownFacts(ArgumentMatchers.eq(knownFacts))(any()))
           .thenReturn(Future.successful(Some(expectedResponse)))
+
+        when(mockEnrolmentStoreProxyConnector.queryGroupsWithEnrolment(ArgumentMatchers.eq(eclReferenceNumber))(any()))
+          .thenReturn(Future.successful(None))
 
         await(
           pageNavigator.nextPage(updatedAnswers)(request)
         ) shouldBe routes.EclRegistrationDateController.onPageLoad()
     }
 
-    "return a Call to the details are invalid page when the ECL reference number does not match" in forAll {
+    "return a Call to the details are invalid page when the ECL reference number does not match and isn't already allocated to another group" in forAll {
       (userAnswers: UserAnswers, eclReferenceNumber: String, request: DataRequest[_]) =>
         val updatedAnswers: UserAnswers               = userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
         val knownFacts: Seq[KeyValue]                 = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber))
@@ -73,6 +79,9 @@ class EclReferencePageNavigatorSpec extends SpecBase {
           )
         )
 
+        when(mockEnrolmentStoreProxyConnector.queryGroupsWithEnrolment(ArgumentMatchers.eq(eclReferenceNumber))(any()))
+          .thenReturn(Future.successful(None))
+
         when(mockEnrolmentStoreProxyConnector.queryKnownFacts(ArgumentMatchers.eq(knownFacts))(any()))
           .thenReturn(Future.successful(Some(expectedResponse)))
 
@@ -85,10 +94,13 @@ class EclReferencePageNavigatorSpec extends SpecBase {
         reset(mockAuditConnector)
     }
 
-    "return a Call to the details are invalid page when the API does not return any results" in forAll {
+    "return a Call to the details are invalid page when the API does not return any results and the ECL reference isn't already allocated to another group" in forAll {
       (userAnswers: UserAnswers, eclReferenceNumber: String, request: DataRequest[_]) =>
         val updatedAnswers: UserAnswers = userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
         val knownFacts: Seq[KeyValue]   = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber))
+
+        when(mockEnrolmentStoreProxyConnector.queryGroupsWithEnrolment(ArgumentMatchers.eq(eclReferenceNumber))(any()))
+          .thenReturn(Future.successful(None))
 
         when(mockEnrolmentStoreProxyConnector.queryKnownFacts(ArgumentMatchers.eq(knownFacts))(any()))
           .thenReturn(Future.successful(None))
@@ -100,6 +112,23 @@ class EclReferencePageNavigatorSpec extends SpecBase {
         verify(mockAuditConnector, times(1)).sendExtendedEvent(any())(any(), any())
 
         reset(mockAuditConnector)
+    }
+
+    "return a Call to the duplicate enrolment page when the ECL already allocated to another group" in forAll {
+      (
+        userAnswers: UserAnswers,
+        eclReferenceNumber: String,
+        groupsWithEnrolment: QueryGroupsWithEnrolmentResponse,
+        request: DataRequest[_]
+      ) =>
+        val updatedAnswers: UserAnswers = userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
+
+        when(mockEnrolmentStoreProxyConnector.queryGroupsWithEnrolment(ArgumentMatchers.eq(eclReferenceNumber))(any()))
+          .thenReturn(Future.successful(Some(groupsWithEnrolment)))
+
+        await(
+          pageNavigator.nextPage(updatedAnswers)(request)
+        ) shouldBe routes.NotableErrorController.duplicateEnrolment()
     }
 
     "return a Call to the answers are invalid page when no answer has been provided" in forAll {

@@ -88,6 +88,17 @@ trait EnrolmentStoreProxyStubs { self: WireMockStubs =>
         .withStatus(NO_CONTENT)
     )
 
+  def stubGroupsWithEnrolment(eclReference: String): StubMapping =
+    stub(
+      get(
+        urlEqualTo(
+          s"/enrolment-store-proxy/enrolment-store/enrolments/${EclEnrolment.EnrolmentKey(eclReference)}/groups?ignore-assignments=true"
+        )
+      ),
+      aResponse()
+        .withStatus(NO_CONTENT)
+    )
+
   def stubWithGroupEclEnrolment(): StubMapping =
     stub(
       get(urlEqualTo(s"/enrolment-store-proxy/enrolment-store/groups/$testGroupId/enrolments")),

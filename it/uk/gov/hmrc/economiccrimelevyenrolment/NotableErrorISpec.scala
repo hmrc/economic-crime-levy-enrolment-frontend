@@ -23,7 +23,7 @@ import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 
 class NotableErrorISpec extends ISpecBase with AuthorisedBehaviour {
 
-  s"GET ${routes.NotableErrorController.detailsDoNotMatch().url}" should {
+  s"GET ${routes.NotableErrorController.detailsDoNotMatch().url}"       should {
     behave like authorisedActionWithEnrolmentCheckRoute(routes.NotableErrorController.detailsDoNotMatch())
 
     "respond with 200 status and the details do not match HTML view" in {
@@ -32,11 +32,11 @@ class NotableErrorISpec extends ISpecBase with AuthorisedBehaviour {
       val result = callRoute(FakeRequest(routes.NotableErrorController.detailsDoNotMatch()))
 
       status(result) shouldBe OK
-      html(result) should include("Your details do not match our records")
+      html(result)     should include("Your details do not match our records")
     }
   }
 
-  s"GET ${routes.NotableErrorController.answersAreInvalid().url}"                                         should {
+  s"GET ${routes.NotableErrorController.answersAreInvalid().url}"       should {
     behave like authorisedActionWithEnrolmentCheckRoute(routes.NotableErrorController.answersAreInvalid())
 
     "respond with 200 status and the answers are invalid HTML view" in {
@@ -49,7 +49,7 @@ class NotableErrorISpec extends ISpecBase with AuthorisedBehaviour {
     }
   }
 
-  s"GET ${routes.NotableErrorController.userAlreadyEnrolled().url}"                                       should {
+  s"GET ${routes.NotableErrorController.userAlreadyEnrolled().url}"     should {
     behave like authorisedActionWithoutEnrolmentCheckRoute(routes.NotableErrorController.userAlreadyEnrolled())
 
     "respond with 200 status and the user already enrolled HTML view" in {
@@ -62,7 +62,7 @@ class NotableErrorISpec extends ISpecBase with AuthorisedBehaviour {
     }
   }
 
-  s"GET ${routes.NotableErrorController.groupAlreadyEnrolled().url}"                                      should {
+  s"GET ${routes.NotableErrorController.groupAlreadyEnrolled().url}"    should {
     behave like authorisedActionWithoutEnrolmentCheckRoute(routes.NotableErrorController.groupAlreadyEnrolled())
 
     "respond with 200 status and the org already registered HTML view" in {
@@ -76,7 +76,7 @@ class NotableErrorISpec extends ISpecBase with AuthorisedBehaviour {
     }
   }
 
-  s"GET ${routes.NotableErrorController.agentCannotRegister().url}"                                       should {
+  s"GET ${routes.NotableErrorController.agentCannotRegister().url}"     should {
     behave like authorisedActionAgentsAllowedRoute(routes.NotableErrorController.agentCannotRegister())
 
     "respond with 200 status and the agent cannot register HTML view" in {
@@ -89,7 +89,7 @@ class NotableErrorISpec extends ISpecBase with AuthorisedBehaviour {
     }
   }
 
-  s"GET ${routes.NotableErrorController.assistantCannotRegister().url}"                                   should {
+  s"GET ${routes.NotableErrorController.assistantCannotRegister().url}" should {
     behave like authorisedActionAssistantsAllowedRoute(routes.NotableErrorController.assistantCannotRegister())
 
     "respond with 200 status and the assistant cannot register HTML view" in {
@@ -102,4 +102,16 @@ class NotableErrorISpec extends ISpecBase with AuthorisedBehaviour {
     }
   }
 
+  s"GET ${routes.NotableErrorController.duplicateEnrolment().url}"      should {
+    behave like authorisedActionWithoutEnrolmentCheckRoute(routes.NotableErrorController.duplicateEnrolment())
+
+    "respond with 200 status and the duplicate enrolment HTML view" in {
+      stubAuthorisedWithNoGroupEnrolment()
+
+      val result = callRoute(FakeRequest(routes.NotableErrorController.duplicateEnrolment()))
+
+      status(result) shouldBe OK
+      html(result)     should include("This Economic Crime Levy reference number is linked to another account")
+    }
+  }
 }

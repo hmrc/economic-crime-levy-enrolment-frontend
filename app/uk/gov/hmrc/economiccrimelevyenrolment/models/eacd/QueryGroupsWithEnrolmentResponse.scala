@@ -17,13 +17,9 @@
 package uk.gov.hmrc.economiccrimelevyenrolment.models.eacd
 
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.economiccrimelevyenrolment.models.KeyValue
 
-final case class GroupEnrolment(
-  service: String,
-  identifiers: Seq[KeyValue]
-)
+final case class QueryGroupsWithEnrolmentResponse(principalGroupIds: Seq[String], delegatedGroupIds: Seq[String])
 
-object GroupEnrolment {
-  implicit val format: OFormat[GroupEnrolment] = Json.format[GroupEnrolment]
+object QueryGroupsWithEnrolmentResponse {
+  implicit val format: OFormat[QueryGroupsWithEnrolmentResponse] = Json.format[QueryGroupsWithEnrolmentResponse]
 }

@@ -40,7 +40,8 @@ class NotableErrorController @Inject() (
   answersAreInvalidView: AnswersAreInvalidView,
   detailsDoNotMatchView: DetailsDoNotMatchView,
   agentCannotRegisterView: AgentCannotRegisterView,
-  assistantCannotRegisterView: AssistantCannotRegisterView
+  assistantCannotRegisterView: AssistantCannotRegisterView,
+  duplicateEnrolmentView: DuplicateEnrolmentView
 ) extends FrontendBaseController
     with I18nSupport {
 
@@ -70,6 +71,10 @@ class NotableErrorController @Inject() (
       s"${appConfig.taxAndSchemeManagementUrl}/services/${EclEnrolment.ServiceName}/${EclEnrolment.IdentifierKey}~$eclRegistrationReference/users"
 
     Ok(groupAlreadyEnrolledView(eclRegistrationReference, taxAndSchemeManagementUrl))
+  }
+
+  def duplicateEnrolment: Action[AnyContent] = authoriseWithoutEnrolmentCheck { implicit request =>
+    Ok(duplicateEnrolmentView())
   }
 
   def agentCannotRegister: Action[AnyContent] = authoriseAgentsAllowed { implicit request =>
