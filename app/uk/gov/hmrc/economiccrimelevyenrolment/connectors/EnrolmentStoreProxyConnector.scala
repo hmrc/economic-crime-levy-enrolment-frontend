@@ -58,6 +58,6 @@ class EnrolmentStoreProxyConnectorImpl @Inject() (appConfig: AppConfig, httpClie
     hc: HeaderCarrier
   ): Future[Option[QueryGroupsWithEnrolmentResponse]] =
     httpClient.GET[Option[QueryGroupsWithEnrolmentResponse]](
-      s"$enrolmentStoreUrl/enrolments/${EclEnrolment.EnrolmentKey(eclReference)}/groups"
+      s"$enrolmentStoreUrl/enrolments/${EclEnrolment.EnrolmentKey(eclReference)}/groups?ignore-assignments=true"
     )(readOptionOfNotFoundOrNoContent[QueryGroupsWithEnrolmentResponse], hc, ec)
 }

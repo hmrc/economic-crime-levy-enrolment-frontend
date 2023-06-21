@@ -117,7 +117,8 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase {
         eclRegistrationReference: String,
         queryGroupsWithEnrolmentResponse: Option[QueryGroupsWithEnrolmentResponse]
       ) =>
-        val expectedUrl = s"$enrolmentStoreUrl/enrolments/${EclEnrolment.EnrolmentKey(eclRegistrationReference)}/groups"
+        val expectedUrl =
+          s"$enrolmentStoreUrl/enrolments/${EclEnrolment.EnrolmentKey(eclRegistrationReference)}/groups?ignore-assignments=true"
 
         when(
           mockHttpClient

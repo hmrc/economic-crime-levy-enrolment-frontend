@@ -92,7 +92,7 @@ trait EnrolmentStoreProxyStubs { self: WireMockStubs =>
     stub(
       get(
         urlEqualTo(
-          s"/enrolment-store-proxy/enrolment-store/enrolments/${EclEnrolment.EnrolmentKey(eclReference)}/groups"
+          s"/enrolment-store-proxy/enrolment-store/enrolments/${EclEnrolment.EnrolmentKey(eclReference)}/groups?ignore-assignments=true"
         )
       ),
       aResponse()
