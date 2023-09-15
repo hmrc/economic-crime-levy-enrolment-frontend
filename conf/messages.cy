@@ -23,13 +23,13 @@ eclReference.heading = Eich cyfeirnod Ardoll Troseddau Economaidd (ECL)
 eclReference.p1 = Gallwch ddod o hyd i’ch cyfeirnod ECL yn y llythyr a gawsoch gan CThEF, neu yn yr e-bost cadarnhau a gawsoch pan wnaethoch gofrestru.
 eclReference.hint = Er enghraifft, XMECL0000000001
 eclReference.error.required = Nodwch gyfeirnod, enghraifft XMECL0000000001
-eclReference.error.invalid = Enter a valid reference number, for example XMECL0000000001
+eclReference.error.invalid = Nodwch gyfeirnod dilys, er enghraifft XMECL0000000001
 
 eclRegistrationDate.title = Eich dyddiad cofrestru ECL
 eclRegistrationDate.heading = Eich dyddiad cofrestru ECL
 eclRegistrationDate.p1 = Rhowch wybod i ni’r dyddiad y gwnaethoch gofrestru ar gyfer ECL. Gallwch ddod o hyd i hwn yn y llythyr a gawsoch gan CThEF, neu yn yr e-bost cadarnhau a gawsoch pan wnaethoch gofrestru.
 eclRegistrationDate.hint = Er enghraifft, 13 9 2023
-eclRegistrationDate.error.notWithinRange = The date must be between 1 April 2022 and today
+eclRegistrationDate.error.notWithinRange = Mae’n rhaid i’r dyddiad fod rhwng 1 Ebrill 2022 a heddiw
 
 detailsDoNotMatch.title = Nid yw’ch manylion yn cyd-fynd â’n cofnodion
 detailsDoNotMatch.heading = Nid yw’ch manylion yn cyd-fynd â’n cofnodion
@@ -38,10 +38,10 @@ detailsDoNotMatch.p2 = Edrychwch ar y llythyr a gawsoch gan CThEF, neu’r e-bos
 
 confirmation.title = Mae’ch manylion wedi’u cadarnhau
 confirmation.heading = Mae’ch manylion wedi’u cadarnhau
-confirmation.subHeading = What you need to do next
+confirmation.subHeading = Beth sydd angen i chi ei wneud nesaf
 confirmation.p1 = Mae’ch manylion Ardoll Troseddau Economaidd (ECL) wedi’u cadarnhau.
-confirmation.eclAccount = Go to your {0}.
-confirmation.eclAccount.link = <a href="{0}" class="govuk-link">ECL account</a>
+confirmation.eclAccount = Ewch i’ch {0}.
+confirmation.eclAccount.link = <a href="{0}" class="govuk-link">Cyfrif ECL</a>
 
 detailsDoNotMatch.title = Nid yw’ch manylion yn cyd-fynd â’n cofnodion
 detailsDoNotMatch.heading = Nid yw’ch manylion yn cyd-fynd â’n cofnodion
