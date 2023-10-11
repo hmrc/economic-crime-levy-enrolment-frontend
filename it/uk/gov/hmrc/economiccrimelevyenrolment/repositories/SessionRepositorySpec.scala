@@ -87,7 +87,7 @@ class SessionRepositorySpec
 
       val result = repository.clear(userAnswers.internalId).futureValue
 
-      result                                         shouldEqual true
+      result                                        shouldEqual true
       repository.get(userAnswers.internalId).futureValue should not be defined
     }
 
