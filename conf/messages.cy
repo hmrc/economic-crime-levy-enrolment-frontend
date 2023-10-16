@@ -1,4 +1,4 @@
-service.name =
+service.name = Ychwanegwch ardoll at eich cyfrif
 
 site.back = Yn ôl
 site.remove = Tynnu
@@ -115,21 +115,21 @@ assistantCannotRegister.heading = Mae’n rhaid i chi fod yn weinyddwr i gofrest
 assistantCannotRegister.p1 = Nid ydych yn weinyddwr ar gyfer eich sefydliad. Ni allwch ddefnyddio’r gwasanaeth hwn i gofrestru ar gyfer yr Ardoll Troseddau Economaidd (ECL).
 assistantCannotRegister.p2 = Bydd angen i chi ofyn gweinyddwr yn eich sefydliad i’ch ychwanegu chi at y cyfrif.
 
-duplicateEnrolment.title =
-duplicateEnrolment.heading =
-duplicateEnrolment.p1 =
-duplicateEnrolment.p2 =
-duplicateEnrolment.p3 =
-duplicateEnrolment.b1 =
-duplicateEnrolment.b2 =
+duplicateEnrolment.title = Mae’r cyfeirnod Ardoll Troseddau Economaidd hwn wedi’i gysylltu â chyfrif arall
+duplicateEnrolment.heading = Mae’r cyfeirnod Ardoll Troseddau Economaidd hwn wedi’i gysylltu â chyfrif arall
+duplicateEnrolment.p1 = Ni allwch ddefnyddio’r cyfeirnod hwn i ychwanegu’r Ardoll Troseddau Economaidd at eich cyfrif treth busnes.
+duplicateEnrolment.p2 = Mae hyn oherwydd bod y rhif hwn wedi’i gysylltu â chyfrif arall.
+duplicateEnrolment.p3 = Gallwch wneud y canlynol:
+duplicateEnrolment.b1 = siarad â rhywun yn eich sefydliad os ydych o’r farn efallai ei fod wedi cofrestru’n barod
+duplicateEnrolment.b2 = <a href="https://www.gov.uk/log-in-register-hmrc-online-services/problems-signing-in" class="govuk-link">adfer eich Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth</a> os cofrestrwch gan ddefnyddio cyfrif gwahanol
 
-feedback.heading =
-feedback.p1 =
-feedback.link =
-feedback.p2 =
+feedback.heading = Rhowch eich barn
+feedback.p1 = Mae hwn yn wasanaeth newydd ac rydym eisiau gwybod beth yw’ch barn amdano.
+feedback.link = <a href="{0}" class="govuk-link">Anfonwch eich adborth atom</a>
+feedback.p2 = {0}. Bydd eich meddyliau a’ch syniadau’n ein helpu i wneud gwelliannau.
 
-exit.survey.link = Beth oedd eich barn am y gwasanaeth hwn?
-exit.survey =
+exit.survey.link = <a href="{0}" class="govuk-link">Beth oedd eich barn am y gwasanaeth hwn?</a>
+exit.survey = Mae’r arolwg ymadael yn (cymryd 30 eiliad).
 
 signedOut.title = Er eich diogelwch, gwnaethom eich allgofnodi
 signedOut.heading = Er eich diogelwch, gwnaethom eich allgofnodi
