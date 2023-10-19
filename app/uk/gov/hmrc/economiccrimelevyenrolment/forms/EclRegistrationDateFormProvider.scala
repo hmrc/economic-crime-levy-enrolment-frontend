@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 class EclRegistrationDateFormProvider @Inject() extends Mappings {
 
-  def sanitise(value: String) =
+  def removeSpaces(value: String) =
     value.replaceAll(" ", "")
 
   def apply(): Form[LocalDate] =
@@ -32,7 +32,7 @@ class EclRegistrationDateFormProvider @Inject() extends Mappings {
       "value" -> localDate(
         "error.date.invalid",
         "error.date.required",
-        sanitise,
+        removeSpaces,
         Some(
           minDate(
             MinMaxValues.MinEclRegistrationDate,

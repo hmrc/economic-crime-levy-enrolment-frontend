@@ -39,7 +39,7 @@ class DateMappingsSpec
     "value" -> localDate(
       requiredKey = "error.date.required",
       invalidKey = "error.date.invalid",
-      sanitise = sanitise
+      sanitise = removeSpaces
     )
   )
 
@@ -52,7 +52,7 @@ class DateMappingsSpec
 
   val missingField: Gen[Option[String]] = Gen.option(Gen.const(""))
 
-  def sanitise(value: String): String =
+  def removeSpaces(value: String): String =
     value.replaceAll(" ", "")
 
   def withSpaces(value: String): String = {
