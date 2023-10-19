@@ -17,6 +17,7 @@
 package uk.gov.hmrc.economiccrimelevyenrolment.forms.mappings
 
 import org.scalacheck.Gen
+import org.scalacheck.Gen.Choose.chooseInt.choose
 import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -37,7 +38,8 @@ class DateMappingsSpec
   val form: Form[LocalDate] = Form(
     "value" -> localDate(
       requiredKey = "error.date.required",
-      invalidKey = "error.date.invalid"
+      invalidKey = "error.date.invalid",
+      sanitise = sanitise
     )
   )
 
@@ -50,14 +52,27 @@ class DateMappingsSpec
 
   val missingField: Gen[Option[String]] = Gen.option(Gen.const(""))
 
+  def sanitise(value: String): String =
+    value.replaceAll(" ", "")
+
+  def withSpaces(value: String): String = {
+    val n = choose(0, 4).sample.get
+    if (n == 0) {
+      value
+    } else {
+      val spaces = " ".repeat(n)
+      spaces + value.replaceAll("\\B|\\b", spaces)
+    }
+  }
+
   "bind" should {
     "bind valid data" in {
 
       forAll(validData -> "valid date") { date =>
         val data = Map(
-          "value.day"   -> date.getDayOfMonth.toString,
-          "value.month" -> date.getMonthValue.toString,
-          "value.year"  -> date.getYear.toString
+          "value.day"   -> withSpaces(date.getDayOfMonth.toString),
+          "value.month" -> withSpaces(date.getMonthValue.toString),
+          "value.year"  -> withSpaces(date.getYear.toString)
         )
 
         val result = form.bind(data)

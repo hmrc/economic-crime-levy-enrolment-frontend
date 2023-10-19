@@ -24,11 +24,15 @@ import javax.inject.Inject
 
 class EclRegistrationDateFormProvider @Inject() extends Mappings {
 
+  def sanitise(value: String) =
+    value.replaceAll(" ", "")
+
   def apply(): Form[LocalDate] =
     Form(
       "value" -> localDate(
         "error.date.invalid",
         "error.date.required",
+        sanitise,
         Some(
           minDate(
             MinMaxValues.MinEclRegistrationDate,

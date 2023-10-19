@@ -27,6 +27,7 @@ import scala.util.{Failure, Success, Try}
 private[mappings] class LocalDateFormatter(
   invalidKey: String,
   requiredKey: String,
+  sanitise: String => String,
   minDateConstraint: Option[Constraint[LocalDate]] = None,
   maxDateConstraint: Option[Constraint[LocalDate]] = None,
   args: Seq[String] = Seq.empty
@@ -78,7 +79,11 @@ private[mappings] class LocalDateFormatter(
     val year: Option[String]  = data.get(yearKey).filter(_.nonEmpty)
 
     (day, month, year) match {
-      case (Some(day), Some(month), Some(year)) =>
+      case (Some(rDay), Some(rMonth), Some(rYear)) =>
+        val day   = sanitise(rDay)
+        val month = sanitise(rMonth)
+        val year  = sanitise(rYear)
+
         validateDayMonthYear(key, day, month, year) match {
           case Nil          =>
             toDate(key, day.toInt, month.toInt, year.toInt) match {
@@ -97,13 +102,13 @@ private[mappings] class LocalDateFormatter(
           case error :: Nil => Left(Seq(error))
           case _            => Left(Seq(FormError(dayKey, invalidKey)))
         }
-      case (Some(_), None, Some(_))             => Left(Seq(FormError(monthKey, "error.month.required")))
-      case (None, Some(_), Some(_))             => Left(Seq(FormError(dayKey, "error.day.required")))
-      case (Some(_), Some(_), None)             => Left(Seq(FormError(yearKey, "error.year.required")))
-      case (None, None, Some(_))                => Left(Seq(FormError(dayKey, "error.dayMonth.required")))
-      case (None, Some(_), None)                => Left(Seq(FormError(dayKey, "error.dayYear.required")))
-      case (Some(_), None, None)                => Left(Seq(FormError(monthKey, "error.monthYear.required")))
-      case _                                    => Left(Seq(FormError(dayKey, requiredKey, args)))
+      case (Some(_), None, Some(_))                => Left(Seq(FormError(monthKey, "error.month.required")))
+      case (None, Some(_), Some(_))                => Left(Seq(FormError(dayKey, "error.day.required")))
+      case (Some(_), Some(_), None)                => Left(Seq(FormError(yearKey, "error.year.required")))
+      case (None, None, Some(_))                   => Left(Seq(FormError(dayKey, "error.dayMonth.required")))
+      case (None, Some(_), None)                   => Left(Seq(FormError(dayKey, "error.dayYear.required")))
+      case (Some(_), None, None)                   => Left(Seq(FormError(monthKey, "error.monthYear.required")))
+      case _                                       => Left(Seq(FormError(dayKey, requiredKey, args)))
     }
   }
 
