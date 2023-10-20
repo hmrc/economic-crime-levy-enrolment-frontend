@@ -129,7 +129,7 @@ feedback.link = <a href="{0}" class="govuk-link">Anfonwch eich adborth atom</a>
 feedback.p2 = {0}. Bydd eich meddyliau a’ch syniadau’n ein helpu i wneud gwelliannau.
 
 exit.survey.link = <a href="{0}" class="govuk-link">Beth oedd eich barn am y gwasanaeth hwn?</a>
-exit.survey = Mae’r arolwg ymadael yn (cymryd 30 eiliad).
+exit.survey = {0} Mae’r arolwg ymadael yn (cymryd 30 eiliad).
 
 signedOut.title = Er eich diogelwch, gwnaethom eich allgofnodi
 signedOut.heading = Er eich diogelwch, gwnaethom eich allgofnodi
