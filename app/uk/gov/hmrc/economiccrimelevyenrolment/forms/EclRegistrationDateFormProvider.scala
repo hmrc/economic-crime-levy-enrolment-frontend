@@ -24,11 +24,15 @@ import javax.inject.Inject
 
 class EclRegistrationDateFormProvider @Inject() extends Mappings {
 
+  def removeSpaces(value: String) =
+    value.replaceAll(" ", "")
+
   def apply(): Form[LocalDate] =
     Form(
       "value" -> localDate(
         "error.date.invalid",
         "error.date.required",
+        removeSpaces,
         Some(
           minDate(
             MinMaxValues.MinEclRegistrationDate,
