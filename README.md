@@ -45,6 +45,13 @@ To format all the scala files in the project correctly:
 To check if there are any scalastyle errors, warnings or infos:
 > `sbt scalastyle`
 
+## Feature flags
+
+- eclAccountEnabled: Controls showing a link to account dashboard on confirmation of claim enrolment.
+- enrolmentStoreProxyStubEnabled: When enabled we use the stub for the Enrolment Store Proxy service.
+- enrolmentStoreProxyStubReturnsEclReference: When enabled we stub the response from the Enrolment Store Proxy service for getting enrolments for a group.
+- welsh-translation: Controls whether the link to view a page in Welsh is displayed on a page.
+
 ### License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
