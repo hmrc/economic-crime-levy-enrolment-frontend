@@ -147,3 +147,5 @@ date.month.9 = September
 date.month.10 = October
 date.month.11 = November
 date.month.12 = December
+
+govukErrorMessage.visuallyHiddenText = Error
