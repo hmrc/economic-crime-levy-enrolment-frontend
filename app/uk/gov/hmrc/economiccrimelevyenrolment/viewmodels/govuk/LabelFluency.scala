@@ -43,10 +43,9 @@ trait LabelFluency {
     def withAttribute(attribute: (String, String)): Label =
       label.copy(attributes = label.attributes + attribute)
 
-    def forAttr(attr: String): Label =
-      label.copy(forAttr = Some(attr))
-
-    def asHiddenPageHeading(size: LabelSize = LabelSize.ExtraLarge): Label =
-      asPageHeading(size).withCssClass("govuk-visually-hidden")
+    def asHidden(): Label =
+      label
+        .copy(isPageHeading = false)
+        .withCssClass("govuk-visually-hidden")
   }
 }
