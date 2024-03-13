@@ -39,7 +39,7 @@
         @radios(
             RadiosViewModel(
                 field = form("value"),
-                legend = LegendViewModel(Empty),
+                legend = LegendViewModel(messages("hasEclReference.heading")).asHidden(),
                 items = TriState.options("hasEclReference")
             )
         )
