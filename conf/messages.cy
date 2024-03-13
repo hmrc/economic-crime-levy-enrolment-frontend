@@ -147,3 +147,5 @@ date.month.9 = Medi
 date.month.10 = Hydref
 date.month.11 = Tachwedd
 date.month.12 = Rhagfyr
+
+govukErrorMessage.visuallyHiddenText = Gwall
