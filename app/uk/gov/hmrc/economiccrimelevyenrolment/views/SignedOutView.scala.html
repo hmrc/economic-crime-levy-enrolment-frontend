@@ -34,10 +34,9 @@
 
     <p class="govuk-body">
         @govukButton(
-            Button(
-                element = Some(messages("site.signIn")),
-                href    = Some(HasEclReferenceController.onPageLoad().url)
-            )
+        ButtonViewModel(messages("site.signIn"))
+        .asLink(HasEclReferenceController.onPageLoad().url)
+        .preventingDoubleClick()
         )
     </p>
 }
