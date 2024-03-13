@@ -38,7 +38,9 @@
 
     @formHelper(action = EclRegistrationDateController.onSubmit()) {
         @dateInput(DateInput(
-            fieldset = Some(Fieldset(legend = None))).withFormField(form("value"))
+            fieldset = Some(
+                Fieldset(legend = Some(LegendViewModel(messages("eclRegistrationDate.heading")).asHidden()))
+            )).withFormField(form("value"))
         )
 
         @button(
