@@ -35,7 +35,7 @@ class EclRegistrationDateFormProviderSpec extends DateBehaviours {
 
     behave like mandatoryDateField(
       form,
-      s"$fieldName.day",
+      fieldName,
       requiredKey
     )
 
@@ -43,9 +43,10 @@ class EclRegistrationDateFormProviderSpec extends DateBehaviours {
       form,
       fieldName,
       MinMaxValues.MinEclRegistrationDate,
-      FormError(
-        s"$fieldName.day",
-        "eclRegistrationDate.error.notWithinRange"
+      Seq(
+        FormError(s"$fieldName.day", "eclRegistrationDate.error.notWithinRange"),
+        FormError(s"$fieldName.month", "eclRegistrationDate.error.notWithinRange"),
+        FormError(s"$fieldName.year", "eclRegistrationDate.error.notWithinRange")
       )
     )
 
@@ -53,7 +54,11 @@ class EclRegistrationDateFormProviderSpec extends DateBehaviours {
       form,
       fieldName,
       MinMaxValues.maxEclRegistrationDate,
-      FormError(s"$fieldName.day", "eclRegistrationDate.error.notWithinRange")
+      Seq(
+        FormError(s"$fieldName.day", "eclRegistrationDate.error.notWithinRange"),
+        FormError(s"$fieldName.month", "eclRegistrationDate.error.notWithinRange"),
+        FormError(s"$fieldName.year", "eclRegistrationDate.error.notWithinRange")
+      )
     )
   }
 }

@@ -30,7 +30,7 @@
 
 @layout(pageTitle = titleWithForm(form, messages("eclRegistrationDate.title"))) {
     @if(form.errors.nonEmpty) {
-        @errorSummary(ErrorSummaryViewModel(form))
+        @errorSummary(ErrorSummaryViewModel(form.copy(errors = form.errors.distinctBy(_.message))))
     }
 
     <h1 class="govuk-heading-l">@messages("eclRegistrationDate.heading")</h1>

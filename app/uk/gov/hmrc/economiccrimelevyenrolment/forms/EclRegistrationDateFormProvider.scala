@@ -33,18 +33,8 @@ class EclRegistrationDateFormProvider @Inject() extends Mappings {
         "error.date.invalid",
         "error.date.required",
         removeSpaces,
-        Some(
-          minDate(
-            MinMaxValues.MinEclRegistrationDate,
-            "eclRegistrationDate.error.notWithinRange"
-          )
-        ),
-        Some(
-          maxDate(
-            MinMaxValues.maxEclRegistrationDate,
-            "eclRegistrationDate.error.notWithinRange"
-          )
-        )
+        Some(minDate(MinMaxValues.MinEclRegistrationDate, "eclRegistrationDate.error.notWithinRange")),
+        Some(maxDate(MinMaxValues.maxEclRegistrationDate, "eclRegistrationDate.error.notWithinRange"))
       )
     )
 
