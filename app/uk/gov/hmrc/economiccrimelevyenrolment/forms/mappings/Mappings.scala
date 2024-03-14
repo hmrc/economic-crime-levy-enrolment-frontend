@@ -25,7 +25,7 @@ import java.time.LocalDate
 
 trait Mappings extends Formatters with Constraints {
 
-  protected def sanitise(value: String) =
+  protected def sanitise(value: String): String =
     value.filterNot(_.isWhitespace)
 
   protected def text(
@@ -67,7 +67,7 @@ trait Mappings extends Formatters with Constraints {
   protected def localDate(
     invalidKey: String,
     requiredKey: String,
-    sanitise: String => String,
+    sanitise: Option[String] => Option[String],
     minDateConstraint: Option[Constraint[LocalDate]] = None,
     maxDateConstraint: Option[Constraint[LocalDate]] = None,
     args: Seq[String] = Seq.empty
