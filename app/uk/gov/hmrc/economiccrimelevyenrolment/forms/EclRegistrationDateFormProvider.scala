@@ -24,8 +24,10 @@ import javax.inject.Inject
 
 class EclRegistrationDateFormProvider @Inject() extends Mappings {
 
-  def removeSpaces(value: String) =
-    value.replaceAll(" ", "")
+  def removeSpaces(value: Option[String]): Option[String] =
+    if (value.isDefined) {
+      Some(value.get.replaceAll(" ", ""))
+    } else { None }
 
   def apply(): Form[LocalDate] =
     Form(
