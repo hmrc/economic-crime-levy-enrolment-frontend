@@ -58,9 +58,9 @@ trait EclTestData { self: Generators =>
       enrolment          <- Arbitrary.arbitrary[AuthEnrolment]
       eclReferenceNumber <- Arbitrary.arbitrary[String]
       eclEnrolment        = enrolment.copy(
-                              key = EclEnrolment.ServiceName,
+                              key = EclEnrolment.serviceName,
                               identifiers =
-                                Seq(EnrolmentIdentifier(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber))
+                                Seq(EnrolmentIdentifier(key = EclEnrolment.identifierKey, value = eclReferenceNumber))
                             )
     } yield EnrolmentsWithEcl(enrolments.copy(enrolments.enrolments + eclEnrolment), eclReferenceNumber)
   }
@@ -68,7 +68,7 @@ trait EclTestData { self: Generators =>
   implicit val arbEnrolmentsWithoutEcl: Arbitrary[EnrolmentsWithoutEcl] = Arbitrary {
     Arbitrary
       .arbitrary[Enrolments]
-      .retryUntil(!_.enrolments.exists(_.key == EclEnrolment.ServiceName))
+      .retryUntil(!_.enrolments.exists(_.key == EclEnrolment.serviceName))
       .map(EnrolmentsWithoutEcl)
   }
 
@@ -117,7 +117,7 @@ trait EclTestData { self: Generators =>
   def alphaNumericString: String = Gen.alphaNumStr.retryUntil(_.nonEmpty).sample.get
 
   def localDate: LocalDate =
-    datesBetween(MinMaxValues.MinEclRegistrationDate, MinMaxValues.maxEclRegistrationDate).sample.get
+    datesBetween(MinMaxValues.minEclRegistrationDate, MinMaxValues.maxEclRegistrationDate).sample.get
 
   val testInternalId: String                = alphaNumericString
   val testGroupId: String                   = alphaNumericString

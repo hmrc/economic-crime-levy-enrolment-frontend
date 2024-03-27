@@ -25,12 +25,10 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 @Singleton
 class AppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
 
-  val host: String    = configuration.get[String]("host")
-  val appName: String = configuration.get[String]("appName")
-  val mongoTtl: Int   = configuration.get[Int]("mongodb.timeToLiveInSeconds")
-
   private val contactHost                  = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier = configuration.get[String]("contact-frontend.serviceId")
+  private val exitSurveyHost               = configuration.get[String]("feedback-frontend.host")
+  private val exitSurveyServiceIdentifier  = configuration.get[String]("feedback-frontend.serviceId")
 
   def feedbackUrl(implicit request: RequestHeader): String =
     s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${RedirectUrl(host + request.uri)}"
@@ -38,30 +36,22 @@ class AppConfig @Inject() (configuration: Configuration, servicesConfig: Service
   def feedbackUrl(backUrl: String): String =
     s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${RedirectUrl(backUrl)}"
 
-  val signInUrl: String                 = configuration.get[String]("urls.signIn")
-  val signOutUrl: String                = configuration.get[String]("urls.signOut")
-  val registrationUrl: String           = configuration.get[String]("urls.registration")
-  val submitReturnUrl: String           = configuration.get[String]("urls.submitReturn")
-  val taxAndSchemeManagementUrl: String = configuration.get[String]("urls.taxAndSchemeManagement")
-  val eclAccountUrl: String             = configuration.get[String]("urls.eclAccount")
-
-  private val exitSurveyHost              = configuration.get[String]("feedback-frontend.host")
-  private val exitSurveyServiceIdentifier = configuration.get[String]("feedback-frontend.serviceId")
-
-  val exitSurveyUrl: String = s"$exitSurveyHost/feedback/$exitSurveyServiceIdentifier"
-
-  val languageTranslationEnabled: Boolean =
-    configuration.get[Boolean]("features.welsh-translation")
-
-  val timeout: Int   = configuration.get[Int]("timeout-dialog.timeout")
-  val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
-
+  val appName: String                                     = configuration.get[String]("appName")
+  val countdown: Int                                      = configuration.get[Int]("timeout-dialog.countdown")
+  val eclAccountEnabled: Boolean                          = configuration.get[Boolean]("features.eclAccountEnabled")
+  val eclAccountUrl: String                               = configuration.get[String]("urls.eclAccount")
+  val enrolmentStoreProxyBaseUrl: String                  = servicesConfig.baseUrl("enrolment-store-proxy")
   val enrolmentStoreProxyStubReturnsEclReference: Boolean =
     configuration.get[Boolean]("features.enrolmentStoreProxyStubReturnsEclReference")
-
-  val enrolmentStoreProxyBaseUrl: String = servicesConfig.baseUrl("enrolment-store-proxy")
-  val taxEnrolmentsBaseUrl: String       = servicesConfig.baseUrl("tax-enrolments")
-
-  val eclAccountEnabled: Boolean = configuration.get[Boolean]("features.eclAccountEnabled")
-
+  val exitSurveyUrl: String                               = s"$exitSurveyHost/feedback/$exitSurveyServiceIdentifier"
+  val host: String                                        = configuration.get[String]("host")
+  val languageTranslationEnabled: Boolean                 = configuration.get[Boolean]("features.welsh-translation")
+  val mongoTtl: Int                                       = configuration.get[Int]("mongodb.timeToLiveInSeconds")
+  val registrationUrl: String                             = configuration.get[String]("urls.registration")
+  val signInUrl: String                                   = configuration.get[String]("urls.signIn")
+  val signOutUrl: String                                  = configuration.get[String]("urls.signOut")
+  val submitReturnUrl: String                             = configuration.get[String]("urls.submitReturn")
+  val taxAndSchemeManagementUrl: String                   = configuration.get[String]("urls.taxAndSchemeManagement")
+  val taxEnrolmentsBaseUrl: String                        = servicesConfig.baseUrl("tax-enrolments")
+  val timeout: Int                                        = configuration.get[Int]("timeout-dialog.timeout")
 }

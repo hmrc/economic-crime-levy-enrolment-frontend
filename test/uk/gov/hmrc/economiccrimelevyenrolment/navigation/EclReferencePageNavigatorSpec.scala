@@ -40,12 +40,12 @@ class EclReferencePageNavigatorSpec extends SpecBase {
     "return a Call to the date of registration page when the ECL reference number matches and isn't already allocated to another group" in forAll {
       (userAnswers: UserAnswers, eclReferenceNumber: String, request: DataRequest[_]) =>
         val updatedAnswers: UserAnswers               = userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
-        val knownFacts: Seq[KeyValue]                 = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber))
+        val knownFacts: Seq[KeyValue]                 = Seq(KeyValue(key = EclEnrolment.identifierKey, value = eclReferenceNumber))
         val expectedResponse: QueryKnownFactsResponse = QueryKnownFactsResponse(
-          service = EclEnrolment.ServiceName,
+          service = EclEnrolment.serviceName,
           enrolments = Seq(
             Enrolment(
-              identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber)),
+              identifiers = Seq(KeyValue(key = EclEnrolment.identifierKey, value = eclReferenceNumber)),
               verifiers = Seq.empty
             )
           )
@@ -68,12 +68,12 @@ class EclReferencePageNavigatorSpec extends SpecBase {
     "return a Call to the details are invalid page when the ECL reference number does not match and isn't already allocated to another group" in forAll {
       (userAnswers: UserAnswers, eclReferenceNumber: String, request: DataRequest[_]) =>
         val updatedAnswers: UserAnswers               = userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
-        val knownFacts: Seq[KeyValue]                 = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber))
+        val knownFacts: Seq[KeyValue]                 = Seq(KeyValue(key = EclEnrolment.identifierKey, value = eclReferenceNumber))
         val expectedResponse: QueryKnownFactsResponse = QueryKnownFactsResponse(
-          service = EclEnrolment.ServiceName,
+          service = EclEnrolment.serviceName,
           enrolments = Seq(
             Enrolment(
-              identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = "invalid-reference")),
+              identifiers = Seq(KeyValue(key = EclEnrolment.identifierKey, value = "invalid-reference")),
               verifiers = Seq.empty
             )
           )
@@ -97,7 +97,7 @@ class EclReferencePageNavigatorSpec extends SpecBase {
     "return a Call to the details are invalid page when the API does not return any results and the ECL reference isn't already allocated to another group" in forAll {
       (userAnswers: UserAnswers, eclReferenceNumber: String, request: DataRequest[_]) =>
         val updatedAnswers: UserAnswers = userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
-        val knownFacts: Seq[KeyValue]   = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber))
+        val knownFacts: Seq[KeyValue]   = Seq(KeyValue(key = EclEnrolment.identifierKey, value = eclReferenceNumber))
 
         when(mockEnrolmentStoreProxyConnector.queryGroupsWithEnrolment(ArgumentMatchers.eq(eclReferenceNumber))(any()))
           .thenReturn(Future.successful(None))

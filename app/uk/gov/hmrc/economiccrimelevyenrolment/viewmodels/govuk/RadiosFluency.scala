@@ -21,7 +21,6 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.economiccrimelevyenrolment.viewmodels.ErrorMessageAwareness
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.{Fieldset, Legend}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.{RadioItem, Radios}
 
 object radios extends RadiosFluency
@@ -90,20 +89,8 @@ trait RadiosFluency {
 
   implicit class FluentRadios(radios: Radios) {
 
-    def withHint(hint: Hint): Radios =
-      radios.copy(hint = Some(hint))
-
-    def withFormGroupClasses(classes: String): Radios =
-      radios.copy(formGroupClasses = classes)
-
-    def withIdPrefix(prefix: String): Radios =
-      radios.copy(idPrefix = Some(prefix))
-
     def withCssClass(newClass: String): Radios =
       radios.copy(classes = s"${radios.classes} $newClass")
-
-    def withAttribute(attribute: (String, String)): Radios =
-      radios.copy(attributes = radios.attributes + attribute)
 
     def inline(): Radios =
       radios.withCssClass("govuk-radios--inline")

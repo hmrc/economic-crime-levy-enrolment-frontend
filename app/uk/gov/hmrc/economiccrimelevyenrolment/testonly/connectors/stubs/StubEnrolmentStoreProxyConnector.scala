@@ -33,8 +33,8 @@ class StubEnrolmentStoreProxyConnector @Inject() (appConfig: AppConfig) extends 
       val groupEnrolmentsWithEcl = GroupEnrolmentsResponse(
         Seq(
           GroupEnrolment(
-            service = EclEnrolment.ServiceName,
-            identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = "XMECL0000000001"))
+            service = EclEnrolment.serviceName,
+            identifiers = Seq(KeyValue(key = EclEnrolment.identifierKey, value = "XMECL0000000001"))
           )
         )
       )
@@ -48,11 +48,11 @@ class StubEnrolmentStoreProxyConnector @Inject() (appConfig: AppConfig) extends 
     Future.successful(
       Some(
         QueryKnownFactsResponse(
-          service = EclEnrolment.ServiceName,
+          service = EclEnrolment.serviceName,
           enrolments = Seq(
             Enrolment(
-              identifiers = Seq(KeyValue(EclEnrolment.IdentifierKey, "XMECL0000000001")),
-              verifiers = Seq(KeyValue(EclEnrolment.VerifierKey, "20230301"))
+              identifiers = Seq(KeyValue(EclEnrolment.identifierKey, "XMECL0000000001")),
+              verifiers = Seq(KeyValue(EclEnrolment.verifierKey, "20230301"))
             )
           )
         )

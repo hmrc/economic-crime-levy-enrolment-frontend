@@ -53,8 +53,8 @@ class EclRegistrationDatePageNavigator @Inject() (
     val eclRegistrationDateString = eclRegistrationDate.format(DateTimeFormatter.BASIC_ISO_DATE)
 
     val knownFacts = Seq(
-      KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber),
-      KeyValue(key = EclEnrolment.VerifierKey, value = eclRegistrationDateString)
+      KeyValue(key = EclEnrolment.identifierKey, value = eclReferenceNumber),
+      KeyValue(key = EclEnrolment.verifierKey, value = eclRegistrationDateString)
     )
 
     enrolmentStoreProxyConnector.queryKnownFacts(knownFacts).flatMap {
@@ -92,7 +92,7 @@ class EclRegistrationDatePageNavigator @Inject() (
     eclReferenceNumber,
     AllocateEnrolmentRequest(
       userId = request.credentials.providerId,
-      verifiers = Seq(KeyValue(EclEnrolment.VerifierKey, eclRegistrationDate))
+      verifiers = Seq(KeyValue(EclEnrolment.verifierKey, eclRegistrationDate))
     )
   )
 

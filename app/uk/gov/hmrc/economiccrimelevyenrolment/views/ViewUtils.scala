@@ -19,11 +19,6 @@ package uk.gov.hmrc.economiccrimelevyenrolment.views
 import play.api.data.Form
 import play.api.i18n.Messages
 
-import java.text.NumberFormat
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, ZoneId}
-import java.util.Date
-
 object ViewUtils {
 
   def titleWithForm(form: Form[_], pageTitle: String, section: Option[String] = None)(implicit
@@ -39,32 +34,5 @@ object ViewUtils {
 
   private def errorPrefix(form: Form[_])(implicit messages: Messages): String =
     if (form.hasErrors || form.hasGlobalErrors) s"${messages("error.browser.title.prefix")} " else ""
-
-  def formatDate(date: Date)(implicit messages: Messages): String = {
-    val localDate: LocalDate = date.toInstant.atZone(ZoneId.systemDefault()).toLocalDate
-
-    val day   = localDate.getDayOfMonth
-    val month = messages(s"date.month.${localDate.getMonthValue}")
-    val year  = localDate.getYear
-
-    s"$day $month $year"
-  }
-
-  def formatLocalDate(localDate: LocalDate, translate: Boolean = true)(implicit messages: Messages): String =
-    if (translate) {
-      val day   = localDate.getDayOfMonth
-      val month = messages(s"date.month.${localDate.getMonthValue}")
-      val year  = localDate.getYear
-
-      s"$day $month $year"
-    } else {
-      val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-      localDate.format(formatter)
-    }
-
-  def formatMoney(amount: Number): String = {
-    val formatter = NumberFormat.getNumberInstance
-    formatter.format(amount)
-  }
 
 }

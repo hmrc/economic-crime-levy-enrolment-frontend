@@ -35,7 +35,7 @@ class TaxEnrolmentsConnector @Inject() (appConfig: AppConfig, httpClient: HttpCl
     eclRegistrationReference: String,
     allocateEnrolmentRequest: AllocateEnrolmentRequest
   )(implicit hc: HeaderCarrier): Future[Unit] = {
-    val enrolmentKey = s"${EclEnrolment.ServiceName}~${EclEnrolment.IdentifierKey}~$eclRegistrationReference"
+    val enrolmentKey = s"${EclEnrolment.serviceName}~${EclEnrolment.identifierKey}~$eclRegistrationReference"
 
     httpClient
       .POST[AllocateEnrolmentRequest, Either[UpstreamErrorResponse, HttpResponse]](

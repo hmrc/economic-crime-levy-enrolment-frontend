@@ -125,9 +125,9 @@ abstract class BaseAuthorisedAction @Inject() (
       val credentialRole: CredentialRole = optCredentialRole.getOrElseFail("Unable to retrieve credentialRole")
       val credentials: Credentials       = optCredentials.getOrElseFail("Unable to retrieve credentials")
 
-      val eclEnrolment: Option[Enrolment]          = enrolments.enrolments.find(_.key == EclEnrolment.ServiceName)
+      val eclEnrolment: Option[Enrolment]          = enrolments.enrolments.find(_.key == EclEnrolment.serviceName)
       val eclRegistrationReference: Option[String] =
-        eclEnrolment.flatMap(_.getIdentifier(EclEnrolment.IdentifierKey).map(_.value))
+        eclEnrolment.flatMap(_.getIdentifier(EclEnrolment.identifierKey).map(_.value))
 
       affinityGroup match {
         case Agent =>

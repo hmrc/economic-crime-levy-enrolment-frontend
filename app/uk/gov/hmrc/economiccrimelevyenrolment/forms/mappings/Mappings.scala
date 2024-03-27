@@ -34,29 +34,6 @@ trait Mappings extends Formatters with Constraints {
   ): FieldMapping[String] =
     of(stringFormatter(errorKey, args, sanitise))
 
-  protected def int(
-    requiredKey: String = "error.required",
-    wholeNumberKey: String = "error.wholeNumber",
-    nonNumericKey: String = "error.nonNumeric",
-    args: Seq[String] = Seq.empty
-  ): FieldMapping[Int] =
-    of(intFormatter(requiredKey, wholeNumberKey, nonNumericKey, args, sanitise))
-
-  protected def long(
-    requiredKey: String = "error.required",
-    wholeNumberKey: String = "error.wholeNumber",
-    nonNumericKey: String = "error.nonNumeric",
-    args: Seq[String] = Seq.empty
-  ): FieldMapping[Long] =
-    of(longFormatter(requiredKey, wholeNumberKey, nonNumericKey, args, sanitise))
-
-  protected def boolean(
-    requiredKey: String = "error.required",
-    invalidKey: String = "error.boolean",
-    args: Seq[String] = Seq.empty
-  ): FieldMapping[Boolean] =
-    of(booleanFormatter(requiredKey, invalidKey, args, sanitise))
-
   protected def enumerable[A](
     requiredKey: String = "error.required",
     invalidKey: String = "error.invalid",

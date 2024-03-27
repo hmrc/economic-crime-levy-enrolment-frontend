@@ -31,7 +31,7 @@ class EnrolmentStoreProxyService @Inject() (enrolmentStoreProxyConnector: Enrolm
     enrolmentStoreProxyConnector
       .getEnrolmentsForGroup(groupId)
       .map(
-        _.flatMap(_.enrolments.find(_.service == EclEnrolment.ServiceName))
-          .flatMap(_.identifiers.find(_.key == EclEnrolment.IdentifierKey).map(_.value))
+        _.flatMap(_.enrolments.find(_.service == EclEnrolment.serviceName))
+          .flatMap(_.identifiers.find(_.key == EclEnrolment.identifierKey).map(_.value))
       )
 }

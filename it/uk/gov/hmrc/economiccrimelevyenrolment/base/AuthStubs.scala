@@ -121,8 +121,8 @@ trait AuthStubs { self: WireMockStubs =>
              |                   "providerType": "$testProviderType"
              |                 },
              |  "allEnrolments": [{
-             |    "key":"${EclEnrolment.ServiceName}",
-             |    "identifiers": [{ "key":"${EclEnrolment.IdentifierKey}", "value": "$testEclRegistrationReference" }],
+             |    "key":"${EclEnrolment.serviceName}",
+             |    "identifiers": [{ "key":"${EclEnrolment.identifierKey}", "value": "$testEclRegistrationReference" }],
              |    "state": "activated"
              |  }]
              |}
@@ -157,8 +157,8 @@ trait AuthStubs { self: WireMockStubs =>
              |                   "providerType": "$testProviderType"
              |                 },
              |  "allEnrolments": [{
-             |    "key":"${EclEnrolment.ServiceName}",
-             |    "identifiers": [{ "key":"${EclEnrolment.IdentifierKey}", "value": "$testEclRegistrationReference" }],
+             |    "key":"${EclEnrolment.serviceName}",
+             |    "identifiers": [{ "key":"${EclEnrolment.identifierKey}", "value": "$testEclRegistrationReference" }],
              |    "state": "activated"
              |  }]
              |}

@@ -49,7 +49,7 @@ class EnrolmentStoreProxyConnectorImpl @Inject() (appConfig: AppConfig, httpClie
     httpClient.POST[QueryKnownFactsRequest, Option[QueryKnownFactsResponse]](
       s"$enrolmentStoreUrl/enrolments",
       QueryKnownFactsRequest(
-        EclEnrolment.ServiceName,
+        EclEnrolment.serviceName,
         knownFacts = knownFacts
       )
     )(QueryKnownFactsRequest.format, readOptionOfNotFoundOrNoContent[QueryKnownFactsResponse], hc, ec)
@@ -58,6 +58,6 @@ class EnrolmentStoreProxyConnectorImpl @Inject() (appConfig: AppConfig, httpClie
     hc: HeaderCarrier
   ): Future[Option[QueryGroupsWithEnrolmentResponse]] =
     httpClient.GET[Option[QueryGroupsWithEnrolmentResponse]](
-      s"$enrolmentStoreUrl/enrolments/${EclEnrolment.EnrolmentKey(eclReference)}/groups?ignore-assignments=true"
+      s"$enrolmentStoreUrl/enrolments/${EclEnrolment.enrolmentKey(eclReference)}/groups?ignore-assignments=true"
     )(readOptionOfNotFoundOrNoContent[QueryGroupsWithEnrolmentResponse], hc, ec)
 }

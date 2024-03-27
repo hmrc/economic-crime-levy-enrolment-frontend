@@ -17,9 +17,9 @@ trait EnrolmentStoreProxyStubs { self: WireMockStubs =>
           Json
             .toJson(
               QueryKnownFactsRequest(
-                service = EclEnrolment.ServiceName,
+                service = EclEnrolment.serviceName,
                 knownFacts = Seq(
-                  KeyValue(key = EclEnrolment.IdentifierKey, value = eclRegistrationReference)
+                  KeyValue(key = EclEnrolment.identifierKey, value = eclRegistrationReference)
                 )
               )
             )
@@ -32,10 +32,10 @@ trait EnrolmentStoreProxyStubs { self: WireMockStubs =>
           Json
             .toJson(
               QueryKnownFactsResponse(
-                service = EclEnrolment.ServiceName,
+                service = EclEnrolment.serviceName,
                 enrolments = Seq(
                   Enrolment(
-                    identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclRegistrationReference)),
+                    identifiers = Seq(KeyValue(key = EclEnrolment.identifierKey, value = eclRegistrationReference)),
                     verifiers = Seq.empty
                   )
                 )
@@ -52,10 +52,10 @@ trait EnrolmentStoreProxyStubs { self: WireMockStubs =>
           Json
             .toJson(
               QueryKnownFactsRequest(
-                service = EclEnrolment.ServiceName,
+                service = EclEnrolment.serviceName,
                 knownFacts = Seq(
-                  KeyValue(key = EclEnrolment.IdentifierKey, value = eclRegistrationReference),
-                  KeyValue(key = EclEnrolment.VerifierKey, value = eclRegistrationDate)
+                  KeyValue(key = EclEnrolment.identifierKey, value = eclRegistrationReference),
+                  KeyValue(key = EclEnrolment.verifierKey, value = eclRegistrationDate)
                 )
               )
             )
@@ -68,11 +68,11 @@ trait EnrolmentStoreProxyStubs { self: WireMockStubs =>
           Json
             .toJson(
               QueryKnownFactsResponse(
-                service = EclEnrolment.ServiceName,
+                service = EclEnrolment.serviceName,
                 enrolments = Seq(
                   Enrolment(
-                    identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclRegistrationReference)),
-                    verifiers = Seq(KeyValue(key = EclEnrolment.VerifierKey, value = eclRegistrationDate))
+                    identifiers = Seq(KeyValue(key = EclEnrolment.identifierKey, value = eclRegistrationReference)),
+                    verifiers = Seq(KeyValue(key = EclEnrolment.verifierKey, value = eclRegistrationDate))
                   )
                 )
               )
@@ -92,7 +92,7 @@ trait EnrolmentStoreProxyStubs { self: WireMockStubs =>
     stub(
       get(
         urlEqualTo(
-          s"/enrolment-store-proxy/enrolment-store/enrolments/${EclEnrolment.EnrolmentKey(eclReference)}/groups?ignore-assignments=true"
+          s"/enrolment-store-proxy/enrolment-store/enrolments/${EclEnrolment.enrolmentKey(eclReference)}/groups?ignore-assignments=true"
         )
       ),
       aResponse()
@@ -110,7 +110,7 @@ trait EnrolmentStoreProxyStubs { self: WireMockStubs =>
             |    "totalRecords": 1,
             |    "enrolments": [
             |        {
-            |           "service": "${EclEnrolment.ServiceName}",
+            |           "service": "${EclEnrolment.serviceName}",
             |           "state": "Activated",
             |           "friendlyName": "ECL Enrolment",
             |           "enrolmentDate": "2023-10-05T14:48:00.000Z",
@@ -118,13 +118,13 @@ trait EnrolmentStoreProxyStubs { self: WireMockStubs =>
             |           "activationDate": "2023-10-13T17:36:00.000Z",
             |           "identifiers": [
             |              {
-            |                 "key": "${EclEnrolment.IdentifierKey}",
+            |                 "key": "${EclEnrolment.identifierKey}",
             |                 "value": "$testEclRegistrationReference"
             |              }
             |           ],
             |           "verifiers": [
             |              {
-            |                 "key": "${EclEnrolment.VerifierKey}",
+            |                 "key": "${EclEnrolment.verifierKey}",
             |                 "value": "$testEclRegistrationDateString"
             |              }
             |           ]
