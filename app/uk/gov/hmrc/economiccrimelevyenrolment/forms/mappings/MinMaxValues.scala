@@ -20,6 +20,6 @@ import java.time.{LocalDate, ZoneOffset}
 
 object MinMaxValues {
 
-  val MinEclRegistrationDate: LocalDate = LocalDate.of(2022, 4, 1)
+  val minEclRegistrationDate: LocalDate = LocalDate.of(2022, 4, 1)
   def maxEclRegistrationDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
 }

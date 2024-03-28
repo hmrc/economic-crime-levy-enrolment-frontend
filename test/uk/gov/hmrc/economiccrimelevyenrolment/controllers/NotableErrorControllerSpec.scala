@@ -104,7 +104,7 @@ class NotableErrorControllerSpec extends SpecBase {
       new TestContext(userAnswers, testGroupId, testProviderId, Some(eclRegistrationReference)) {
         val result: Future[Result]    = controller.groupAlreadyEnrolled()(fakeRequest)
         val taxAndSchemeManagementUrl =
-          s"${appConfig.taxAndSchemeManagementUrl}/services/${EclEnrolment.ServiceName}/${EclEnrolment.IdentifierKey}~$eclRegistrationReference/users"
+          s"${appConfig.taxAndSchemeManagementUrl}/services/${EclEnrolment.serviceName}/${EclEnrolment.identifierKey}~$eclRegistrationReference/users"
 
         status(result) shouldBe OK
 

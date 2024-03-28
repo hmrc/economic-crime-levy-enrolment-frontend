@@ -26,7 +26,7 @@ class EclReferenceFormProvider @Inject() extends Mappings {
   def apply(): Form[String] =
     Form(
       "value" -> text("eclReference.error.required").verifying(
-        regexp(Regex.EclRegistrationReferenceRegex, "eclReference.error.invalid")
+        regexp(Regex.eclRegistrationReferenceRegex, "eclReference.error.invalid")
       )
     )
 

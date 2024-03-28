@@ -68,11 +68,11 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase {
       ) =>
         val expectedUrl                    = s"$enrolmentStoreUrl/enrolments"
         val expectedKnownFacts             = Seq(
-          KeyValue(EclEnrolment.IdentifierKey, eclRegistrationReference),
-          KeyValue(EclEnrolment.VerifierKey, eclRegistrationDate.format(DateTimeFormatter.BASIC_ISO_DATE))
+          KeyValue(EclEnrolment.identifierKey, eclRegistrationReference),
+          KeyValue(EclEnrolment.verifierKey, eclRegistrationDate.format(DateTimeFormatter.BASIC_ISO_DATE))
         )
         val expectedQueryKnownFactsRequest = QueryKnownFactsRequest(
-          service = EclEnrolment.ServiceName,
+          service = EclEnrolment.serviceName,
           knownFacts = expectedKnownFacts
         )
 
@@ -118,7 +118,7 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase {
         queryGroupsWithEnrolmentResponse: Option[QueryGroupsWithEnrolmentResponse]
       ) =>
         val expectedUrl =
-          s"$enrolmentStoreUrl/enrolments/${EclEnrolment.EnrolmentKey(eclRegistrationReference)}/groups?ignore-assignments=true"
+          s"$enrolmentStoreUrl/enrolments/${EclEnrolment.enrolmentKey(eclRegistrationReference)}/groups?ignore-assignments=true"
 
         when(
           mockHttpClient

@@ -21,10 +21,10 @@ import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 
 trait AuditEvent {
 
-  private val AuditSource: String = "economic-crime-levy-enrolment-frontend"
+  private val auditSource: String = "economic-crime-levy-enrolment-frontend"
   val auditType: String
   val detailJson: JsValue
 
   def extendedDataEvent: ExtendedDataEvent =
-    ExtendedDataEvent(auditSource = AuditSource, auditType = auditType, detail = detailJson)
+    ExtendedDataEvent(auditSource = auditSource, auditType = auditType, detail = detailJson)
 }

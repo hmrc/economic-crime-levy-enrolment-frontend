@@ -54,16 +54,16 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
         val eclRegistrationDateString: String = eclRegistrationDate.format(DateTimeFormatter.BASIC_ISO_DATE)
 
         val knownFacts: Seq[KeyValue] = Seq(
-          KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber),
-          KeyValue(key = EclEnrolment.VerifierKey, value = eclRegistrationDateString)
+          KeyValue(key = EclEnrolment.identifierKey, value = eclReferenceNumber),
+          KeyValue(key = EclEnrolment.verifierKey, value = eclRegistrationDateString)
         )
 
         val expectedResponse: QueryKnownFactsResponse = QueryKnownFactsResponse(
-          service = EclEnrolment.ServiceName,
+          service = EclEnrolment.serviceName,
           enrolments = Seq(
             Enrolment(
-              identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber)),
-              verifiers = Seq(KeyValue(key = EclEnrolment.VerifierKey, value = eclRegistrationDateString))
+              identifiers = Seq(KeyValue(key = EclEnrolment.identifierKey, value = eclReferenceNumber)),
+              verifiers = Seq(KeyValue(key = EclEnrolment.verifierKey, value = eclRegistrationDateString))
             )
           )
         )
@@ -93,16 +93,16 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
         val eclRegistrationDateString: String = eclRegistrationDate.format(DateTimeFormatter.BASIC_ISO_DATE)
 
         val knownFacts: Seq[KeyValue] = Seq(
-          KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber),
-          KeyValue(key = EclEnrolment.VerifierKey, value = eclRegistrationDateString)
+          KeyValue(key = EclEnrolment.identifierKey, value = eclReferenceNumber),
+          KeyValue(key = EclEnrolment.verifierKey, value = eclRegistrationDateString)
         )
 
         val expectedResponse: QueryKnownFactsResponse = QueryKnownFactsResponse(
-          service = EclEnrolment.ServiceName,
+          service = EclEnrolment.serviceName,
           enrolments = Seq(
             Enrolment(
-              identifiers = Seq(KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber)),
-              verifiers = Seq(KeyValue(key = EclEnrolment.VerifierKey, value = "99991231"))
+              identifiers = Seq(KeyValue(key = EclEnrolment.identifierKey, value = eclReferenceNumber)),
+              verifiers = Seq(KeyValue(key = EclEnrolment.verifierKey, value = "99991231"))
             )
           )
         )
@@ -129,8 +129,8 @@ class EclRegistrationDatePageNavigatorSpec extends SpecBase {
         val eclRegistrationDateString: String = eclRegistrationDate.format(DateTimeFormatter.BASIC_ISO_DATE)
 
         val knownFacts: Seq[KeyValue] = Seq(
-          KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber),
-          KeyValue(key = EclEnrolment.VerifierKey, value = eclRegistrationDateString)
+          KeyValue(key = EclEnrolment.identifierKey, value = eclReferenceNumber),
+          KeyValue(key = EclEnrolment.verifierKey, value = eclRegistrationDateString)
         )
 
         when(mockEnrolmentStoreProxyConnector.queryKnownFacts(ArgumentMatchers.eq(knownFacts))(any()))

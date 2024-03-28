@@ -132,5 +132,5 @@ trait Generators {
       chars <- listOfN(length, arbitrary[Char])
     } yield chars.mkString
 
-  def eclRegistrationReference: Gen[String] = RegexpGen.from(s"${Regex.EclRegistrationReferenceRegex}")
+  def eclRegistrationReference: Gen[String] = RegexpGen.from(s"${Regex.eclRegistrationReferenceRegex}")
 }

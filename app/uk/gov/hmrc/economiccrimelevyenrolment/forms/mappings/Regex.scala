@@ -18,6 +18,6 @@ package uk.gov.hmrc.economiccrimelevyenrolment.forms.mappings
 
 object Regex {
 
-  val EclRegistrationReferenceRegex: String = "^X[A-Z]{1}ECL[0-9]{10}$"
+  val eclRegistrationReferenceRegex: String = "^X[A-Z]{1}ECL[0-9]{10}$"
 
 }

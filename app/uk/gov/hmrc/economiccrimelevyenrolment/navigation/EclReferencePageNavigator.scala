@@ -47,7 +47,7 @@ class EclReferencePageNavigator @Inject() (
     request: DataRequest[_]
   ): Future[Call] = {
     val knownFacts = Seq(
-      KeyValue(key = EclEnrolment.IdentifierKey, value = eclReferenceNumber)
+      KeyValue(key = EclEnrolment.identifierKey, value = eclReferenceNumber)
     )
 
     enrolmentStoreProxyConnector.queryGroupsWithEnrolment(eclReferenceNumber).flatMap {

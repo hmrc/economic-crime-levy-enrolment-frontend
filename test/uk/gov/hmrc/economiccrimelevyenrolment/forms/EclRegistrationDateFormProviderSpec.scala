@@ -30,7 +30,7 @@ class EclRegistrationDateFormProviderSpec extends DateBehaviours {
     behave like dateField(
       form,
       fieldName,
-      datesBetween(MinMaxValues.MinEclRegistrationDate, MinMaxValues.maxEclRegistrationDate)
+      datesBetween(MinMaxValues.minEclRegistrationDate, MinMaxValues.maxEclRegistrationDate)
     )
 
     behave like mandatoryDateField(
@@ -42,7 +42,7 @@ class EclRegistrationDateFormProviderSpec extends DateBehaviours {
     behave like dateFieldWithMin(
       form,
       fieldName,
-      MinMaxValues.MinEclRegistrationDate,
+      MinMaxValues.minEclRegistrationDate,
       Seq(
         FormError(s"$fieldName.day", "eclRegistrationDate.error.notWithinRange"),
         FormError(s"$fieldName.month", "eclRegistrationDate.error.notWithinRange"),
