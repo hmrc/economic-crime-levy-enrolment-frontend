@@ -128,8 +128,10 @@ feedback.p1 = Mae hwn yn wasanaeth newydd ac rydym eisiau gwybod beth yw’ch ba
 feedback.link = <a href="{0}" class="govuk-link">Anfonwch eich adborth atom</a>
 feedback.p2 = {0}. Bydd eich meddyliau a’ch syniadau’n ein helpu i wneud gwelliannau.
 
-exit.survey.link = <a href="{0}" class="govuk-link">Beth oedd eich barn am y gwasanaeth hwn?</a>
-exit.survey = {0} Mae’r arolwg ymadael yn (cymryd 30 eiliad).
+exit.h2 = Cyn i chi fynd
+exit.p1 = Mae’ch adborth yn ein helpu i wella ein gwasanaeth.
+exit.survey.link = <a href="{0}" class="govuk-link">Llenwch ein harolwg</a>
+exit.survey = {0} i rannu’ch adborth ar y gwasanaeth
 
 signedOut.title = Er eich diogelwch, gwnaethom eich allgofnodi
 signedOut.heading = Er eich diogelwch, gwnaethom eich allgofnodi
