@@ -35,10 +35,12 @@
     }
 
     <h1 class="govuk-heading-l">@messages("eclRegistrationDate.heading")</h1>
+
     <p class="govuk-body">@messages("eclRegistrationDate.p1")</p>
 
     @formHelper(action = EclRegistrationDateController.onSubmit()) {
         @dateInput(DateInput(
+            hint = Some(Hint(content = Text(messages("eclRegistrationDate.hint")))),
             fieldset = Some(
                 Fieldset(legend = Some(LegendViewModel(messages("eclRegistrationDate.heading")).asHidden()))
             )).withFormField(form("value"))
