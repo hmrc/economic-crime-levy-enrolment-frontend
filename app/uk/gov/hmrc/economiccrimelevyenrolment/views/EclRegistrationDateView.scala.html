@@ -35,7 +35,10 @@
     }
 
     <h1 class="govuk-heading-l">@messages("eclRegistrationDate.heading")</h1>
+
     <p class="govuk-body">@messages("eclRegistrationDate.p1")</p>
+
+    <div class="govuk-hint">@messages("eclRegistrationDate.hint")</div>
 
     @formHelper(action = EclRegistrationDateController.onSubmit()) {
         @dateInput(DateInput(
