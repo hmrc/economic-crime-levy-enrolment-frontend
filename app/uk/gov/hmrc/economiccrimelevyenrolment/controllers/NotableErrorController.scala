@@ -41,7 +41,8 @@ class NotableErrorController @Inject() (
   detailsDoNotMatchView: DetailsDoNotMatchView,
   agentCannotRegisterView: AgentCannotRegisterView,
   assistantCannotRegisterView: AssistantCannotRegisterView,
-  duplicateEnrolmentView: DuplicateEnrolmentView
+  duplicateEnrolmentView: DuplicateEnrolmentView,
+  eclAlreadyAddedView: ECLAlreadyAddedView
 ) extends FrontendBaseController
     with I18nSupport {
 
@@ -83,6 +84,10 @@ class NotableErrorController @Inject() (
 
   def assistantCannotRegister: Action[AnyContent] = authoriseAssistantsAllowed { implicit request =>
     Ok(assistantCannotRegisterView())
+  }
+
+  def eclAlreadyAdded: Action[AnyContent] = Action { implicit request =>
+    Ok(eclAlreadyAddedView())
   }
 
 }

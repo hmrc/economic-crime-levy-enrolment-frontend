@@ -19,7 +19,7 @@ package uk.gov.hmrc.economiccrimelevyenrolment.controllers
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions.{AuthorisedActionWithEnrolmentCheck, DataRetrievalAction}
+import uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions.{AuthorisedActionWithEnrolmentCheck, DataRetrievalAction, DataRetrievalOrErrorAction}
 import uk.gov.hmrc.economiccrimelevyenrolment.forms.EclRegistrationDateFormProvider
 import uk.gov.hmrc.economiccrimelevyenrolment.forms.FormImplicits.FormOps
 import uk.gov.hmrc.economiccrimelevyenrolment.navigation.EclRegistrationDatePageNavigator
@@ -33,13 +33,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EclRegistrationDateController @Inject() (
-  val controllerComponents: MessagesControllerComponents,
-  authorise: AuthorisedActionWithEnrolmentCheck,
-  getUserAnswers: DataRetrievalAction,
-  repository: SessionRepository,
-  formProvider: EclRegistrationDateFormProvider,
-  pageNavigator: EclRegistrationDatePageNavigator,
-  view: EclRegistrationDateView
+                                                val controllerComponents: MessagesControllerComponents,
+                                                authorise: AuthorisedActionWithEnrolmentCheck,
+                                                getUserAnswers: DataRetrievalOrErrorAction,
+                                                repository: SessionRepository,
+                                                formProvider: EclRegistrationDateFormProvider,
+                                                pageNavigator: EclRegistrationDatePageNavigator,
+                                                view: EclRegistrationDateView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
