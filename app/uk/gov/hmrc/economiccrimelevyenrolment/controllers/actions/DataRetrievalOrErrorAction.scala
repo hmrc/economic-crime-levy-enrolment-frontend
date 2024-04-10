@@ -32,12 +32,11 @@ class UserAnswersDataRetrievalOrErrorAction @Inject() (
     extends DataRetrievalOrErrorAction
     with FrontendHeaderCarrierProvider {
 
-  override protected def refine[A](request: AuthorisedRequest[A]): Future[Either[Result, DataRequest[A]]] = {
+  override protected def refine[A](request: AuthorisedRequest[A]): Future[Either[Result, DataRequest[A]]] =
     sessionRepository.get(request.internalId).map {
-      case Some(_) => Future.successful(Right(DataRequest(request.request, request.internalId, request.groupId, request.credentials, _)))
-      case None => Left(Redirect(routes.NotableErrorController.eclAlreadyAdded()))
-    }
-
+      case Some(userAnswers) =>
+        Right(DataRequest(request.request, request.internalId, request.groupId, request.credentials, userAnswers))
+      case None              => Left(Redirect(routes.NotableErrorController.eclAlreadyAdded()))
     }
 
 }
