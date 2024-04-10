@@ -35,6 +35,7 @@ class NotableErrorControllerSpec extends SpecBase {
   val agentCannotRegisterView: AgentCannotRegisterView         = app.injector.instanceOf[AgentCannotRegisterView]
   val assistantCannotRegisterView: AssistantCannotRegisterView = app.injector.instanceOf[AssistantCannotRegisterView]
   val duplicateEnrolmentView: DuplicateEnrolmentView           = app.injector.instanceOf[DuplicateEnrolmentView]
+  val eclAlreadyAddedView: ECLAlreadyAddedView                 = app.injector.instanceOf[ECLAlreadyAddedView]
 
   class TestContext(
     userAnswers: UserAnswers,
@@ -56,7 +57,8 @@ class NotableErrorControllerSpec extends SpecBase {
       detailsDoNotMatchView,
       agentCannotRegisterView,
       assistantCannotRegisterView,
-      duplicateEnrolmentView
+      duplicateEnrolmentView,
+      eclAlreadyAddedView
     )
   }
 

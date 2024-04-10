@@ -36,14 +36,13 @@ class UserAnswersDataRetrievalAction @Inject() (
       DataRequest(request.request, request.internalId, request.groupId, request.credentials, _)
     }
 
-  private def getOrCreateUserAnswers(internalId: String): Future[UserAnswers] = {
-     sessionRepository.get(internalId).flatMap {
+  private def getOrCreateUserAnswers(internalId: String): Future[UserAnswers] =
+    sessionRepository.get(internalId).flatMap {
       case Some(userAnswers) => Future.successful(userAnswers)
       case None              =>
         val userAnswers = UserAnswers.empty(internalId)
         sessionRepository.upsert(userAnswers).map(_ => userAnswers)
     }
-  }
 }
 
 trait DataRetrievalAction extends ActionTransformer[AuthorisedRequest, DataRequest]

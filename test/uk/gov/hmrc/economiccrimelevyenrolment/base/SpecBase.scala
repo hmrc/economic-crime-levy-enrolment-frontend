@@ -81,6 +81,8 @@ trait SpecBase
     new FakeAuthorisedActionAssistantsAllowed(bodyParsers)
   def fakeDataRetrievalAction(data: UserAnswers)                                                      =
     new FakeDataRetrievalAction(data)
+  def fakeDataRetrievalOrErrorAction(data: UserAnswers)                                               =
+    new FakeDataRetrievalOrErrorAction(data)
 
   def onwardRoute: Call = Call(GET, "/foo")
 
