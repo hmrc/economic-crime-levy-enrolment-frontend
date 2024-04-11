@@ -17,6 +17,7 @@
 package uk.gov.hmrc.economiccrimelevyenrolment.connectors
 
 import play.api.http.HeaderNames
+import play.api.http.Status.{ACCEPTED, CREATED, NO_CONTENT, OK}
 import play.api.libs.json.Json
 import uk.gov.hmrc.economiccrimelevyenrolment.config.AppConfig
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{AllocateEnrolmentRequest, EclEnrolment}
@@ -50,10 +51,12 @@ class TaxEnrolmentsConnector @Inject() (
     hc.authorization
       .map(auth => request.setHeader(HeaderNames.AUTHORIZATION -> auth.value))
       .getOrElse(request)
-      .execute[Either[UpstreamErrorResponse, HttpResponse]]
-      .map {
-        case Left(e)  => throw e
-        case Right(_) => ()
+      .execute[HttpResponse]
+      .map { response =>
+        response.status match {
+          case CREATED => ()
+          case _       => throw UpstreamErrorResponse(response.body, response.status)
+        }
       }
   }
 }

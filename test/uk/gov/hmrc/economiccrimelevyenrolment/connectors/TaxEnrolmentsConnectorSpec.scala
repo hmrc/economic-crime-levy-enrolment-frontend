@@ -18,14 +18,15 @@ package uk.gov.hmrc.economiccrimelevyenrolment.connectors
 
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT}
+import play.api.http.Status.{CREATED, INTERNAL_SERVER_ERROR}
 import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{AllocateEnrolmentRequest, EclEnrolment}
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
-import uk.gov.hmrc.http.{HttpResponse, StringContextOps, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HttpResponse, StringContextOps}
 
 import scala.concurrent.Future
+import scala.util.{Failure, Success, Try}
 
 class TaxEnrolmentsConnectorSpec extends SpecBase {
   val mockHttpClient: HttpClientV2       = mock[HttpClientV2]
@@ -35,12 +36,14 @@ class TaxEnrolmentsConnectorSpec extends SpecBase {
   "allocateEnrolment" should {
     "return unit when the http client successfully returns a http response" in forAll {
       allocateEnrolmentRequest: AllocateEnrolmentRequest =>
+        reset(mockHttpClient)
+
         val groupId      = testGroupId
         val enrolmentKey = s"${EclEnrolment.serviceName}~${EclEnrolment.identifierKey}~$testEclRegistrationReference"
 
         val expectedUrl = url"${appConfig.taxEnrolmentsBaseUrl}/tax-enrolments/groups/$groupId/enrolments/$enrolmentKey"
 
-        val response = HttpResponse(NO_CONTENT, "", Map.empty)
+        val response = HttpResponse(CREATED, "", Map.empty)
 
         when(mockHttpClient.post(ArgumentMatchers.eq(expectedUrl))(any()))
           .thenReturn(mockRequestBuilder)
@@ -58,12 +61,12 @@ class TaxEnrolmentsConnectorSpec extends SpecBase {
 
         verify(mockHttpClient, times(1))
           .post(ArgumentMatchers.eq(expectedUrl))(any())
-
-        reset(mockHttpClient)
     }
 
     "throw an UpstreamErrorResponse exception when the http client fails to return a success response" in forAll {
       allocateEnrolmentRequest: AllocateEnrolmentRequest =>
+        reset(mockHttpClient)
+
         val groupId      = testGroupId
         val enrolmentKey = s"${EclEnrolment.serviceName}~${EclEnrolment.identifierKey}~$testEclRegistrationReference"
 
@@ -78,16 +81,13 @@ class TaxEnrolmentsConnectorSpec extends SpecBase {
         when(mockRequestBuilder.execute[HttpResponse](any(), any()))
           .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "Internal server error")))
 
-        val result: UpstreamErrorResponse = intercept[UpstreamErrorResponse] {
-          await(connector.allocateEnrolment(groupId, testEclRegistrationReference, allocateEnrolmentRequest))
+        Try(await(connector.allocateEnrolment(groupId, testEclRegistrationReference, allocateEnrolmentRequest))) match {
+          case Failure(thr) => thr.getMessage shouldBe "Internal server error"
+          case Success(_)   => fail("expected exception to be thrown")
         }
 
-        result.message shouldBe "Internal server error"
-
         verify(mockHttpClient, times(1))
-          .post(ArgumentMatchers.eq(expectedUrl))
-
-        reset(mockHttpClient)
+          .post(ArgumentMatchers.eq(expectedUrl))(any())
     }
   }
 }
