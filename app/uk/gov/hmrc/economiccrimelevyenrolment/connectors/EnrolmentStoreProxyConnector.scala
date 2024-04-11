@@ -16,12 +16,13 @@
 
 package uk.gov.hmrc.economiccrimelevyenrolment.connectors
 
+import play.api.libs.json.Json
 import uk.gov.hmrc.economiccrimelevyenrolment.config.AppConfig
 import uk.gov.hmrc.economiccrimelevyenrolment.models.KeyValue
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd._
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -33,7 +34,10 @@ trait EnrolmentStoreProxyConnector {
   ): Future[Option[QueryGroupsWithEnrolmentResponse]]
 }
 
-class EnrolmentStoreProxyConnectorImpl @Inject() (appConfig: AppConfig, httpClient: HttpClient)(implicit
+class EnrolmentStoreProxyConnectorImpl @Inject() (
+  appConfig: AppConfig,
+  httpClient: HttpClientV2
+)(implicit
   ec: ExecutionContext
 ) extends EnrolmentStoreProxyConnector {
 
@@ -41,23 +45,27 @@ class EnrolmentStoreProxyConnectorImpl @Inject() (appConfig: AppConfig, httpClie
     s"${appConfig.enrolmentStoreProxyBaseUrl}/enrolment-store-proxy/enrolment-store"
 
   def getEnrolmentsForGroup(groupId: String)(implicit hc: HeaderCarrier): Future[Option[GroupEnrolmentsResponse]] =
-    httpClient.GET[Option[GroupEnrolmentsResponse]](
-      s"$enrolmentStoreUrl/groups/$groupId/enrolments"
-    )(readOptionOfNotFoundOrNoContent[GroupEnrolmentsResponse], hc, ec)
+    httpClient
+      .get(url"$enrolmentStoreUrl/groups/$groupId/enrolments")
+      .execute[Option[GroupEnrolmentsResponse]]
 
   def queryKnownFacts(knownFacts: Seq[KeyValue])(implicit hc: HeaderCarrier): Future[Option[QueryKnownFactsResponse]] =
-    httpClient.POST[QueryKnownFactsRequest, Option[QueryKnownFactsResponse]](
-      s"$enrolmentStoreUrl/enrolments",
-      QueryKnownFactsRequest(
-        EclEnrolment.serviceName,
-        knownFacts = knownFacts
+    httpClient
+      .post(url"$enrolmentStoreUrl/enrolments")
+      .withBody(
+        Json.toJson(
+          QueryKnownFactsRequest(
+            EclEnrolment.serviceName,
+            knownFacts = knownFacts
+          )
+        )
       )
-    )(QueryKnownFactsRequest.format, readOptionOfNotFoundOrNoContent[QueryKnownFactsResponse], hc, ec)
+      .execute[Option[QueryKnownFactsResponse]]
 
   def queryGroupsWithEnrolment(eclReference: String)(implicit
     hc: HeaderCarrier
   ): Future[Option[QueryGroupsWithEnrolmentResponse]] =
-    httpClient.GET[Option[QueryGroupsWithEnrolmentResponse]](
-      s"$enrolmentStoreUrl/enrolments/${EclEnrolment.enrolmentKey(eclReference)}/groups?ignore-assignments=true"
-    )(readOptionOfNotFoundOrNoContent[QueryGroupsWithEnrolmentResponse], hc, ec)
+    httpClient
+      .get(url"$enrolmentStoreUrl/enrolments/${EclEnrolment.enrolmentKey(eclReference)}/groups?ignore-assignments=true")
+      .execute[Option[QueryGroupsWithEnrolmentResponse]]
 }

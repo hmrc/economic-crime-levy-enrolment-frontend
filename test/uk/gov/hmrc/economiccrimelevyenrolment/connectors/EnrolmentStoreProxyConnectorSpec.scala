@@ -22,26 +22,30 @@ import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.KeyValue
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd._
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HttpClient, HttpResponse, StringContextOps, UpstreamErrorResponse}
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 class EnrolmentStoreProxyConnectorSpec extends SpecBase {
 
-  val mockHttpClient: HttpClient = mock[HttpClient]
-  val connector                  = new EnrolmentStoreProxyConnectorImpl(appConfig, mockHttpClient)
-  val enrolmentStoreUrl: String  = s"${appConfig.enrolmentStoreProxyBaseUrl}/enrolment-store-proxy/enrolment-store"
+  val mockHttpClient: HttpClientV2       = mock[HttpClientV2]
+  val mockRequestBuilder: RequestBuilder = mock[RequestBuilder]
+  val connector                          = new EnrolmentStoreProxyConnectorImpl(appConfig, mockHttpClient)
+  val enrolmentStoreUrl: String          = s"${appConfig.enrolmentStoreProxyBaseUrl}/enrolment-store-proxy/enrolment-store"
 
   "getEnrolmentsForGroup" should {
     "return a list of enrolments for the specified group when the http client returns a list of enrolments" in forAll {
       (groupId: String, groupEnrolments: Option[GroupEnrolmentsResponse]) =>
-        val expectedUrl = s"$enrolmentStoreUrl/groups/$groupId/enrolments"
-        when(
-          mockHttpClient
-            .GET[Option[GroupEnrolmentsResponse]](ArgumentMatchers.eq(expectedUrl), any(), any())(any(), any(), any())
-        )
+        val expectedUrl = url"$enrolmentStoreUrl/groups/$groupId/enrolments"
+
+        when(mockHttpClient.get(ArgumentMatchers.eq(expectedUrl))(any()))
+          .thenReturn(mockRequestBuilder)
+
+        when(mockRequestBuilder.execute[Option[GroupEnrolmentsResponse]](any(), any()))
           .thenReturn(Future.successful(groupEnrolments))
 
         val result = await(connector.getEnrolmentsForGroup(groupId))
@@ -49,11 +53,7 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase {
         result shouldBe groupEnrolments
 
         verify(mockHttpClient, times(1))
-          .GET[Option[GroupEnrolmentsResponse]](
-            ArgumentMatchers.eq(expectedUrl),
-            any(),
-            any()
-          )(any(), any(), any())
+          .get(ArgumentMatchers.eq(expectedUrl))(any())
 
         reset(mockHttpClient)
     }
@@ -66,7 +66,7 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase {
         eclRegistrationDate: LocalDate,
         queryKnownFactsResponse: Option[QueryKnownFactsResponse]
       ) =>
-        val expectedUrl                    = s"$enrolmentStoreUrl/enrolments"
+        val expectedUrl                    = url"$enrolmentStoreUrl/enrolments"
         val expectedKnownFacts             = Seq(
           KeyValue(EclEnrolment.identifierKey, eclRegistrationReference),
           KeyValue(EclEnrolment.verifierKey, eclRegistrationDate.format(DateTimeFormatter.BASIC_ISO_DATE))
@@ -76,19 +76,13 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase {
           knownFacts = expectedKnownFacts
         )
 
-        when(
-          mockHttpClient
-            .POST[QueryKnownFactsRequest, Option[QueryKnownFactsResponse]](
-              ArgumentMatchers.eq(expectedUrl),
-              ArgumentMatchers.eq(expectedQueryKnownFactsRequest),
-              any()
-            )(
-              any(),
-              any(),
-              any(),
-              any()
-            )
-        )
+        when(mockHttpClient.post(ArgumentMatchers.eq(expectedUrl))(any()))
+          .thenReturn(mockRequestBuilder)
+
+        when(mockRequestBuilder.withBody(any())(any(), any(), any()))
+          .thenReturn(mockRequestBuilder)
+
+        when(mockRequestBuilder.execute[Option[QueryKnownFactsResponse]](any(), any()))
           .thenReturn(Future.successful(queryKnownFactsResponse))
 
         val result = await(connector.queryKnownFacts(expectedKnownFacts))
@@ -96,16 +90,7 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase {
         result shouldBe queryKnownFactsResponse
 
         verify(mockHttpClient, times(1))
-          .POST[QueryKnownFactsRequest, Option[QueryKnownFactsResponse]](
-            ArgumentMatchers.eq(expectedUrl),
-            ArgumentMatchers.eq(expectedQueryKnownFactsRequest),
-            any()
-          )(
-            any(),
-            any(),
-            any(),
-            any()
-          )
+          .post(ArgumentMatchers.eq(expectedUrl))
 
         reset(mockHttpClient)
     }
@@ -118,20 +103,12 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase {
         queryGroupsWithEnrolmentResponse: Option[QueryGroupsWithEnrolmentResponse]
       ) =>
         val expectedUrl =
-          s"$enrolmentStoreUrl/enrolments/${EclEnrolment.enrolmentKey(eclRegistrationReference)}/groups?ignore-assignments=true"
+          url"$enrolmentStoreUrl/enrolments/${EclEnrolment.enrolmentKey(eclRegistrationReference)}/groups?ignore-assignments=true"
 
-        when(
-          mockHttpClient
-            .GET[Option[QueryGroupsWithEnrolmentResponse]](
-              ArgumentMatchers.eq(expectedUrl),
-              any(),
-              any()
-            )(
-              any(),
-              any(),
-              any()
-            )
-        )
+        when(mockHttpClient.get(ArgumentMatchers.eq(expectedUrl))(any()))
+          .thenReturn(mockRequestBuilder)
+
+        when(mockRequestBuilder.execute[Option[QueryGroupsWithEnrolmentResponse]](any(), any()))
           .thenReturn(Future.successful(queryGroupsWithEnrolmentResponse))
 
         val result = await(connector.queryGroupsWithEnrolment(eclRegistrationReference))
@@ -139,15 +116,7 @@ class EnrolmentStoreProxyConnectorSpec extends SpecBase {
         result shouldBe queryGroupsWithEnrolmentResponse
 
         verify(mockHttpClient, times(1))
-          .GET[Option[QueryGroupsWithEnrolmentResponse]](
-            ArgumentMatchers.eq(expectedUrl),
-            any(),
-            any()
-          )(
-            any(),
-            any(),
-            any()
-          )
+          .get(ArgumentMatchers.eq(expectedUrl))
 
         reset(mockHttpClient)
     }
