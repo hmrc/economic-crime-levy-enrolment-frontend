@@ -47,15 +47,14 @@ class EclReferenceISpec extends ISpecBase with AuthorisedBehaviour {
       stubGroupsWithEnrolment(testEclRegistrationReference)
       stubQueryKnownFacts(testEclRegistrationReference)
 
-      sessionRepository.upsert(
-        UserAnswers
-          .empty(testInternalId)
-          .copy(
-            hasEclReference = Some(Yes),
-            eclReferenceNumber = None,
-            eclRegistrationDate = None
-          )
-      )
+      val userAnswers = UserAnswers
+        .empty(testInternalId)
+        .copy(
+          hasEclReference = Some(Yes),
+          eclReferenceNumber = None,
+          eclRegistrationDate = None
+        )
+      stubUpsert(sessionRepository, userAnswers)
 
       val result = callRoute(
         FakeRequest(routes.EclReferenceController.onSubmit())

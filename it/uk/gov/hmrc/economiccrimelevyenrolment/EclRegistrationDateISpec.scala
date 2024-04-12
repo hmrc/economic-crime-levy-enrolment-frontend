@@ -32,6 +32,27 @@ class EclRegistrationDateISpec extends ISpecBase with AuthorisedBehaviour {
     "respond with 200 status and the ECL registration date HTML view" in {
       stubAuthorised()
 
+      val userAnswers =
+        UserAnswers
+          .empty(testInternalId)
+          .copy(
+            hasEclReference = Some(Yes),
+            eclReferenceNumber = Some(testEclRegistrationReference),
+            eclRegistrationDate = None
+          )
+
+      stubUpsert(sessionRepository, userAnswers)
+
+      val result = callRoute(FakeRequest(routes.EclRegistrationDateController.onPageLoad()))
+
+      status(result) shouldBe OK
+
+      html(result) should include("Your ECL registration date")
+    }
+
+    "respond with 303 status and the ECL registration date HTML view" in {
+      stubAuthorised()
+
       val result = callRoute(FakeRequest(routes.EclRegistrationDateController.onPageLoad()))
 
       status(result) shouldBe OK
@@ -53,7 +74,7 @@ class EclRegistrationDateISpec extends ISpecBase with AuthorisedBehaviour {
         )
       )
 
-      sessionRepository.upsert(
+      val userAnswers =
         UserAnswers
           .empty(testInternalId)
           .copy(
@@ -61,7 +82,8 @@ class EclRegistrationDateISpec extends ISpecBase with AuthorisedBehaviour {
             eclReferenceNumber = Some(testEclRegistrationReference),
             eclRegistrationDate = None
           )
-      )
+
+      stubUpsert(sessionRepository, userAnswers)
 
       val result = callRoute(
         FakeRequest(routes.EclRegistrationDateController.onSubmit())

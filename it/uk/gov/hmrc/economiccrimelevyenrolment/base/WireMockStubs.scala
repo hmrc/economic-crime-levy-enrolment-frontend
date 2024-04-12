@@ -14,6 +14,7 @@ trait WireMockStubs
     with AuthStubs
     with EnrolmentStoreProxyStubs
     with TaxEnrolmentsStubs
+    with SessionRepositoryStubs
     with Generators {
 
   def stubAuthorisedWithNoGroupEnrolment(): StubMapping = {
