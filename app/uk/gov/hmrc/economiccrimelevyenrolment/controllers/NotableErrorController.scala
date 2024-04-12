@@ -42,7 +42,7 @@ class NotableErrorController @Inject() (
   agentCannotRegisterView: AgentCannotRegisterView,
   assistantCannotRegisterView: AssistantCannotRegisterView,
   duplicateEnrolmentView: DuplicateEnrolmentView,
-  eclAlreadyAddedView: ECLAlreadyAddedView
+  eclAlreadyAddedView: EclAlreadyAddedView
 ) extends FrontendBaseController
     with I18nSupport {
 
