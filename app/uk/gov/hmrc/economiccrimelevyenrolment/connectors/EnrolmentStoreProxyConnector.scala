@@ -16,11 +16,14 @@
 
 package uk.gov.hmrc.economiccrimelevyenrolment.connectors
 
+import play.api.http.Status.{ACCEPTED, CREATED, NOT_FOUND, NO_CONTENT, OK}
+import play.api.libs.json.{Json, Reads}
 import uk.gov.hmrc.economiccrimelevyenrolment.config.AppConfig
 import uk.gov.hmrc.economiccrimelevyenrolment.models.KeyValue
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd._
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,31 +36,69 @@ trait EnrolmentStoreProxyConnector {
   ): Future[Option[QueryGroupsWithEnrolmentResponse]]
 }
 
-class EnrolmentStoreProxyConnectorImpl @Inject() (appConfig: AppConfig, httpClient: HttpClient)(implicit
+class EnrolmentStoreProxyConnectorImpl @Inject() (
+  appConfig: AppConfig,
+  httpClient: HttpClientV2
+)(implicit
   ec: ExecutionContext
 ) extends EnrolmentStoreProxyConnector {
 
   private val enrolmentStoreUrl: String =
     s"${appConfig.enrolmentStoreProxyBaseUrl}/enrolment-store-proxy/enrolment-store"
 
-  def getEnrolmentsForGroup(groupId: String)(implicit hc: HeaderCarrier): Future[Option[GroupEnrolmentsResponse]] =
-    httpClient.GET[Option[GroupEnrolmentsResponse]](
-      s"$enrolmentStoreUrl/groups/$groupId/enrolments"
-    )(readOptionOfNotFoundOrNoContent[GroupEnrolmentsResponse], hc, ec)
+  private def deserialiseAs[A](response: HttpResponse)(implicit reads: Reads[A]): Option[A] =
+    response.json
+      .validate[A]
+      .map(result => Some(result))
+      .recoverTotal(error => throw new Exception(error.toString))
 
-  def queryKnownFacts(knownFacts: Seq[KeyValue])(implicit hc: HeaderCarrier): Future[Option[QueryKnownFactsResponse]] =
-    httpClient.POST[QueryKnownFactsRequest, Option[QueryKnownFactsResponse]](
-      s"$enrolmentStoreUrl/enrolments",
-      QueryKnownFactsRequest(
-        EclEnrolment.serviceName,
-        knownFacts = knownFacts
+  def getEnrolmentsForGroup(groupId: String)(implicit
+    hc: HeaderCarrier
+  ): Future[Option[GroupEnrolmentsResponse]] =
+    httpClient
+      .get(url"$enrolmentStoreUrl/groups/$groupId/enrolments")
+      .execute[HttpResponse]
+      .map { response =>
+        response.status match {
+          case OK | ACCEPTED | CREATED => deserialiseAs[GroupEnrolmentsResponse](response)
+          case NO_CONTENT | NOT_FOUND  => None
+          case _                       => throw UpstreamErrorResponse(response.body, response.status)
+        }
+      }
+
+  def queryKnownFacts(knownFacts: Seq[KeyValue])(implicit
+    hc: HeaderCarrier
+  ): Future[Option[QueryKnownFactsResponse]] =
+    httpClient
+      .post(url"$enrolmentStoreUrl/enrolments")
+      .withBody(
+        Json.toJson(
+          QueryKnownFactsRequest(
+            EclEnrolment.serviceName,
+            knownFacts = knownFacts
+          )
+        )
       )
-    )(QueryKnownFactsRequest.format, readOptionOfNotFoundOrNoContent[QueryKnownFactsResponse], hc, ec)
+      .execute[HttpResponse]
+      .map { response =>
+        response.status match {
+          case OK | ACCEPTED | CREATED => deserialiseAs[QueryKnownFactsResponse](response)
+          case NO_CONTENT | NOT_FOUND  => None
+          case _                       => throw UpstreamErrorResponse(response.body, response.status)
+        }
+      }
 
   def queryGroupsWithEnrolment(eclReference: String)(implicit
     hc: HeaderCarrier
   ): Future[Option[QueryGroupsWithEnrolmentResponse]] =
-    httpClient.GET[Option[QueryGroupsWithEnrolmentResponse]](
-      s"$enrolmentStoreUrl/enrolments/${EclEnrolment.enrolmentKey(eclReference)}/groups?ignore-assignments=true"
-    )(readOptionOfNotFoundOrNoContent[QueryGroupsWithEnrolmentResponse], hc, ec)
+    httpClient
+      .get(url"$enrolmentStoreUrl/enrolments/${EclEnrolment.enrolmentKey(eclReference)}/groups?ignore-assignments=true")
+      .execute[HttpResponse]
+      .map { response =>
+        response.status match {
+          case OK | ACCEPTED | CREATED => deserialiseAs[QueryGroupsWithEnrolmentResponse](response)
+          case NO_CONTENT | NOT_FOUND  => None
+          case _                       => throw UpstreamErrorResponse(response.body, response.status)
+        }
+      }
 }

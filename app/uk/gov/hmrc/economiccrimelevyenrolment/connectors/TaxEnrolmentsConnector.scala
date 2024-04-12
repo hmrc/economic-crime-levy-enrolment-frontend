@@ -16,16 +16,23 @@
 
 package uk.gov.hmrc.economiccrimelevyenrolment.connectors
 
+import play.api.http.HeaderNames
+import play.api.http.Status.CREATED
+import play.api.libs.json.Json
 import uk.gov.hmrc.economiccrimelevyenrolment.config.AppConfig
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{AllocateEnrolmentRequest, EclEnrolment}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TaxEnrolmentsConnector @Inject() (appConfig: AppConfig, httpClient: HttpClient)(implicit ec: ExecutionContext) {
+class TaxEnrolmentsConnector @Inject() (
+  appConfig: AppConfig,
+  httpClient: HttpClientV2
+)(implicit ec: ExecutionContext) {
 
   private val taxEnrolmentsUrl: String =
     s"${appConfig.taxEnrolmentsBaseUrl}/tax-enrolments"
@@ -37,14 +44,19 @@ class TaxEnrolmentsConnector @Inject() (appConfig: AppConfig, httpClient: HttpCl
   )(implicit hc: HeaderCarrier): Future[Unit] = {
     val enrolmentKey = s"${EclEnrolment.serviceName}~${EclEnrolment.identifierKey}~$eclRegistrationReference"
 
-    httpClient
-      .POST[AllocateEnrolmentRequest, Either[UpstreamErrorResponse, HttpResponse]](
-        s"$taxEnrolmentsUrl/groups/$groupId/enrolments/$enrolmentKey",
-        allocateEnrolmentRequest
-      )
-      .map {
-        case Left(e)  => throw e
-        case Right(_) => ()
+    val request = httpClient
+      .post(url"$taxEnrolmentsUrl/groups/$groupId/enrolments/$enrolmentKey")
+      .withBody(Json.toJson(allocateEnrolmentRequest))
+
+    hc.authorization
+      .map(auth => request.setHeader(HeaderNames.AUTHORIZATION -> auth.value))
+      .getOrElse(request)
+      .execute[HttpResponse]
+      .map { response =>
+        response.status match {
+          case CREATED => ()
+          case _       => throw UpstreamErrorResponse(response.body, response.status)
+        }
       }
   }
 }
