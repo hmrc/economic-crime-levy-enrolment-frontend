@@ -16,12 +16,10 @@
 
 package uk.gov.hmrc.economiccrimelevyenrolment.controllers
 
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase
-import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.TriState._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
 import uk.gov.hmrc.economiccrimelevyenrolment.repositories.SessionRepository
@@ -50,9 +48,6 @@ class ConfirmationControllerSpec extends SpecBase {
     "return OK and answer invalid view" in { (userAnswers: UserAnswers) =>
       new TestContext(userAnswers.copy(hasEclReference = Some(Yes)), testGroupId, testProviderId) {
 
-        /*  when(mockSessionRepository.clear(ArgumentMatchers.eq(id)))
-          .thenReturn(Future.successful(true))*/
-
         when(mockSessionRepository.clear(userAnswers.internalId))
           .thenReturn(Future.failed(UpstreamErrorResponse(any(), any(), any(), any())))
 
@@ -60,7 +55,7 @@ class ConfirmationControllerSpec extends SpecBase {
 
         status(result) shouldBe OK
 
-        contentAsString(result) shouldBe view()(fakeRequest, messages).toString
+        contentAsString(result) shouldBe answersAreInvalidView()(fakeRequest, messages).toString
       }
     }
 

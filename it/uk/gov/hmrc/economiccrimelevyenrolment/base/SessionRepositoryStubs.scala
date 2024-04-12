@@ -1,15 +1,12 @@
 package uk.gov.hmrc.economiccrimelevyenrolment.base
 
-import com.github.tomakehurst.wiremock.client.WireMock._
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.libs.json.Json
-import uk.gov.hmrc.economiccrimelevyenrolment.base.WireMockHelper.stub
-import uk.gov.hmrc.economiccrimelevyenrolment.models.TriState.Yes
 import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
 import uk.gov.hmrc.economiccrimelevyenrolment.repositories.SessionRepository
 
+import scala.concurrent.Future
+
 trait SessionRepositoryStubs { self: WireMockStubs =>
 
-  def stubUpsert(sessionRepository: SessionRepository, userAnswers: UserAnswers) =
+  def stubUpsert(sessionRepository: SessionRepository, userAnswers: UserAnswers): Future[Boolean] =
     sessionRepository.upsert(userAnswers)
 }
