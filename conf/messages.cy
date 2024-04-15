@@ -151,3 +151,8 @@ date.month.11 = Tachwedd
 date.month.12 = Rhagfyr
 
 govukErrorMessage.visuallyHiddenText = Gwall
+
+eclAlreadyAdded.title = Rydych eisoes wedi ychwanegu’r Ardoll Troseddau Economaidd at eich cyfrif treth busnes -Ychwanegwch ardoll at eich cyfrif - GOV.UK
+eclAlreadyAdded.heading = Rydych eisoes wedi ychwanegu’r Ardoll Troseddau Economaidd at eich cyfrif treth busnes
+eclAlreadyAdded.body.p1 = Mae’ch gwybodaeth wedi cael ei hanfon i CThEF.
+eclAlreadyAdded.body.link = <a href="{0}" class="govuk-link">Yn ôl i’ch cyfrif treth busnes</a>

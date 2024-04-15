@@ -19,21 +19,32 @@ package uk.gov.hmrc.economiccrimelevyenrolment.controllers
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions.AuthorisedActionWithoutEnrolmentCheck
-import uk.gov.hmrc.economiccrimelevyenrolment.views.html.ConfirmationView
+import uk.gov.hmrc.economiccrimelevyenrolment.repositories.SessionRepository
+import uk.gov.hmrc.economiccrimelevyenrolment.views.html.{AnswersAreInvalidView, ConfirmationView}
+import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class ConfirmationController @Inject() (
+  val sessionRepository: SessionRepository,
   val controllerComponents: MessagesControllerComponents,
   authorise: AuthorisedActionWithoutEnrolmentCheck,
-  view: ConfirmationView
-) extends FrontendBaseController
+  confirmationView: ConfirmationView,
+  answersAreInvalidView: AnswersAreInvalidView
+)(implicit ex: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = authorise { implicit request =>
-    Ok(view())
+  def onPageLoad: Action[AnyContent] = authorise.async { implicit request =>
+    sessionRepository
+      .clear(request.internalId)
+      .map(_ => Ok(confirmationView()))
+      .recover { case UpstreamErrorResponse(_, _, _, _) =>
+        Ok(answersAreInvalidView())
+      }
   }
 
 }

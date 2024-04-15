@@ -19,7 +19,7 @@ package uk.gov.hmrc.economiccrimelevyenrolment.controllers
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions.{AuthorisedActionWithEnrolmentCheck, DataRetrievalAction}
+import uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions.{AuthorisedActionWithEnrolmentCheck, DataRetrievalOrErrorAction}
 import uk.gov.hmrc.economiccrimelevyenrolment.forms.EclRegistrationDateFormProvider
 import uk.gov.hmrc.economiccrimelevyenrolment.forms.FormImplicits.FormOps
 import uk.gov.hmrc.economiccrimelevyenrolment.navigation.EclRegistrationDatePageNavigator
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class EclRegistrationDateController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   authorise: AuthorisedActionWithEnrolmentCheck,
-  getUserAnswers: DataRetrievalAction,
+  getUserAnswers: DataRetrievalOrErrorAction,
   repository: SessionRepository,
   formProvider: EclRegistrationDateFormProvider,
   pageNavigator: EclRegistrationDatePageNavigator,

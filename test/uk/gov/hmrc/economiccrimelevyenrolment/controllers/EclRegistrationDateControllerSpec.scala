@@ -57,7 +57,7 @@ class EclRegistrationDateControllerSpec extends SpecBase {
     val controller = new EclRegistrationDateController(
       mcc,
       fakeAuthorisedActionWithEnrolmentCheck(userAnswers.internalId, groupId, providerId),
-      fakeDataRetrievalAction(userAnswers),
+      fakeDataRetrievalOrErrorAction(userAnswers),
       mockSessionRepository,
       formProvider,
       pageNavigator,

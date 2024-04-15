@@ -20,8 +20,6 @@ import play.api.data.FormError
 import play.api.data.format.Formatter
 import uk.gov.hmrc.economiccrimelevyenrolment.models.Enumerable
 
-import scala.util.control.Exception.nonFatalCatch
-
 trait Formatters {
 
   private[mappings] def stringFormatter(
@@ -44,77 +42,6 @@ trait Formatters {
       override def unbind(key: String, value: String): Map[String, String] =
         Map(key -> value)
     }
-
-  private[mappings] def booleanFormatter(
-    requiredKey: String,
-    invalidKey: String,
-    args: Seq[String] = Seq.empty,
-    sanitise: String => String
-  ): Formatter[Boolean] =
-    new Formatter[Boolean] {
-
-      private val baseFormatter = stringFormatter(requiredKey, args, sanitise)
-
-      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Boolean] =
-        baseFormatter
-          .bind(key, data)
-          .flatMap {
-            case "true"  => Right(true)
-            case "false" => Right(false)
-            case _       => Left(Seq(FormError(key, invalidKey, args)))
-          }
-
-      def unbind(key: String, value: Boolean): Map[String, String] = Map(key -> value.toString)
-    }
-
-  private def numberFormatter[T](
-    stringToNumber: String => T,
-    requiredKey: String,
-    wholeNumberKey: String,
-    nonNumericKey: String,
-    args: Seq[String],
-    sanitise: String => String
-  ): Formatter[T] =
-    new Formatter[T] {
-
-      val decimalRegexp = """^-?(\d*\.\d*)$"""
-
-      private val baseFormatter = stringFormatter(requiredKey, args, sanitise)
-
-      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], T] =
-        baseFormatter
-          .bind(key, data)
-          .map(_.replace(",", ""))
-          .map(_.replaceAll("\\s+", ""))
-          .flatMap {
-            case s if s.matches(decimalRegexp) =>
-              Left(Seq(FormError(key, wholeNumberKey, args)))
-            case s                             =>
-              nonFatalCatch
-                .either(stringToNumber(s))
-                .left
-                .map(_ => Seq(FormError(key, nonNumericKey, args)))
-          }
-
-      override def unbind(key: String, value: T): Map[String, String] =
-        baseFormatter.unbind(key, value.toString)
-    }
-
-  private[mappings] def longFormatter(
-    requiredKey: String,
-    wholeNumberKey: String,
-    nonNumericKey: String,
-    args: Seq[String] = Seq.empty,
-    sanitise: String => String
-  ): Formatter[Long] = numberFormatter[Long](_.toLong, requiredKey, wholeNumberKey, nonNumericKey, args, sanitise)
-
-  private[mappings] def intFormatter(
-    requiredKey: String,
-    wholeNumberKey: String,
-    nonNumericKey: String,
-    args: Seq[String] = Seq.empty,
-    sanitise: String => String
-  ): Formatter[Int] = numberFormatter[Int](_.toInt, requiredKey, wholeNumberKey, nonNumericKey, args, sanitise)
 
   private[mappings] def enumerableFormatter[A](
     requiredKey: String,

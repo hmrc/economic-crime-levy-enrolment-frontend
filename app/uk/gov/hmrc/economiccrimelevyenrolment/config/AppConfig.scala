@@ -54,4 +54,5 @@ class AppConfig @Inject() (configuration: Configuration, servicesConfig: Service
   val taxAndSchemeManagementUrl: String                   = configuration.get[String]("urls.taxAndSchemeManagement")
   val taxEnrolmentsBaseUrl: String                        = servicesConfig.baseUrl("tax-enrolments")
   val timeout: Int                                        = configuration.get[Int]("timeout-dialog.timeout")
+  val businessAccountUrl: String                          = configuration.get[String]("urls.businessAccount")
 }

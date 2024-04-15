@@ -44,7 +44,8 @@ class HasEclReferenceISpec extends ISpecBase with AuthorisedBehaviour {
     "save the selected ECL reference option then redirect to the ECL reference number page when the answer is 'Yes'" in {
       stubAuthorised()
 
-      sessionRepository.upsert(UserAnswers.empty(testInternalId))
+      val userAnswers = UserAnswers.empty(testInternalId)
+      stubUpsert(sessionRepository, userAnswers)
 
       val result = callRoute(
         FakeRequest(routes.HasEclReferenceController.onSubmit())
@@ -59,7 +60,8 @@ class HasEclReferenceISpec extends ISpecBase with AuthorisedBehaviour {
     "save the selected ECL reference option then redirect to the need to register for ECL page when the answer is 'No'" in {
       stubAuthorised()
 
-      sessionRepository.upsert(UserAnswers.empty(testInternalId))
+      val userAnswers = UserAnswers.empty(testInternalId)
+      stubUpsert(sessionRepository, userAnswers)
 
       val result = callRoute(
         FakeRequest(routes.HasEclReferenceController.onSubmit())
@@ -74,7 +76,8 @@ class HasEclReferenceISpec extends ISpecBase with AuthorisedBehaviour {
     "save the selected ECL reference option then redirect to the find your ECL reference page when the answer is 'Unknown'" in {
       stubAuthorised()
 
-      sessionRepository.upsert(UserAnswers.empty(testInternalId))
+      val userAnswers = UserAnswers.empty(testInternalId)
+      stubUpsert(sessionRepository, userAnswers)
 
       val result = callRoute(
         FakeRequest(routes.HasEclReferenceController.onSubmit())

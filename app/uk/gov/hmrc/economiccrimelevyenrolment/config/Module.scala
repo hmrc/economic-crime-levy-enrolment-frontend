@@ -19,7 +19,7 @@ package uk.gov.hmrc.economiccrimelevyenrolment.config
 import com.google.inject.AbstractModule
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.economiccrimelevyenrolment.connectors.{EnrolmentStoreProxyConnector, EnrolmentStoreProxyConnectorImpl}
-import uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions.{DataRetrievalAction, UserAnswersDataRetrievalAction}
+import uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions.{DataRetrievalAction, DataRetrievalOrErrorAction, UserAnswersDataRetrievalAction, UserAnswersDataRetrievalOrErrorAction}
 import uk.gov.hmrc.economiccrimelevyenrolment.testonly.connectors.stubs.StubEnrolmentStoreProxyConnector
 
 import java.time.{Clock, ZoneOffset}
@@ -29,6 +29,9 @@ class Module(environment: Environment, configuration: Configuration) extends Abs
   override def configure(): Unit = {
     bind(classOf[DataRetrievalAction])
       .to(classOf[UserAnswersDataRetrievalAction])
+      .asEagerSingleton()
+    bind(classOf[DataRetrievalOrErrorAction])
+      .to(classOf[UserAnswersDataRetrievalOrErrorAction])
       .asEagerSingleton()
 
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))

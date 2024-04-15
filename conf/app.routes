@@ -36,3 +36,5 @@ GET         /add-levy                                          uk.gov.hmrc.econo
 GET         /account/sign-out-survey                           uk.gov.hmrc.economiccrimelevyenrolment.controllers.SignOutController.signOut()
 GET         /account/sign-out                                  uk.gov.hmrc.economiccrimelevyenrolment.controllers.SignOutController.signOutNoSurvey()
 GET         /account/signed-out                                uk.gov.hmrc.economiccrimelevyenrolment.controllers.SignOutController.signedOut()
+
+GET         /you-have-already-added-ecl                        uk.gov.hmrc.economiccrimelevyenrolment.controllers.NotableErrorController.eclAlreadyAdded()

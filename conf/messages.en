@@ -151,3 +151,8 @@ date.month.11 = November
 date.month.12 = December
 
 govukErrorMessage.visuallyHiddenText = Error
+
+eclAlreadyAdded.title = You have already added the Economic Crime Levy to your business tax account - Add a levy to your account - GOV.UK
+eclAlreadyAdded.heading = You have already added the Economic Crime Levy to your business tax account
+eclAlreadyAdded.body.p1 = Your information has been sent to HMRC.
+eclAlreadyAdded.body.link = <a href="{0}" class="govuk-link">Return to your business tax account</a>
