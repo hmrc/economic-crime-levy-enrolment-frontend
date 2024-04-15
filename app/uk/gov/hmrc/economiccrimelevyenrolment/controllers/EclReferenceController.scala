@@ -55,7 +55,7 @@ class EclReferenceController @Inject() (
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         eclReferenceNumber => {
-          val updatedAnswers = request.userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber))
+          val updatedAnswers = request.userAnswers.copy(eclReferenceNumber = Some(eclReferenceNumber.toUpperCase()))
           repository
             .upsert(updatedAnswers)
             .flatMap(_ => pageNavigator.nextPage(updatedAnswers).map(Redirect))
