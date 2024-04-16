@@ -91,7 +91,7 @@ class EclReferenceControllerSpec extends SpecBase {
     ) { (userAnswers: UserAnswers, eclReferenceNumber: String) =>
       new TestContext(userAnswers, testGroupId, testProviderId) {
         val updatedAnswers: UserAnswers = userAnswers.copy(
-          eclReferenceNumber = Some(eclReferenceNumber)
+          eclReferenceNumber = Some(eclReferenceNumber.toUpperCase())
         )
 
         when(mockSessionRepository.upsert(ArgumentMatchers.eq(updatedAnswers)))

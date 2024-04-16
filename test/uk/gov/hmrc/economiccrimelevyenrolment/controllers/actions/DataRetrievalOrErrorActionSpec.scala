@@ -17,7 +17,6 @@
 package uk.gov.hmrc.economiccrimelevyenrolment.controllers.actions
 
 import org.mockito.ArgumentMatchers
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContentAsEmpty, Request, Result}
 import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase

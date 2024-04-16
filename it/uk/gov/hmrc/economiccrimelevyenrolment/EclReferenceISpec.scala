@@ -43,9 +43,11 @@ class EclReferenceISpec extends ISpecBase with AuthorisedBehaviour {
     behave like authorisedActionWithEnrolmentCheckRoute(routes.EclReferenceController.onSubmit())
 
     "save the provided ECL reference number then redirect to the ECL registration date page" in {
+      val uppercaseTestEclRegistrationReference = testEclRegistrationReference.toUpperCase()
+
       stubAuthorised()
-      stubGroupsWithEnrolment(testEclRegistrationReference)
-      stubQueryKnownFacts(testEclRegistrationReference)
+      stubGroupsWithEnrolment(uppercaseTestEclRegistrationReference)
+      stubQueryKnownFacts(uppercaseTestEclRegistrationReference)
 
       val userAnswers = UserAnswers
         .empty(testInternalId)
