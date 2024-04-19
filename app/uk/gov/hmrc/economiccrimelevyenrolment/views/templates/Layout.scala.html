@@ -15,7 +15,7 @@
  *@
 
 @import uk.gov.hmrc.economiccrimelevyenrolment.config.AppConfig
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{Banners, HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
 
 @this(
         appConfig: AppConfig,
@@ -23,8 +23,7 @@
         govukBackLink: GovukBackLink,
         hmrcHead: HmrcHead,
         hmrcTimeoutDialog: HmrcTimeoutDialog,
-        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-        betaBanner: StandardBetaBanner
+        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
 )
 
 @(pageTitle: String, showBackLink: Boolean = true, timeout: Boolean = true, showSignOut: Boolean = true, isWelshTranslationAvailable: Option[Boolean] = None)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
@@ -66,9 +65,6 @@
     serviceURLs = ServiceURLs(
         serviceUrl = Some(HasEclReferenceController.onPageLoad.url),
         signOutUrl = if(showSignOut) Some(SignOutController.signOut.url) else None
-    ),
-    banners = Banners(
-        phaseBanner = Some(betaBanner(appConfig.feedbackUrl))
     ),
     isWelshTranslationAvailable = isWelshTranslationAvailable.getOrElse(appConfig.languageTranslationEnabled),
     templateOverrides = TemplateOverrides(
