@@ -36,6 +36,13 @@ class AppConfig @Inject() (configuration: Configuration, servicesConfig: Service
   def feedbackUrl(backUrl: String): String =
     s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${RedirectUrl(backUrl)}"
 
+  val platformHost: Option[String] = configuration.getOptional[String]("platform.frontend.host")
+
+  lazy val basGatewayLoggedOutUrl: String = {
+    val baseUrl = platformHost.getOrElse("http://localhost:9553")
+    s"$baseUrl/bas-gateway/loggedout"
+  }
+
   val appName: String                                     = configuration.get[String]("appName")
   val countdown: Int                                      = configuration.get[Int]("timeout-dialog.countdown")
   val eclAccountEnabled: Boolean                          = configuration.get[Boolean]("features.eclAccountEnabled")
