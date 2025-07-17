@@ -16,7 +16,7 @@ date.month = Mis
 date.year = Blwyddyn
 
 timeout.title = Rydych ar fin cael eich allgofnodi
-timeout.message = Am resymau diogelwch, cewch eich allgofnodi o’r gwasanaeth hwn ymhen
+timeout.message = Er eich diogelwch, byddwn yn eich allgofnodi ymhen
 timeout.keepAlive = Parhau i fod wedi’ch mewngofnodi
 timeout.signOut = Allgofnodi
 
@@ -135,7 +135,7 @@ exit.survey = {0} i rannu’ch adborth ar y gwasanaeth
 
 signedOut.title = Er eich diogelwch, gwnaethom eich allgofnodi
 signedOut.heading = Er eich diogelwch, gwnaethom eich allgofnodi
-signedOut.guidance = Gwnaethom gadw’ch atebion.
+signedOut.guidance = Gwnaethom gadw’ch atebion am 15 o funudau.
 
 date.month.1 = Ionawr
 date.month.2 = Chwefror
