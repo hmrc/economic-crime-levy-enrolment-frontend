@@ -30,11 +30,14 @@ import uk.gov.hmrc.economiccrimelevyenrolment.navigation.EclRegistrationDatePage
 import uk.gov.hmrc.economiccrimelevyenrolment.repositories.SessionRepository
 import uk.gov.hmrc.economiccrimelevyenrolment.views.html.EclRegistrationDateView
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalatestplus.mockito.MockitoSugar
+import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries.given
 
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class EclRegistrationDateControllerSpec extends SpecBase {
+class EclRegistrationDateControllerSpec extends SpecBase with MockitoSugar {
 
   val view: EclRegistrationDateView                                  = app.injector.instanceOf[EclRegistrationDateView]
   val formProvider: EclRegistrationDateFormProvider                  = new EclRegistrationDateFormProvider()
@@ -66,7 +69,7 @@ class EclRegistrationDateControllerSpec extends SpecBase {
   }
 
   "onPageLoad" should {
-    "return OK and the correct view when no answer has already been provided" in forAll { userAnswers: UserAnswers =>
+    "return OK and the correct view when no answer has already been provided" in forAll { (userAnswers: UserAnswers) =>
       new TestContext(userAnswers.copy(eclRegistrationDate = None), testGroupId, testProviderId) {
         val result: Future[Result] = controller.onPageLoad()(fakeRequest)
 
@@ -118,7 +121,7 @@ class EclRegistrationDateControllerSpec extends SpecBase {
         }
     }
 
-    "return a Bad Request with form errors when invalid data is submitted" in forAll { userAnswers: UserAnswers =>
+    "return a Bad Request with form errors when invalid data is submitted" in forAll { (userAnswers: UserAnswers) =>
       new TestContext(userAnswers, testGroupId, testProviderId) {
         val result: Future[Result]          = controller.onSubmit()(fakeRequest.withFormUrlEncodedBody(("value", "")))
         val formWithErrors: Form[LocalDate] = form.bind(Map("value" -> ""))

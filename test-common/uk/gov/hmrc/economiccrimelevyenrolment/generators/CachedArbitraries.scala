@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,20 @@
 
 package uk.gov.hmrc.economiccrimelevyenrolment.generators
 
+import io.github.martinhh.derived.scalacheck.deriveArbitrary
 import org.scalacheck.Arbitrary
-import org.scalacheck.derive.MkArbitrary
+import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.economiccrimelevyenrolment.EclTestData
 import uk.gov.hmrc.economiccrimelevyenrolment.models._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd._
-import com.danielasfregola.randomdatagenerator.RandomDataGenerator.derivedArbitrary
-import uk.gov.hmrc.auth.core.retrieve.Credentials
 
 object CachedArbitraries extends EclTestData with Generators {
 
-  private def mkArb[T](implicit mkArb: MkArbitrary[T]): Arbitrary[T] = MkArbitrary[T].arbitrary
-
-  implicit lazy val arbGroupEnrolmentsResponse: Arbitrary[GroupEnrolmentsResponse]                   = mkArb
-  implicit lazy val arbUserAnswers: Arbitrary[UserAnswers]                                           = mkArb
-  implicit lazy val arbTriState: Arbitrary[TriState]                                                 = mkArb
-  implicit lazy val arbQueryKnownFactsResponse: Arbitrary[QueryKnownFactsResponse]                   = mkArb
-  implicit lazy val arbAllocateEnrolmentRequest: Arbitrary[AllocateEnrolmentRequest]                 = mkArb
-  implicit lazy val arbCredentials: Arbitrary[Credentials]                                           = mkArb
-  implicit lazy val arbQueryGroupsWithEnrolmentResponse: Arbitrary[QueryGroupsWithEnrolmentResponse] = mkArb
-
+  given arbGroupEnrolmentsResponse: Arbitrary[GroupEnrolmentsResponse]                   = deriveArbitrary
+  given arbUserAnswers: Arbitrary[UserAnswers]                                           = deriveArbitrary
+  given arbTriState: Arbitrary[TriState]                                                 = deriveArbitrary
+  given arbQueryKnownFactsResponse: Arbitrary[QueryKnownFactsResponse]                   = deriveArbitrary
+  given arbAllocateEnrolmentRequest: Arbitrary[AllocateEnrolmentRequest]                 = deriveArbitrary
+  given arbCredentials: Arbitrary[Credentials]                                           = deriveArbitrary
+  given arbQueryGroupsWithEnrolmentResponse: Arbitrary[QueryGroupsWithEnrolmentResponse] = deriveArbitrary
 }

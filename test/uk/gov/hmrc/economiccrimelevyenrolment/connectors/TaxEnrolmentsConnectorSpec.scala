@@ -24,18 +24,21 @@ import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{AllocateEnrolmentRequest, EclEnrolment}
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HttpResponse, StringContextOps}
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalatestplus.mockito.MockitoSugar
+import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries.given
 
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
-class TaxEnrolmentsConnectorSpec extends SpecBase {
+class TaxEnrolmentsConnectorSpec extends SpecBase with MockitoSugar {
   val mockHttpClient: HttpClientV2       = mock[HttpClientV2]
   val mockRequestBuilder: RequestBuilder = mock[RequestBuilder]
   val connector                          = new TaxEnrolmentsConnector(appConfig, mockHttpClient)
 
   "allocateEnrolment" should {
     "return unit when the http client successfully returns a http response" in forAll {
-      allocateEnrolmentRequest: AllocateEnrolmentRequest =>
+      (allocateEnrolmentRequest: AllocateEnrolmentRequest) =>
         reset(mockHttpClient)
 
         val groupId      = testGroupId
@@ -64,7 +67,7 @@ class TaxEnrolmentsConnectorSpec extends SpecBase {
     }
 
     "throw an UpstreamErrorResponse exception when the http client fails to return a success response" in forAll {
-      allocateEnrolmentRequest: AllocateEnrolmentRequest =>
+      (allocateEnrolmentRequest: AllocateEnrolmentRequest) =>
         reset(mockHttpClient)
 
         val groupId      = testGroupId

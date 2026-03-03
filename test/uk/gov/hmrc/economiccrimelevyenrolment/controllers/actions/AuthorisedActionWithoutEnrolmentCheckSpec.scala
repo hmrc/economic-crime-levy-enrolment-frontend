@@ -31,10 +31,14 @@ import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.EclEnrolment
 import uk.gov.hmrc.economiccrimelevyenrolment.services.EnrolmentStoreProxyService
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalatestplus.mockito.MockitoSugar
+import org.scalacheck.Arbitrary.arbitrary
+import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries.given
 
 import scala.concurrent.Future
 
-class AuthorisedActionWithoutEnrolmentCheckSpec extends SpecBase {
+class AuthorisedActionWithoutEnrolmentCheckSpec extends SpecBase with MockitoSugar {
 
   val defaultBodyParser: BodyParsers.Default                     = app.injector.instanceOf[BodyParsers.Default]
   val mockAuthConnector: AuthConnector                           = mock[AuthConnector]
@@ -60,24 +64,36 @@ class AuthorisedActionWithoutEnrolmentCheckSpec extends SpecBase {
     Retrievals.internalId and Retrievals.allEnrolments and Retrievals.groupIdentifier and Retrievals.affinityGroup and Retrievals.credentialRole and Retrievals.credentials
 
   "invokeBlock" should {
-    "execute the block and return the result if authorised" in forAll {
-      (internalId: String, enrolmentsWithEcl: EnrolmentsWithEcl, groupId: String, credentials: Credentials) =>
-        when(mockAuthConnector.authorise(any(), ArgumentMatchers.eq(expectedRetrievals))(any(), any()))
-          .thenReturn(
-            Future(
-              Some(internalId) and enrolmentsWithEcl.enrolments and Some(groupId) and Some(Organisation) and Some(
-                User
-              ) and Some(credentials)
-            )
+    "execute the block and return the result if authorised" in {
+      val internalId = "internal-123"
+      val groupId    = "group-123"
+
+      val credentials: Credentials =
+        arbitrary[Credentials].sample.getOrElse {
+          fail("Could not generate Credentials")
+        }
+
+      val enrolmentsWithEcl: EnrolmentsWithEcl =
+        arbitrary[EnrolmentsWithEcl].sample.getOrElse {
+          fail("Could not generate EnrolmentsWithEcl")
+        }
+
+      when(mockAuthConnector.authorise(any(), ArgumentMatchers.eq(expectedRetrievals))(any(), any()))
+        .thenReturn(
+          Future(
+            Some(internalId) and enrolmentsWithEcl.enrolments and Some(groupId) and Some(Organisation) and Some(
+              User
+            ) and Some(credentials)
           )
+        )
 
-        when(mockEnrolmentStoreProxyService.getEclReferenceFromGroupEnrolment(ArgumentMatchers.eq(groupId))(any()))
-          .thenReturn(Future.successful(None))
+      when(mockEnrolmentStoreProxyService.getEclReferenceFromGroupEnrolment(ArgumentMatchers.eq(groupId))(any()))
+        .thenReturn(Future.successful(None))
 
-        val result: Future[Result] = authorisedAction.invokeBlock(fakeRequest, testAction)
+      val result: Future[Result] = authorisedAction.invokeBlock(fakeRequest, testAction)
 
-        status(result)          shouldBe OK
-        contentAsString(result) shouldBe "Test"
+      status(result)          shouldBe OK
+      contentAsString(result) shouldBe "Test"
     }
 
     "redirect the user to sign in when there is no active session" in {
@@ -92,50 +108,72 @@ class AuthorisedActionWithoutEnrolmentCheckSpec extends SpecBase {
       }
     }
 
-    "redirect the user to the agent not supported page if they have an agent affinity group" in forAll {
-      (internalId: String, enrolmentsWithEcl: EnrolmentsWithEcl, groupId: String, credentials: Credentials) =>
-        when(
-          mockAuthConnector
-            .authorise(any(), ArgumentMatchers.eq(expectedRetrievals))(any(), any())
+    "redirect the user to the agent not supported page if they have an agent affinity group" in {
+      val internalId = "internal-123"
+      val groupId    = "group-123"
+
+      val credentials: Credentials =
+        arbitrary[Credentials].sample.getOrElse {
+          fail("Could not generate Credentials")
+        }
+
+      val enrolmentsWithEcl: EnrolmentsWithEcl =
+        arbitrary[EnrolmentsWithEcl].sample.getOrElse {
+          fail("Could not generate EnrolmentsWithEcl")
+        }
+
+      when(
+        mockAuthConnector
+          .authorise(any(), ArgumentMatchers.eq(expectedRetrievals))(any(), any())
+      ).thenReturn(
+        Future(
+          Some(internalId) and enrolmentsWithEcl.enrolments and Some(groupId) and Some(Agent) and Some(
+            User
+          ) and Some(credentials)
         )
-          .thenReturn(
-            Future(
-              Some(internalId) and enrolmentsWithEcl.enrolments and Some(groupId) and Some(Agent) and Some(
-                User
-              ) and Some(credentials)
-            )
-          )
+      )
 
-        when(mockEnrolmentStoreProxyService.getEclReferenceFromGroupEnrolment(ArgumentMatchers.eq(groupId))(any()))
-          .thenReturn(Future.successful(None))
+      when(mockEnrolmentStoreProxyService.getEclReferenceFromGroupEnrolment(ArgumentMatchers.eq(groupId))(any()))
+        .thenReturn(Future.successful(None))
 
-        val result: Future[Result] = authorisedAction.invokeBlock(fakeRequest, testAction)
+      val result: Future[Result] = authorisedAction.invokeBlock(fakeRequest, testAction)
 
-        status(result)                 shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.NotableErrorController.agentCannotRegister().url
+      status(result)                 shouldBe SEE_OTHER
+      redirectLocation(result).value shouldBe routes.NotableErrorController.agentCannotRegister().url
     }
 
-    "redirect the user to the assistant not supported page if they have an assistant credential role" in forAll {
-      (internalId: String, enrolmentsWithEcl: EnrolmentsWithEcl, groupId: String, credentials: Credentials) =>
-        when(
-          mockAuthConnector
-            .authorise(any(), ArgumentMatchers.eq(expectedRetrievals))(any(), any())
+    "redirect the user to the assistant not supported page if they have an assistant credential role" in {
+      val internalId = "internal-123"
+      val groupId    = "group-123"
+
+      val credentials: Credentials =
+        arbitrary[Credentials].sample.getOrElse {
+          fail("Could not generate Credentials")
+        }
+
+      val enrolmentsWithEcl: EnrolmentsWithEcl =
+        arbitrary[EnrolmentsWithEcl].sample.getOrElse {
+          fail("Could not generate EnrolmentsWithEcl")
+        }
+
+      when(
+        mockAuthConnector
+          .authorise(any(), ArgumentMatchers.eq(expectedRetrievals))(any(), any())
+      ).thenReturn(
+        Future(
+          Some(internalId) and enrolmentsWithEcl.enrolments and Some(groupId) and Some(Organisation) and Some(
+            Assistant
+          ) and Some(credentials)
         )
-          .thenReturn(
-            Future(
-              Some(internalId) and enrolmentsWithEcl.enrolments and Some(groupId) and Some(Organisation) and Some(
-                Assistant
-              ) and Some(credentials)
-            )
-          )
+      )
 
-        val result: Future[Result] = authorisedAction.invokeBlock(fakeRequest, testAction)
+      val result: Future[Result] = authorisedAction.invokeBlock(fakeRequest, testAction)
 
-        status(result)                 shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.NotableErrorController.assistantCannotRegister().url
+      status(result)                 shouldBe SEE_OTHER
+      redirectLocation(result).value shouldBe routes.NotableErrorController.assistantCannotRegister().url
     }
 
-    "throw an IllegalStateException if there is no internal id" in forAll { credentials: Credentials =>
+    "throw an IllegalStateException if there is no internal id" in forAll { (credentials: Credentials) =>
       when(mockAuthConnector.authorise(any(), ArgumentMatchers.eq(expectedRetrievals))(any(), any()))
         .thenReturn(
           Future(
@@ -150,7 +188,7 @@ class AuthorisedActionWithoutEnrolmentCheckSpec extends SpecBase {
       result.getMessage shouldBe "Unable to retrieve internalId"
     }
 
-    "throw an IllegalStateException if there is no group id" in forAll { credentials: Credentials =>
+    "throw an IllegalStateException if there is no group id" in forAll { (credentials: Credentials) =>
       when(mockAuthConnector.authorise(any(), ArgumentMatchers.eq(expectedRetrievals))(any(), any()))
         .thenReturn(
           Future(
@@ -165,7 +203,7 @@ class AuthorisedActionWithoutEnrolmentCheckSpec extends SpecBase {
       result.getMessage shouldBe "Unable to retrieve groupIdentifier"
     }
 
-    "throw an IllegalStateException if there is no affinity group" in forAll { credentials: Credentials =>
+    "throw an IllegalStateException if there is no affinity group" in forAll { (credentials: Credentials) =>
       when(mockAuthConnector.authorise(any(), ArgumentMatchers.eq(expectedRetrievals))(any(), any()))
         .thenReturn(
           Future(Some("") and Enrolments(Set.empty) and Some("") and None and Some(User) and Some(credentials))
@@ -178,10 +216,12 @@ class AuthorisedActionWithoutEnrolmentCheckSpec extends SpecBase {
       result.getMessage shouldBe "Unable to retrieve affinityGroup"
     }
 
-    "throw an IllegalStateException if there is no credential role" in forAll { credentials: Credentials =>
+    "throw an IllegalStateException if there is no credential role" in forAll { (credentials: Credentials) =>
       when(mockAuthConnector.authorise(any(), ArgumentMatchers.eq(expectedRetrievals))(any(), any()))
         .thenReturn(
-          Future(Some("") and Enrolments(Set.empty) and Some("") and Some(Organisation) and None and Some(credentials))
+          Future(
+            Some("") and Enrolments(Set.empty) and Some("") and Some(Organisation) and None and Some(credentials)
+          )
         )
 
       val result = intercept[IllegalStateException] {

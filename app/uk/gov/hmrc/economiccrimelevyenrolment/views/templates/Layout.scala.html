@@ -63,8 +63,8 @@
 @hmrcStandardPage(HmrcStandardPageParams(
     pageTitle = Some(pageTitle),
     serviceURLs = ServiceURLs(
-        serviceUrl = Some(HasEclReferenceController.onPageLoad.url),
-        signOutUrl = if(showSignOut) Some(SignOutController.signOut.url) else None
+        serviceUrl = Some(HasEclReferenceController.onPageLoad().url),
+        signOutUrl = if(showSignOut) Some(SignOutController.signOut().url) else None
     ),
     isWelshTranslationAvailable = isWelshTranslationAvailable.getOrElse(appConfig.languageTranslationEnabled),
     templateOverrides = TemplateOverrides(

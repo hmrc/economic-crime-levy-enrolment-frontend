@@ -16,17 +16,17 @@
 
 package uk.gov.hmrc.economiccrimelevyenrolment
 
-import com.danielasfregola.randomdatagenerator.RandomDataGenerator.derivedArbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core.retrieve.Credentials
-import uk.gov.hmrc.auth.core.{AffinityGroup, EnrolmentIdentifier, Enrolments, Enrolment => AuthEnrolment}
+import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment => AuthEnrolment, EnrolmentIdentifier, Enrolments}
 import uk.gov.hmrc.economiccrimelevyenrolment.forms.mappings.MinMaxValues
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.Generators
 import uk.gov.hmrc.economiccrimelevyenrolment.models._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, GroupEnrolment, GroupEnrolmentsResponse}
 import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
+import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries.given
 
 import java.time.format.DateTimeFormatter
 import java.time.{Instant, LocalDate}
@@ -63,6 +63,31 @@ trait EclTestData { self: Generators =>
                                 Seq(EnrolmentIdentifier(key = EclEnrolment.identifierKey, value = eclReferenceNumber))
                             )
     } yield EnrolmentsWithEcl(enrolments.copy(enrolments.enrolments + eclEnrolment), eclReferenceNumber)
+  }
+
+  implicit val arbEnrolmentIdentifier: Arbitrary[EnrolmentIdentifier] = Arbitrary {
+    for {
+      key   <- Gen.alphaNumStr.retryUntil(_.nonEmpty)
+      value <- Gen.alphaNumStr.retryUntil(_.nonEmpty)
+    } yield EnrolmentIdentifier(key = key, value = value)
+  }
+
+  implicit val arbAuthEnrolment: Arbitrary[AuthEnrolment] = Arbitrary {
+    for {
+      key         <- Gen.alphaNumStr.retryUntil(_.nonEmpty)
+      identifiers <- Gen.listOf(arbEnrolmentIdentifier.arbitrary)
+      state       <- Gen.alphaNumStr.retryUntil(_.nonEmpty)
+      delegated   <- Gen.option(Gen.alphaNumStr.retryUntil(_.nonEmpty))
+    } yield AuthEnrolment(
+      key = key,
+      identifiers = identifiers,
+      state = state,
+      delegatedAuthRule = delegated
+    )
+  }
+
+  implicit val arbEnrolments: Arbitrary[Enrolments] = Arbitrary {
+    Gen.listOf(arbAuthEnrolment.arbitrary).map(list => Enrolments(list.toSet))
   }
 
   implicit val arbEnrolmentsWithoutEcl: Arbitrary[EnrolmentsWithoutEcl] = Arbitrary {

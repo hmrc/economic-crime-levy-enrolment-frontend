@@ -31,10 +31,13 @@ import uk.gov.hmrc.economiccrimelevyenrolment.navigation.EclReferencePageNavigat
 import uk.gov.hmrc.economiccrimelevyenrolment.repositories.SessionRepository
 import uk.gov.hmrc.economiccrimelevyenrolment.views.html.EclReferenceView
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.Mockito.{reset, times, verify, when}
+import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries.given
 
 import scala.concurrent.Future
 
-class EclReferenceControllerSpec extends SpecBase {
+class EclReferenceControllerSpec extends SpecBase with MockitoSugar {
 
   val view: EclReferenceView                                         = app.injector.instanceOf[EclReferenceView]
   val formProvider: EclReferenceFormProvider                         = new EclReferenceFormProvider()
@@ -62,7 +65,7 @@ class EclReferenceControllerSpec extends SpecBase {
   }
 
   "onPageLoad" should {
-    "return OK and the correct view when no answer has already been provided" in forAll { userAnswers: UserAnswers =>
+    "return OK and the correct view when no answer has already been provided" in forAll { (userAnswers: UserAnswers) =>
       new TestContext(userAnswers.copy(eclReferenceNumber = None), testGroupId, testProviderId) {
         val result: Future[Result] = controller.onPageLoad()(fakeRequest)
 
@@ -106,7 +109,7 @@ class EclReferenceControllerSpec extends SpecBase {
       }
     }
 
-    "return a Bad Request with form errors when invalid data is submitted" in forAll { userAnswers: UserAnswers =>
+    "return a Bad Request with form errors when invalid data is submitted" in forAll { (userAnswers: UserAnswers) =>
       new TestContext(userAnswers, testGroupId, testProviderId) {
         val result: Future[Result]       = controller.onSubmit()(fakeRequest.withFormUrlEncodedBody(("value", "")))
         val formWithErrors: Form[String] = form.bind(Map("value" -> ""))
