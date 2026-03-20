@@ -33,7 +33,7 @@ class EclReferenceFormProviderSpec extends StringFieldBehaviours {
 
     "fail to bind an invalid registration reference" in forAll(
       stringsWithMaxLength(15).retryUntil(!_.matches(Regex.eclRegistrationReferenceRegex))
-    ) { invalidRegistrationReference: String =>
+    ) { (invalidRegistrationReference: String) =>
       val result: Form[String] = form.bind(Map("value" -> invalidRegistrationReference))
 
       result.errors.map(_.message) should contain("eclReference.error.invalid")

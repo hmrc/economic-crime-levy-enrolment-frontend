@@ -26,12 +26,15 @@ import uk.gov.hmrc.economiccrimelevyenrolment.models.KeyValue
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd._
 import uk.gov.hmrc.http.{HttpResponse, StringContextOps}
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalatestplus.mockito.MockitoSugar
+import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries.given
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import scala.concurrent.Future
 
-class EnrolmentStoreProxyConnectorSpec extends SpecBase {
+class EnrolmentStoreProxyConnectorSpec extends SpecBase with MockitoSugar {
 
   val mockHttpClient: HttpClientV2       = mock[HttpClientV2]
   val mockRequestBuilder: RequestBuilder = mock[RequestBuilder]

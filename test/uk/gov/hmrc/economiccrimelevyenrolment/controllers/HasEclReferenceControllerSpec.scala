@@ -27,10 +27,13 @@ import uk.gov.hmrc.economiccrimelevyenrolment.models.{TriState, UserAnswers}
 import uk.gov.hmrc.economiccrimelevyenrolment.navigation.HasEclReferencePageNavigator
 import uk.gov.hmrc.economiccrimelevyenrolment.repositories.SessionRepository
 import uk.gov.hmrc.economiccrimelevyenrolment.views.html.HasEclReferenceView
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalatestplus.mockito.MockitoSugar
+import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries.given
 
 import scala.concurrent.Future
 
-class HasEclReferenceControllerSpec extends SpecBase {
+class HasEclReferenceControllerSpec extends SpecBase with MockitoSugar {
 
   val view: HasEclReferenceView                   = app.injector.instanceOf[HasEclReferenceView]
   val formProvider: HasEclReferenceFormProvider   = new HasEclReferenceFormProvider()
@@ -53,7 +56,7 @@ class HasEclReferenceControllerSpec extends SpecBase {
   }
 
   "onPageLoad" should {
-    "return OK and the correct view when no answer has already been provided" in forAll { userAnswers: UserAnswers =>
+    "return OK and the correct view when no answer has already been provided" in forAll { (userAnswers: UserAnswers) =>
       new TestContext(userAnswers.copy(hasEclReference = None), testGroupId, testProviderId) {
         val result: Future[Result] = controller.onPageLoad()(fakeRequest)
 
@@ -95,7 +98,7 @@ class HasEclReferenceControllerSpec extends SpecBase {
         }
     }
 
-    "return a Bad Request with form errors when invalid data is submitted" in forAll { userAnswers: UserAnswers =>
+    "return a Bad Request with form errors when invalid data is submitted" in forAll { (userAnswers: UserAnswers) =>
       new TestContext(userAnswers, testGroupId, testProviderId) {
         val result: Future[Result]         = controller.onSubmit()(fakeRequest.withFormUrlEncodedBody(("value", "")))
         val formWithErrors: Form[TriState] = form.bind(Map("value" -> ""))

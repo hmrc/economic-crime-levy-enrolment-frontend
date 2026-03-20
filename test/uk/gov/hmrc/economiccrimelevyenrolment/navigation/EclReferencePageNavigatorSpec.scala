@@ -26,10 +26,13 @@ import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.{EclEnrolment, Enrolme
 import uk.gov.hmrc.economiccrimelevyenrolment.models.requests.DataRequest
 import uk.gov.hmrc.economiccrimelevyenrolment.models.{KeyValue, UserAnswers}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalatestplus.mockito.MockitoSugar
+import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries.given
 
 import scala.concurrent.Future
 
-class EclReferencePageNavigatorSpec extends SpecBase {
+class EclReferencePageNavigatorSpec extends SpecBase with MockitoSugar {
 
   val mockEnrolmentStoreProxyConnector: EnrolmentStoreProxyConnector = mock[EnrolmentStoreProxyConnector]
   val mockAuditConnector: AuditConnector                             = mock[AuditConnector]

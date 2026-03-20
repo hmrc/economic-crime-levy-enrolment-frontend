@@ -23,6 +23,7 @@ import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.TriState._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
 import uk.gov.hmrc.economiccrimelevyenrolment.views.html.FindEclReferenceView
+import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries.given
 
 import scala.concurrent.Future
 
@@ -39,7 +40,7 @@ class FindEclReferenceControllerSpec extends SpecBase {
   }
 
   "onPageLoad" should {
-    "return OK and the correct view" in forAll { userAnswers: UserAnswers =>
+    "return OK and the correct view" in forAll { (userAnswers: UserAnswers) =>
       new TestContext(userAnswers.copy(hasEclReference = Some(Unknown)), testGroupId, testProviderId) {
         val result: Future[Result] = controller.onPageLoad()(fakeRequest)
 

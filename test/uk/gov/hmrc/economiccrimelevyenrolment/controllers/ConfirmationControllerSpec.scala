@@ -25,10 +25,12 @@ import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
 import uk.gov.hmrc.economiccrimelevyenrolment.repositories.SessionRepository
 import uk.gov.hmrc.economiccrimelevyenrolment.views.html.{AnswersAreInvalidView, ConfirmationView}
 import uk.gov.hmrc.http.UpstreamErrorResponse
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalatestplus.mockito.MockitoSugar
 
 import scala.concurrent.Future
 
-class ConfirmationControllerSpec extends SpecBase {
+class ConfirmationControllerSpec extends SpecBase with MockitoSugar {
 
   val view: ConfirmationView                       = app.injector.instanceOf[ConfirmationView]
   val answersAreInvalidView: AnswersAreInvalidView = app.injector.instanceOf[AnswersAreInvalidView]

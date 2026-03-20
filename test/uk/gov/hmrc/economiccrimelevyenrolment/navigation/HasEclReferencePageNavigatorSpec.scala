@@ -21,6 +21,7 @@ import uk.gov.hmrc.economiccrimelevyenrolment.controllers.routes
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.TriState._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
+import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries.given
 
 class HasEclReferencePageNavigatorSpec extends SpecBase {
 
@@ -28,28 +29,28 @@ class HasEclReferencePageNavigatorSpec extends SpecBase {
 
   "nextPage" should {
     "return a Call to the ECL reference number page in NormalMode when the answer is 'Yes'" in forAll {
-      userAnswers: UserAnswers =>
+      (userAnswers: UserAnswers) =>
         val updatedAnswers: UserAnswers = userAnswers.copy(hasEclReference = Some(Yes))
 
         pageNavigator.nextPage(updatedAnswers) shouldBe routes.EclReferenceController.onPageLoad()
     }
 
     "return a Call to the you need to register for ECL page in NormalMode when the answer is 'No'" in forAll {
-      userAnswers: UserAnswers =>
+      (userAnswers: UserAnswers) =>
         val updatedAnswers: UserAnswers = userAnswers.copy(hasEclReference = Some(No))
 
         pageNavigator.nextPage(updatedAnswers) shouldBe routes.RegistrationController.onPageLoad()
     }
 
     "return a Call to the find your ECL reference page in NormalMode when the answer is 'Unknown'" in forAll {
-      userAnswers: UserAnswers =>
+      (userAnswers: UserAnswers) =>
         val updatedAnswers: UserAnswers = userAnswers.copy(hasEclReference = Some(Unknown))
 
         pageNavigator.nextPage(updatedAnswers) shouldBe routes.FindEclReferenceController.onPageLoad()
     }
 
     "return a Call to the answers are invalid page in NormalMode when no answer has been provided" in forAll {
-      userAnswers: UserAnswers =>
+      (userAnswers: UserAnswers) =>
         val updatedAnswers: UserAnswers = userAnswers.copy(hasEclReference = None)
 
         pageNavigator.nextPage(updatedAnswers) shouldBe routes.NotableErrorController.answersAreInvalid()

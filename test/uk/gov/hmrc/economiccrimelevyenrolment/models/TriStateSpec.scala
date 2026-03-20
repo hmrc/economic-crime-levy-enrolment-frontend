@@ -19,10 +19,11 @@ package uk.gov.hmrc.economiccrimelevyenrolment.models
 import play.api.libs.json.{JsBoolean, JsError, JsString, Json}
 import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase
 import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
+import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries.given
 
 class TriStateSpec extends SpecBase {
   "writes" should {
-    "return the tri-state serialized to its JSON representation" in forAll { triSate: TriState =>
+    "return the tri-state serialized to its JSON representation" in forAll { (triSate: TriState) =>
       val result = Json.toJson(triSate)
 
       result shouldBe JsString(triSate.toString)
@@ -30,7 +31,7 @@ class TriStateSpec extends SpecBase {
   }
 
   "reads" should {
-    "return the tri-state deserialized from its JSON representation" in forAll { triSate: TriState =>
+    "return the tri-state deserialized from its JSON representation" in forAll { (triSate: TriState) =>
       val json = Json.toJson(triSate)
 
       json.as[TriState] shouldBe triSate

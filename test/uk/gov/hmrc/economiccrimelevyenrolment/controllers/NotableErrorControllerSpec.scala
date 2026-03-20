@@ -23,6 +23,7 @@ import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries._
 import uk.gov.hmrc.economiccrimelevyenrolment.models.UserAnswers
 import uk.gov.hmrc.economiccrimelevyenrolment.models.eacd.EclEnrolment
 import uk.gov.hmrc.economiccrimelevyenrolment.views.html._
+import uk.gov.hmrc.economiccrimelevyenrolment.generators.CachedArbitraries.given
 
 import scala.concurrent.Future
 
@@ -63,7 +64,7 @@ class NotableErrorControllerSpec extends SpecBase {
   }
 
   "answerAreInvalid" should {
-    "return OK and the correct view" in forAll { userAnswers: UserAnswers =>
+    "return OK and the correct view" in forAll { (userAnswers: UserAnswers) =>
       new TestContext(userAnswers, testGroupId, testProviderId) {
         val result: Future[Result] = controller.answersAreInvalid()(fakeRequest)
 
@@ -75,7 +76,7 @@ class NotableErrorControllerSpec extends SpecBase {
   }
 
   "detailsDoNotMatch" should {
-    "return OK and the correct view" in forAll { userAnswers: UserAnswers =>
+    "return OK and the correct view" in forAll { (userAnswers: UserAnswers) =>
       new TestContext(userAnswers, testGroupId, testProviderId) {
         val result: Future[Result] = controller.detailsDoNotMatch()(fakeRequest)
 
@@ -119,7 +120,7 @@ class NotableErrorControllerSpec extends SpecBase {
   }
 
   "agentCannotRegister" should {
-    "return OK and the correct view" in forAll { userAnswers: UserAnswers =>
+    "return OK and the correct view" in forAll { (userAnswers: UserAnswers) =>
       new TestContext(userAnswers, testGroupId, testProviderId) {
         val result: Future[Result] = controller.agentCannotRegister()(fakeRequest)
 
@@ -131,7 +132,7 @@ class NotableErrorControllerSpec extends SpecBase {
   }
 
   "assistantCannotRegister" should {
-    "return OK and the correct view" in forAll { userAnswers: UserAnswers =>
+    "return OK and the correct view" in forAll { (userAnswers: UserAnswers) =>
       new TestContext(userAnswers, testGroupId, testProviderId) {
         val result: Future[Result] = controller.assistantCannotRegister()(fakeRequest)
 
@@ -143,7 +144,7 @@ class NotableErrorControllerSpec extends SpecBase {
   }
 
   "duplicateEnrolment" should {
-    "return OK and the correct view" in forAll { userAnswers: UserAnswers =>
+    "return OK and the correct view" in forAll { (userAnswers: UserAnswers) =>
       new TestContext(userAnswers, testGroupId, testProviderId) {
         val result: Future[Result] = controller.duplicateEnrolment()(fakeRequest)
 
@@ -155,7 +156,7 @@ class NotableErrorControllerSpec extends SpecBase {
   }
 
   "eclAlreadyAddedView" should {
-    "return OK and the correct view" in forAll { userAnswers: UserAnswers =>
+    "return OK and the correct view" in forAll { (userAnswers: UserAnswers) =>
       new TestContext(userAnswers, testGroupId, testProviderId) {
         val result: Future[Result] = controller.eclAlreadyAdded()(fakeRequest)
 

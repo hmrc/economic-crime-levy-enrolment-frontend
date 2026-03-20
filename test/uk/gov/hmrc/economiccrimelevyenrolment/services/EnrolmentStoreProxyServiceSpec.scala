@@ -20,21 +20,30 @@ import org.mockito.ArgumentMatchers.any
 import uk.gov.hmrc.economiccrimelevyenrolment.{GroupEnrolmentsResponseWithEcl, GroupEnrolmentsResponseWithoutEcl}
 import uk.gov.hmrc.economiccrimelevyenrolment.base.SpecBase
 import uk.gov.hmrc.economiccrimelevyenrolment.connectors.EnrolmentStoreProxyConnector
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalatestplus.mockito.MockitoSugar
+import org.scalacheck.Arbitrary.arbitrary
 
 import scala.concurrent.Future
 
-class EnrolmentStoreProxyServiceSpec extends SpecBase {
+class EnrolmentStoreProxyServiceSpec extends SpecBase with MockitoSugar {
   val mockEnrolmentStoreProxyConnector: EnrolmentStoreProxyConnector = mock[EnrolmentStoreProxyConnector]
   val service                                                        = new EnrolmentStoreProxyService(mockEnrolmentStoreProxyConnector)
 
   "groupHasEnrolment" should {
-    "return true when the list of group enrolments contains the ECL enrolment" in forAll {
-      (groupId: String, groupEnrolmentsWithEcl: GroupEnrolmentsResponseWithEcl) =>
-        when(mockEnrolmentStoreProxyConnector.getEnrolmentsForGroup(any())(any()))
-          .thenReturn(Future.successful(Some(groupEnrolmentsWithEcl.groupEnrolmentsResponse)))
+    "return true when the list of group enrolments contains the ECL enrolment" in {
+      val groupId = "group-123"
 
-        val result = await(service.getEclReferenceFromGroupEnrolment(groupId))
-        result shouldBe Some(groupEnrolmentsWithEcl.eclReferenceNumber)
+      val groupEnrolmentsWithEcl: GroupEnrolmentsResponseWithEcl =
+        arbitrary[GroupEnrolmentsResponseWithEcl].sample.getOrElse {
+          fail("Could not generate GroupEnrolmentsResponseWithEcl")
+        }
+
+      when(mockEnrolmentStoreProxyConnector.getEnrolmentsForGroup(any())(any()))
+        .thenReturn(Future.successful(Some(groupEnrolmentsWithEcl.groupEnrolmentsResponse)))
+
+      val result = await(service.getEclReferenceFromGroupEnrolment(groupId))
+      result shouldBe Some(groupEnrolmentsWithEcl.eclReferenceNumber)
     }
 
     "return false when the list of group enrolments does not contain the ECL enrolment" in forAll {
@@ -46,7 +55,7 @@ class EnrolmentStoreProxyServiceSpec extends SpecBase {
         result shouldBe None
     }
 
-    "return false when there are no group enrolments returned" in forAll { groupId: String =>
+    "return false when there are no group enrolments returned" in forAll { (groupId: String) =>
       when(mockEnrolmentStoreProxyConnector.getEnrolmentsForGroup(any())(any()))
         .thenReturn(Future.successful(None))
 

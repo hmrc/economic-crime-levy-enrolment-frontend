@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.economiccrimelevyenrolment.base
 
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.{BeforeAndAfterEach, OptionValues, TryValues}
@@ -67,7 +67,7 @@ trait SpecBase
     groupId: String,
     providerId: String,
     eclRegistrationReference: Option[String] = None
-  )                                                                                                   =
+  ) =
     new FakeAuthorisedActionWithoutEnrolmentCheck(
       eclRegistrationReference,
       internalId,
