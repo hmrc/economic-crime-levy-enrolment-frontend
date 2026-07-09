@@ -55,4 +55,7 @@ class AppConfig @Inject() (configuration: Configuration, servicesConfig: Service
   val taxEnrolmentsBaseUrl: String                        = servicesConfig.baseUrl("tax-enrolments")
   val timeout: Int                                        = configuration.get[Int]("timeout-dialog.timeout")
   val businessAccountUrl: String                          = configuration.get[String]("urls.businessAccount")
+  val researchBannerEnabled: Boolean                      = configuration.get[Boolean]("features.researchBannerEnabled")
+  val researchBannerUrl: String                           = configuration.get[String]("urls.researchBanner")
+  val researchBannerCyUrl: String                         = configuration.get[String]("urls.researchBannerCy")
 }
